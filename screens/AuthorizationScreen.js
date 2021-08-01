@@ -1,59 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Link from '../components/Link';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import AnimatedTextInput from '../components/AnimatedTextInput';
+import Toolbar from '../components/Toolbar';
+import H1 from '../components/H1';
+import Button from '../components/Button';
 
-export default function AuthorizationScreen({ navigation }) {
+export default function RegistrationScreen({ navigation }) {
+
+
+    const [isValid, setIsValid] = useState(true);
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+
     return (
-        <View style={styles.container}>
-            <View>
-                <Text style={globalStyles.title}>Авторизация</Text>
+        <View style={[globalStyles.container, { justifyContent: 'space-between', alignItems: 'flex-start', padding: 20 }]}>
+            <Toolbar back={true} />
+            <View style={{ width: 248, marginTop: 82 }}>
+                <H1>Добро
+                    пожаловать</H1>
             </View>
-            <View>
-                <View style={[globalStyles.row, styles.inputRows]}>
-                    <Text style={globalStyles.label}>E-mail</Text>
-                    <TextInput
-                        width="77%"
-                        style={globalStyles.textInput}
-                        keyboardType="email-address"
-                        placeholder="example@site.com"
-                    />
-                </View>
-                <View style={[globalStyles.row, styles.inputRows]}>
-                    <Text style={globalStyles.label}>Пароль</Text>
-                    <TextInput
-                        width="77%"
-                        style={globalStyles.textInput}
-                        secureTextEntry={true}
-                    />
-                </View>
-                <View style={[globalStyles.row, styles.alternatives, styles.inputRows]}>
-                    <Link title="Забыли пароль?" onPress={() => { navigation.navigate("PasswordRecovery") }} />
-                    <Link title="Зарегистрироваться" onPress={() => { navigation.navigate("Registration") }} />
-                </View>
+            <View width="100%">
+                <AnimatedTextInput
+                    placeholder="E-mail"
+                    keyboardType="email-address"
+                />
+                <AnimatedTextInput
+                    placeholder="Password"
+                    secureTextEntry={true}
+
+                    keyboardType="visible-password"
+                />
+                <Link page="PasswordRecovery" title="Забыли пароль?" />
             </View>
-            <TouchableOpacity
-                style={globalStyles.button}
-                activeOpacity={0.5}
-            >
-                <Text style={globalStyles.buttonText}>Продолжить</Text>
-            </TouchableOpacity>
+            <Button title="Войти" onPress={() => { }} />
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
+        marginBottom: 86,
         justifyContent: 'space-evenly',
-        alignItems: 'center',
+        alignItems: 'center'
     },
-    inputRows: {
-        margin: 5,
+    content: {
+        padding: 20,
+        justifyContent: 'space-evenly',
     },
-    alternatives: {
-        paddingVertical: 20,
-        paddingHorizontal: 10
-    }
 })

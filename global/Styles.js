@@ -6,7 +6,7 @@ export default globalStyles = StyleSheet.create({
         shadowOffset: { height: 1, width: 1 }, // IOS
         shadowOpacity: 1, // IOS
         shadowRadius: 1, //IOS
-        backgroundColor: 'rgb(97,218,251)',
+        backgroundColor: '#6566fd',
         elevation: 2, // Android
         padding: 14,
         justifyContent: 'center',
@@ -17,8 +17,40 @@ export default globalStyles = StyleSheet.create({
     buttonText: {
         fontSize: 18,
     },
-    title: {
-        fontSize: 23
+    h1: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#fff'
+    },
+    h2: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#fff'
+    },
+    h3: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff'
+    },
+    h4: {
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#fff'
+    },
+    h5: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#fff'
+    },
+    h6: {
+        fontSize: 14,
+        fontWeight: '400',
+        color: '#fff'
+    },
+    h7: {
+        fontSize: 12,
+        fontWeight: '400',
+        color: '#fff'
     },
     row: {
         flexDirection: 'row',
@@ -39,5 +71,11 @@ export default globalStyles = StyleSheet.create({
     },
     label: {
         fontSize: 14
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        backgroundColor: '#0E0938',
     }
 })

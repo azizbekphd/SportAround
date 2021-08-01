@@ -3,81 +3,32 @@ import globalStyles from '../global/Styles';
 import Link from '../components/Link';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import RequiredLabel from '../components/RequiredLabel';
+import Toolbar from '../components/Toolbar';
+import ViewPager from 'react-native-pager-view';
+import H1 from '../components/H1';
 
 export default function RegistrationScreen({ navigation }) {
     return (
-        <View style={styles.container}>
-            <View>
-                <Text style={globalStyles.title}>Регистрация</Text>
-            </View>
-            <View style={styles.content}>
-                <View style={globalStyles.row}>
-                    <RequiredLabel>
-                        E-mail
-                    </RequiredLabel>
-                    <TextInput
-                        width="70%"
-                        style={globalStyles.textInput}
-                        keyboardType="email-address"
-                        placeholder="example@site.com"
-                    />
-                </View>
-                <View style={globalStyles.row}>
-                    <RequiredLabel>
-                        Никнейм
-                    </RequiredLabel>
-                    <TextInput
-                        width="70%"
-                        style={globalStyles.textInput}
-                    />
-                </View>
-                <View style={globalStyles.row}>
-                    <RequiredLabel>
-                        Дата рождения
-                    </RequiredLabel>
-                    <TextInput
-                        width="50%"
-                        style={globalStyles.textInput}
-                    />
-                </View>
-                <View style={globalStyles.row}>
-                    <RequiredLabel>
-                        Пароль
-                    </RequiredLabel>
-                    <TextInput
-                        width="55%"
-                        secureTextEntry={true}
-                        style={globalStyles.textInput}
-                    />
-                </View>
-                <View style={globalStyles.row}>
-                    <RequiredLabel>
-                        Повторите пароль
-                    </RequiredLabel>
-                    <TextInput
-                        width="55%"
-                        secureTextEntry={true}
-                        style={globalStyles.textInput}
-                    />
-                </View>
-                <View style={globalStyles.row}>
-                    <RequiredLabel>
-                        Номер телефона
-                    </RequiredLabel>
-                    <TextInput
-                        width="55%"
-                        keyboardType="phone-pad"
-                        style={globalStyles.textInput}
-                    />
-                </View>
-                <Link title="У меня уже есть аккаунт" onPress={() => { navigation.goBack() }} />
-            </View>
-            <TouchableOpacity
-                style={globalStyles.button}
-                activeOpacity={0.5}
+        <View style={[globalStyles.container, { justifyContent: 'space-between' }]}>
+            <Toolbar back={true} />
+            <ViewPager
+                style={styles.container}
+                initialPage={0}
             >
-                <Text style={globalStyles.buttonText}>Продолжить</Text>
-            </TouchableOpacity>
+                <View key="1">
+                    <View style={{ width: 248 }}>
+                        <H1>Новый
+                            Аккаунт</H1>
+                    </View>
+                </View>
+                <View key="2">
+                    <View style={{ width: 248 }}>
+                        <H1>Вы почти
+                            у цели
+                        </H1>
+                    </View>
+                </View>
+            </ViewPager>
         </View>
     )
 }
@@ -85,6 +36,7 @@ export default function RegistrationScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginBottom: 86,
         justifyContent: 'space-evenly',
         alignItems: 'center'
     },
