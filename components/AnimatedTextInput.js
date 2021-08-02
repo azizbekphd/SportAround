@@ -52,7 +52,7 @@ export default function AnimatedTextInput({
                 onChangeText={(value) => { setValue(value) }}
                 style={{
                     color: "#fff",
-                    height: 55,
+                    height: 50,
                     borderBottomColor: getColor(valid),
                     borderBottomWidth: focused ? 2 : 1,
                     fontSize: 16,

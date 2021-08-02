@@ -10,34 +10,55 @@ export default function Toolbar(props) {
     return (
         <View width="100%" style={{
             height: 47 + StatusBar.currentHeight,
-            position: 'absolute',
+            position: 'relative',
             top: 0,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
             padding: 7,
-            backgroundColor: "#f00"
+            zIndex: 1000
         }}>
-            {props.back ??
-                <TouchableOpacity
-                    activeOpacity={0.5}
-                    onPress={() => { navigation.pop() }}
+            <View width="100%" style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+            }}>
+                <View
                     style={{
                         height: 40,
                         width: 40,
                         justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: "#0f0"
-                    }}
-                >
-                    <Image source={require("../assets/icons/arrow_back.png")} />
-                </TouchableOpacity>
-            }
-            <View>
-                {props.title ??
-                    <H3>{props.title}</H3>
-                }
+                        alignItems: 'center'
+                    }}>
+                    {(props.back === true) &&
+                        <TouchableOpacity
+                            activeOpacity={0.5}
+                            onPress={() => { navigation.pop() }}
+                            style={{
+                                height: 40,
+                                width: 40,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <Image source={require("../assets/icons/arrow_back.png")} />
+                        </TouchableOpacity>
+                    }
+                </View>
+                <View>
+                    {(props.title != "") &&
+                        <H3>{props.title}</H3>
+                    }
+                </View>
+                <View style={{
+                    height: 40,
+                    width: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+
+                </View>
             </View>
-        </View>
+        </View >
     )
 }

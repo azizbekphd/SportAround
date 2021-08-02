@@ -15,26 +15,28 @@ export default function RegistrationScreen({ navigation }) {
     const [password, setPassword] = useState(null);
 
     return (
-        <View style={[globalStyles.container, { justifyContent: 'space-between', alignItems: 'flex-start', padding: 20 }]}>
-            <Toolbar back={true} />
-            <View style={{ width: 248, marginTop: 82 }}>
-                <H1>Добро
-                    пожаловать</H1>
-            </View>
-            <View width="100%">
-                <AnimatedTextInput
-                    placeholder="E-mail"
-                    keyboardType="email-address"
-                />
-                <AnimatedTextInput
-                    placeholder="Password"
-                    secureTextEntry={true}
+        <View style={[globalStyles.container, { alignItems: 'stretch' }]} >
+            <Toolbar back />
+            <View style={[globalStyles.container, { justifyContent: 'space-between', alignItems: 'flex-start', padding: 20 }]}>
+                <View style={{ width: 248, marginTop: 82 }}>
+                    <H1>Добро
+                        пожаловать</H1>
+                </View>
+                <View width="100%">
+                    <AnimatedTextInput
+                        placeholder="E-mail"
+                        keyboardType="email-address"
+                    />
+                    <AnimatedTextInput
+                        placeholder="Пароль"
+                        secureTextEntry={true}
 
-                    keyboardType="visible-password"
-                />
-                <Link page="PasswordRecovery" title="Забыли пароль?" />
+                        keyboardType="visible-password"
+                    />
+                    <Link page="PasswordRecovery" title="Забыли пароль?" />
+                </View>
+                <Button title="Войти" onPress={() => { }} />
             </View>
-            <Button title="Войти" onPress={() => { }} />
         </View>
     )
 }
