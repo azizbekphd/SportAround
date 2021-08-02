@@ -4,6 +4,7 @@ import { View, TextInput, Animated, Text, StyleSheet } from "react-native";
 export default function AnimatedTextInput({
     placeholder,
     valid,
+    onFocus,
     ...others
 }) {
     const floatAnim = useRef(new Animated.Value(20)).current;
@@ -14,7 +15,7 @@ export default function AnimatedTextInput({
     const getColor = function (valid) {
         return valid ? "#29dec8" :
             (valid === false ? "#ff3333" :
-                (focused ? "#656b82" : "#fff"))
+                (focused ? "#fff" : "#656b82"))
     }
 
     const animate = function (ref, value) {
@@ -36,10 +37,11 @@ export default function AnimatedTextInput({
                 }]}>{placeholder}</Animated.Text>
             <TextInput
                 {...others}
-                onFocus={() => {
+                onFocus={(ev) => {
                     setFocused(true);
                     animate(floatAnim, 0)
                     animate(fontSizeAnim, 13)
+                    onFocus && onFocus(ev);
                 }}
                 onBlur={() => {
                     setFocused(false);
@@ -67,7 +69,7 @@ export default function AnimatedTextInput({
 
 const styles = StyleSheet.create({
     inputContainer: {
-        height: 80,
+        height: 68,
         justifyContent: "space-between"
     },
     placeholder: {
