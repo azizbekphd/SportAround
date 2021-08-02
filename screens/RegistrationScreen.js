@@ -76,10 +76,11 @@ export default function RegistrationScreen({ navigation }) {
                             <AnimatedTextInput
                                 placeholder="Телефон"
                                 keyboardType="phone-pad"
+                                tel
                             />
                             <AnimatedTextInput
                                 placeholder="Дата рождения"
-                                onFocus={(ev) => { Alert.alert("Blabla"); ev.target.blur() }}
+                                date
                             />
                             <AnimatedTextInput
                                 placeholder="Адрес"
@@ -87,7 +88,12 @@ export default function RegistrationScreen({ navigation }) {
                             <View style={{ height: 68 }}>
                                 <H6 color="rgba(255,255,255,.5)">Нажимая кнопку «Начать», вы соглашаетесь с политикой конфиденциальности</H6>
                             </View>
-                            <Button title="Начать" onPress={() => { navigation.replace("SportChoice") }} />
+                            <Button title="Начать" onPress={() => {
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [{ name: 'SportChoice' }],
+                                });
+                            }} />
                         </View>
                     </View>
                 </ViewPager>

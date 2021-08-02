@@ -35,7 +35,12 @@ export default function RegistrationScreen({ navigation }) {
                     />
                     <Link page="PasswordRecovery" title="Забыли пароль?" />
                 </View>
-                <Button title="Войти" onPress={() => { }} />
+                <Button title="Войти" onPress={() => {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'SportChoice' }],
+                    });
+                }} />
             </View>
         </View>
     )
