@@ -11,6 +11,7 @@ import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, StatusBar }
 import SignInSignUpScreen from './screens/SignInSignUpScreen';
 import SportChoiceScreen from './screens/SportChoiceScreen';
 import NewGameScreen from './screens/NewGameScreen';
+import PlaygroundChoiceScreen from './screens/PlaygroundsChoiceScreen';
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,10 @@ export default function App() {
           <Stack.Screen
             name="NewGame"
             component={NewGameScreen}
+          />
+          <Stack.Screen
+            name="PlaygroundChoice"
+            component={PlaygroundChoiceScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -54,7 +54,7 @@ export default function NewGameScreen({ route, navigation }) {
                         />
                     </View>
                 </View>
-                <Button title="Начать" />
+                <Button title="Начать" onPress={() => { navigation.navigate("PlaygroundChoice") }} />
             </View>
         </>
     )

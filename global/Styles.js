@@ -1,18 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 export default globalStyles = StyleSheet.create({
-    button: {
-        shadowColor: 'rgba(0,0,0, .4)', // IOS
-        shadowOffset: { height: 1, width: 1 }, // IOS
-        shadowOpacity: 1, // IOS
-        shadowRadius: 1, //IOS
-        backgroundColor: '#6566fd',
-        elevation: 2, // Android
-        padding: 14,
+    center: {
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
-        borderRadius: 10,
     },
     buttonText: {
         fontSize: 18,

@@ -57,7 +57,9 @@ export default function Toolbar(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-
+                    {(props.menu) &&
+                        <Image source={require('../assets/icons/three_dots.png')} />
+                    }
                 </View>
             </View>
         </View >
