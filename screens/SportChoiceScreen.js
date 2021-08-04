@@ -10,6 +10,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Navbar from '../components/Navbar';
 
 export default function SportChoiceScreen({ navigation }) {
+
+    const openNextPage = (isSoccer) => {
+        navigation.navigate('NewGame', { isSoccer: isSoccer })
+    }
+
     return (
         <>
             <Toolbar title="Новая игра" />
@@ -20,7 +25,7 @@ export default function SportChoiceScreen({ navigation }) {
                         <H3>Выберите вид, чтобы создать или найти игру рядом с вами</H3>
                     </View>
                     <View style={[globalStyles.row, { justifyContent: 'space-around' }]}>
-                        <TouchableOpacity style={styles.sport}>
+                        <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(true) }}>
                             <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={["#6566FD", "#6843CF"]}>
                                 <View style={{ alignItems: 'flex-end' }}>
                                     <Image source={require('../assets/icons/soccer.png')} />
@@ -30,7 +35,7 @@ export default function SportChoiceScreen({ navigation }) {
                                 </View>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.sport}>
+                        <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(false) }}>
                             <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={["#29DEC8", "#049DFF"]}>
                                 <View style={{ alignItems: 'flex-end' }}>
                                     <Image source={require('../assets/icons/basketball.png')} />

@@ -30,7 +30,7 @@ export default function LoadingScreen({ navigation }) {
 
     useEffect(() => {
         if (progress >= 245) {
-            navigation.replace("Intro")
+            navigation.replace("SportChoice")
         } else {
             setTimeout(() => {
                 setProgress(progress + 1)

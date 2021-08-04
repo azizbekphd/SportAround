@@ -32,7 +32,7 @@ export default function RegistrationScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
                 <ViewPager
-                    style={[styles.container]}
+                    style={styles.container}
                     initialPage={0}
                     layoutDirection="ltr"
                     width="100%" height="100%"
@@ -80,7 +80,7 @@ export default function RegistrationScreen({ navigation }) {
                             />
                             <AnimatedTextInput
                                 placeholder="Дата рождения"
-                                date
+                                mode="date"
                             />
                             <AnimatedTextInput
                                 placeholder="Адрес"

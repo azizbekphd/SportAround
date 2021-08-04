@@ -10,6 +10,7 @@ import RegistrationScreen from './screens/RegistrationScreen';
 import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, StatusBar } from 'react-native';
 import SignInSignUpScreen from './screens/SignInSignUpScreen';
 import SportChoiceScreen from './screens/SportChoiceScreen';
+import NewGameScreen from './screens/NewGameScreen';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,10 @@ export default function App() {
           <Stack.Screen
             name="SportChoice"
             component={SportChoiceScreen}
+          />
+          <Stack.Screen
+            name="NewGame"
+            component={NewGameScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

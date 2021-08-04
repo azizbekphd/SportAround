@@ -7,7 +7,7 @@ export default function AnimatedTextInput({
     placeholder,
     valid,
     onFocus,
-    date,
+    mode,
     tel,
     ...others
 }) {
@@ -16,7 +16,7 @@ export default function AnimatedTextInput({
     const [focused, setFocused] = useState(false);
     const [value, setValue] = useState("");
     const [modal, setModal] = useState(false);
-    const [dateValue, setDateValue] = useState(new Date());
+    const [nativeValue, setNativeValue] = useState(new Date());
 
     const getColor = function (valid) {
         return valid ? "#29dec8" :
@@ -30,6 +30,10 @@ export default function AnimatedTextInput({
             duration: 200,
             useNativeDriver: false
         }).start();
+    }
+
+    const getNull = (number) => {
+        return ((number < 10 ? "0" : "") + number.toString())
     }
 
     return (
@@ -47,7 +51,7 @@ export default function AnimatedTextInput({
                     setFocused(true);
                     animate(floatAnim, 0)
                     animate(fontSizeAnim, 13)
-                    if (date) {
+                    if (mode == "date" || mode == "time") {
                         setModal(true)
                     } else {
                         onFocus && onFocus(ev);
@@ -61,7 +65,7 @@ export default function AnimatedTextInput({
                     }
                 }}
                 value={value}
-                onChangeText={(value) => { if (date) { setModal(true) } else { setValue(value) } }}
+                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) } }}
                 style={{
                     color: "#fff",
                     height: 50,
@@ -83,7 +87,7 @@ export default function AnimatedTextInput({
                         setFocused(true);
                         animate(floatAnim, 0)
                         animate(fontSizeAnim, 13)
-                        if (date) {
+                        if (mode == "date" || mode == "time") {
                             setModal(true)
                         } else {
                             onFocus && onFocus(ev);
@@ -97,7 +101,7 @@ export default function AnimatedTextInput({
                         }
                     }}
                     value={value}
-                    onChangeText={(value) => { if (date) { setModal(true) } else { setValue(value) } }}
+                    onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) } }}
                     style={{
                         color: "#fff",
                         height: 50,
@@ -111,15 +115,18 @@ export default function AnimatedTextInput({
                 />}
             <DateTimePickerModal
                 isVisible={modal}
-                mode="date"
+                mode={mode}
                 headerTextIOS="Выберите дату"
                 isDarkModeEnabled={true}
                 onConfirm={(newDate) => {
-                    setDateValue(newDate)
-                    setValue(newDate.toUTCString());
+                    setNativeValue(newDate)
+                    setValue(
+                        (mode == "date") ?
+                            `${getNull(newDate.getDate())}.${getNull(newDate.getMonth())}.${newDate.getFullYear()}` :
+                            `${getNull(newDate.getHours())}:${getNull(newDate.getMinutes())}`);
                     setModal(false)
                 }}
-                date={dateValue}
+                date={nativeValue}
                 onCancel={() => { setModal(false) }}
             />
         </View>
