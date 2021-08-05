@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { TextInput, View, Image, StyleSheet } from 'react-native';
 import H3 from './H3';
 
-export default function Searchbar(props) {
+export default Searchbar = forwardRef((props, ref) => {
     const [focused, setFocused] = useState(false);
     const [value, setValue] = useState("")
 
@@ -27,10 +27,11 @@ export default function Searchbar(props) {
                 onChangeText={(newValue) => {
                     setValue(newValue)
                 }}
+                ref={ref}
             />
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {

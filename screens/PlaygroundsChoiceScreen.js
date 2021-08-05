@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, createRef } from 'react';
 import globalStyles from '../global/Styles';
 import { View, StyleSheet, Image, Dimensions, StatusBar } from 'react-native';
 import Toolbar from '../components/Toolbar';
@@ -10,17 +10,18 @@ import FloatingPanel from '../components/FloatingPanel';
 
 export default function PlaygroundChoiceScreen(props) {
     const [showList, setShowList] = useState(false)
+    const ref = createRef()
 
     return (
         <>
             <Toolbar title="Выберите площадку" menu />
             <View style={styles.container}>
                 <View style={styles.searchbarContainer}>
-                    <Searchbar />
+                    <Searchbar ref={ref} />
                 </View>
                 <View style={styles.buttonsContainer} width="100%">
                     <View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
-                        <Button title="Список" onPress={() => { setShowList(true) }} />
+                        <Button title="Список" onPress={() => { ref.current.blur(); setShowList(true) }} />
                     </View>
                     <View style={styles.button}>
                         <IconButton>
@@ -30,7 +31,37 @@ export default function PlaygroundChoiceScreen(props) {
                 </View>
             </View>
             <Maps />
-            <FloatingPanel show={showList} />
+            <FloatingPanel show={showList} items={[
+                {
+                    key: "1",
+                    title: "Название",
+                    subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
+                    distance: "200 м"
+                },
+                {
+                    key: "2",
+                    title: "Название",
+                    subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
+                    distance: "500 м"
+                },
+                {
+                    key: "3",
+                    title: "Название",
+                    subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
+                    distance: "1 км"
+                },
+                {
+                    key: "4",
+                    title: "Название",
+                    subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
+                    distance: "1.5 км"
+                },
+                {
+                    key: "5",
+                    title: "Название",
+                    subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
+                    distance: "2.4 км"
+                }]} hideCallback={setShowList} />
         </>
     )
 }

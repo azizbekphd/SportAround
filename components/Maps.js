@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, StatusBar, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 
 export default function Maps(props) {
+    const [location, setLocation] = useState(null)
+
+    useEffect(() => {
+
+    }, [])
+
     return (
         <MapView style={styles.mapview}></MapView>
     )
