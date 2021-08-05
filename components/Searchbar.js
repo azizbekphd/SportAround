@@ -22,7 +22,7 @@ export default Searchbar = forwardRef((props, ref) => {
             <TextInput
                 height="100%"
                 style={styles.input}
-                onFocus={() => { setFocused(true) }}
+                onFocus={() => { setFocused(true); props.onFocus && props.onFocus() }}
                 onBlur={() => { setFocused(false) }}
                 onChangeText={(newValue) => {
                     setValue(newValue)

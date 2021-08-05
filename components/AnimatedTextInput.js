@@ -21,7 +21,8 @@ export default function AnimatedTextInput({
     const getColor = function (valid) {
         return valid ? "#29dec8" :
             (valid === false ? "#ff3333" :
-                (focused ? "#fff" : "#656b82"))
+                (focused ? "#fff" :
+                    (value == "" ? "#fff" : "#656b82")))
     }
 
     const animate = function (ref, value) {
@@ -69,7 +70,7 @@ export default function AnimatedTextInput({
                 style={{
                     color: "#fff",
                     height: 50,
-                    borderBottomColor: getColor(valid),
+                    borderBottomColor: (getColor(valid) == "#fff" && !focused) ? "#656b82" : getColor(valid),
                     borderBottomWidth: focused ? 2 : 1,
                     fontSize: 16,
                     paddingHorizontal: 5,
@@ -105,7 +106,7 @@ export default function AnimatedTextInput({
                     style={{
                         color: "#fff",
                         height: 50,
-                        borderBottomColor: getColor(valid),
+                        borderBottomColor: (getColor(valid) == "#fff" && !focused) ? "#656b82" : getColor(valid),
                         borderBottomWidth: focused ? 2 : 1,
                         fontSize: 16,
                         paddingHorizontal: 5,
@@ -140,5 +141,5 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         position: 'absolute'
-    }
+    },
 })

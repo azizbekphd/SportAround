@@ -1,6 +1,7 @@
-import React, { useRef, useState, createRef } from 'react';
+import React, { useRef, useState, createRef, useEffect, useCallback } from 'react';
 import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler } from 'react-native';
+import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
 import Searchbar from '../components/Searchbar';
 import Button from '../components/Button';
@@ -8,23 +9,50 @@ import IconButton from '../components/IconButton';
 import Maps from '../components/Maps';
 import FloatingPanel from '../components/FloatingPanel';
 
-export default function PlaygroundChoiceScreen(props) {
+export default function PlaygroundChoiceScreen({ navigation }) {
     const [showList, setShowList] = useState(false)
+    const [title, setTitle] = useState("")
     const ref = createRef()
+
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                if (showList) {
+                    setShowList(false);
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [showList, setShowList])
+    );
+
+    useEffect(() => {
+        if (showList) {
+            setTitle("Список площадок")
+        } else {
+            setTitle("Выберите площадку")
+        }
+    }, [showList])
 
     return (
         <>
-            <Toolbar title="Выберите площадку" menu />
+            <Toolbar back title={title} menu />
             <View style={styles.container}>
                 <View style={styles.searchbarContainer}>
-                    <Searchbar ref={ref} />
+                    <Searchbar ref={ref} onFocus={() => { setShowList(false) }} onChangeText={console.log} />
                 </View>
                 <View style={styles.buttonsContainer} width="100%">
                     <View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
-                        <Button title="Список" onPress={() => { ref.current.blur(); setShowList(true) }} />
+                        <Button title="Список" onPress={() => { setShowList(true); ref.current.blur(); }} />
                     </View>
                     <View style={styles.button}>
-                        <IconButton>
+                        <IconButton onPress={() => { navigation.push("AddPlayground") }}>
                             <Image source={require('../assets/icons/add_location.png')} />
                         </IconButton>
                     </View>

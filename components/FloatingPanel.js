@@ -18,14 +18,14 @@ export default function FloatingPanel(props) {
     useEffect(() => {
         if (props.show)
             Animated.timing(anim, {
-                toValue: screenHeight - (54 + props.items.length * 83),
-                duration: 300,
+                toValue: screenHeight - (54 + (props.items.length + 1) * 83),
+                duration: 400,
                 useNativeDriver: false
             }).start()
         else
             Animated.timing(anim, {
                 toValue: screenHeight,
-                duration: 300,
+                duration: 400,
                 useNativeDriver: false
             }).start()
     }, [props.show])

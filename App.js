@@ -12,6 +12,7 @@ import SignInSignUpScreen from './screens/SignInSignUpScreen';
 import SportChoiceScreen from './screens/SportChoiceScreen';
 import NewGameScreen from './screens/NewGameScreen';
 import PlaygroundChoiceScreen from './screens/PlaygroundsChoiceScreen';
+import AddPlaygroundScreen from './screens/AddPlaygroundScreen';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,10 @@ export default function App() {
           <Stack.Screen
             name="PlaygroundChoice"
             component={PlaygroundChoiceScreen}
+          />
+          <Stack.Screen
+            name="AddPlayground"
+            component={AddPlaygroundScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
