@@ -16,7 +16,7 @@ export default function ScheduleSingleScreen({ route, navigation }) {
     return (
         <>
             <Toolbar back title={route.params.title} onReady={() => { navigation.pop() }} />
-            <View style={{ justifyContent: 'flex-start', padding: 20, backgroundColor: '#0E0938' }}>
+            <View style={{ justifyContent: 'flex-start', padding: 20, paddingBottom: 0, backgroundColor: '#0E0938' }}>
                 <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }} width="100%">
                     <H2 style={{ fontWeight: "600" }}>
                         {text}

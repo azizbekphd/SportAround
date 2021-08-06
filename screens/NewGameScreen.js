@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import globalStyles from '../global/Styles';
 import { View, StyleSheet } from 'react-native';
 import Toolbar from '../components/Toolbar';
@@ -10,12 +10,13 @@ import Counter from '../components/Counter';
 import Button from '../components/Button';
 
 export default function NewGameScreen({ route, navigation }) {
+    const [isNewGame, setIsNewGame] = useState(true)
     return (
         <>
             <Toolbar back title="Новая игра" />
             <View style={[globalStyles.container, { padding: 20, justifyContent: 'space-between', alignItems: 'center' }]}>
                 <View style={{ alignItems: 'center' }}>
-                    <ModeSwitch onChange={(pos) => { console.log(pos) }} />
+                    <ModeSwitch onChange={(pos) => { setIsNewGame(pos == 0) }} />
                     <View width="100%" style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -46,15 +47,16 @@ export default function NewGameScreen({ route, navigation }) {
                             default={2}
                         />
                     </View>
-                    <View width="100%" style={styles.item}>
-                        <H3 style={{ marginBottom: 9 }}>Тип команды:</H3>
-                        <Counter
-                            items={["3x3", "4x4", "5x5", "Любой"]}
-                            default={route.params.isSoccer ? 2 : 1}
-                        />
-                    </View>
+                    {isNewGame &&
+                        <View width="100%" style={styles.item}>
+                            <H3 style={{ marginBottom: 9 }}>Тип команды:</H3>
+                            <Counter
+                                items={["3x3", "4x4", "5x5", "Любой"]}
+                                default={route.params.isSoccer ? 2 : 1}
+                            />
+                        </View>}
                 </View>
-                <Button title="Начать" onPress={() => { navigation.navigate("PlaygroundChoice") }} />
+                <Button title={isNewGame ? "Начать" : "Найти"} onPress={() => { navigation.navigate("PlaygroundChoice") }} />
             </View>
         </>
     )

@@ -17,7 +17,7 @@ export default function Toolbar(props) {
             justifyContent: 'space-between',
             alignItems: 'flex-end',
             padding: 7,
-            zIndex: 1000,
+            zIndex: 2000,
             backgroundColor: "#0E0938"
         }}>
             <View width="100%" style={{

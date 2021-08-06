@@ -7,7 +7,7 @@ import Toolbar from '../components/Toolbar';
 import globalStyles from '../global/Styles';
 
 export default function PriceScreen({ navigation }) {
-    const [tfs, setTfs] = useState(false)
+    const [free, setFree] = useState(false)
 
     return (
         <>
@@ -21,12 +21,12 @@ export default function PriceScreen({ navigation }) {
                         trackColor={{ false: "#3e3e3e", true: "#c4c4c4" }}
                         thumbColor={"#fff"}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={(newValue) => { setTfs(newValue) }}
-                        value={tfs}
+                        onValueChange={(newValue) => { setFree(newValue) }}
+                        value={free}
                     />
                 </View>
                 <View width="100%" style={{ height: 1, backgroundColor: "#656B82", marginVertical: 20 }} />
-                {!tfs &&
+                {!free &&
                     <FlatList
                         width="100%"
                         style={{ backgroundColor: "#fff", borderRadius: 12, paddingVertical: 12, height: 319 }}

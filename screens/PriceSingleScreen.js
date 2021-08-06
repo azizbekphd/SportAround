@@ -9,14 +9,25 @@ import globalStyles from '../global/Styles';
 import AnimatedTextInput from '../components/AnimatedTextInput'
 
 export default function PriceSingleScreen({ route, navigation }) {
-    const [isHoliday, setIsHoliday] = useState(false)
-    const [hasBreak, setHasBreak] = useState(false)
+    const [isFree, setIsFree] = useState(false)
+    let arr = new Array(24)
+    for (let i = 0; i < 24; i++) {
+        arr[i] = {
+            hour: i,
+            price: 0
+        }
+    }
+    const [prices, setPrices] = useState(arr)
     const [text, setText] = useState("Платно")
+
+    const getNull = (number) => {
+        return ((number < 10 ? "0" : "") + number.toString())
+    }
 
     return (
         <>
             <Toolbar back title={route.params.title} onReady={() => { navigation.pop() }} />
-            <View style={{ justifyContent: 'flex-start', padding: 20, backgroundColor: '#0E0938' }}>
+            <View style={{ justifyContent: 'flex-start', padding: 20, paddingBottom: 0, backgroundColor: '#0E0938' }}>
                 <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }} width="100%">
                     <H2 style={{ fontWeight: "600" }}>
                         {text}
@@ -26,60 +37,32 @@ export default function PriceSingleScreen({ route, navigation }) {
                         thumbColor={"#fff"}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={(newValue) => {
-                            setIsHoliday(newValue)
+                            setIsFree(newValue)
                             if (newValue) setText("Бесплатно"); else setText("Платно")
                         }}
-                        value={isHoliday}
+                        value={isFree}
                     />
                 </View>
                 <View width="100%" style={{ height: 1, backgroundColor: "#656B82", marginVertical: 20 }} />
             </View>
-            {!isHoliday &&
-                <View style={{ padding: 20 }}>
-                    <AnimatedTextInput
-                        light
-                        placeholder="Время открытия площадки"
-                        mode="time"
-                    />
-                    <AnimatedTextInput
-                        light
-                        placeholder="Время закрытия площадки"
-                        mode="time"
-                    />
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginTop: 40,
-                            marginBottom: 10
-                        }}
-                    >
-                        <H2 color="#000">Перерыв</H2>
-                        <Switch
-                            trackColor={{ false: "#3e3e3e", true: "#c4c4c4" }}
-                            thumbColor={"#e9e9e9"}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={(newValue) => {
-                                setHasBreak(newValue)
-                            }}
-                            value={hasBreak}
-                        />
-                    </View>
-                    {hasBreak &&
-                        <>
-                            <AnimatedTextInput
-                                light
-                                placeholder="Время закрытия площадки"
-                                mode="time"
-                            />
-                            <AnimatedTextInput
-                                light
-                                placeholder="Время открытия площадки"
-                                mode="time"
-                            />
-                        </>}
-                </View>}
+            {!isFree &&
+                <FlatList
+                    data={prices}
+                    keyExtractor={(item) => { return item.hour.toString() }}
+                    renderItem={({ item }) => {
+                        return <TouchableHighlight
+                            underlayColor="rgba(0,0,0,.1)"
+                            style={styles.item}
+                            onPress={() => { }}
+                        >
+                            <View width="100%" style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <H3 color="#000">{`${getNull(item.hour)}:00`}</H3>
+                                <H3 color="#6565FC">{`${item.price} руб.`}</H3>
+                            </View>
+                        </TouchableHighlight>
+                    }}
+                    ItemSeparatorComponent={() => { return <View width="100%" style={{ height: 1, backgroundColor: "#E5E5E5", marginHorizontal: 20 }} /> }}
+                />}
         </>
     )
 }
