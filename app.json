@@ -24,7 +24,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E0938"
       },
-      "package": "com.sportaround"
+      "package": "com.sportaround",
+      "config": {
+        "googleMaps":{
+          "apiKey":"AIzaSyDfzsVORzcpbK-eUm5f4h910oWXtpLxYBY"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

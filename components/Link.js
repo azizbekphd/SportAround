@@ -8,7 +8,7 @@ export default function Link(props) {
     const navigation = useNavigation()
 
     return (
-        <TouchableOpacity activeOpacity={0.5} onPress={() => { navigation.push(props.page) }}>
+        <TouchableOpacity activeOpacity={0.5} onPress={() => { props.page && navigation.push(props.page) }}>
             <H6 style={{ textDecorationLine: "underline" }}>{props.title}</H6>
         </TouchableOpacity>
     );

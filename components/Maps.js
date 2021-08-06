@@ -16,8 +16,6 @@ export default function Maps(props) {
             top: StatusBar.currentHeight,
         }}>
             <MapView
-                minZoomLevel={1}
-                maxZoomLevel={1}
                 style={styles.mapview}
             ></MapView>
         </ScrollView>

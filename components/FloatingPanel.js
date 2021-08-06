@@ -35,61 +35,56 @@ export default function FloatingPanel(props) {
 
     return (
         <Animated.View
-            width="100%"
-            height="100%"
             style={{
-                zIndex: 1500,
-                position: 'absolute',
+                ...styles.container,
                 transform: [{ translateY: anim }]
             }}
         >
-            <View style={{ ...styles.container }}>
-                <TouchableOpacity activeOpacity={0.5} width="100%" onPress={handleHideCallback}>
-                    <View width="100%" style={{ ...globalStyles.row, height: 54, paddingLeft: 15 }}>
-                        <H3 color="#6D61E7">Смотреть на карте</H3>
-                        <LinearGradient
-                            colors={["#6566FD", "#6843CF"]}
-                            style={{
-                                ...globalStyles.center,
-                                borderBottomLeftRadius: 10,
-                                borderTopRightRadius: 10,
-                                width: 54,
-                                height: 54
-                            }}
-                        >
-                            <Image source={require('../assets/icons/location.png')} />
-                        </LinearGradient>
-                    </View>
-                </TouchableOpacity>
-                <FlatList
-                    data={props.items}
-                    renderItem={({ item }) => {
-                        return <TouchableOpacity
-                            style={styles.listItem}
-                            activeOpacity={0.5}
-                            onPress={() => {
-                                props.hideCallback(false);
-                                props.showInfo(true);
-                            }}
-                        >
-                            <H2 color="#000">
-                                {item.title}
-                            </H2>
-                            <View style={{ ...globalStyles.row, alignItems: 'flex-end' }}>
-                                <View style={{
-                                    flex: 1,
-                                    justifyContent: 'space-evenly',
-                                }}>
-                                    <H7 color="#000">{item.subtitle}</H7>
-                                </View>
-                                <H6 color="#6565FC">{item.distance}</H6>
+            <TouchableOpacity activeOpacity={0.5} width="100%" onPress={handleHideCallback}>
+                <View width="100%" style={{ ...globalStyles.row, height: 54, paddingLeft: 15 }}>
+                    <H3 color="#6D61E7">Смотреть на карте</H3>
+                    <LinearGradient
+                        colors={["#6566FD", "#6843CF"]}
+                        style={{
+                            ...globalStyles.center,
+                            borderBottomLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: 54,
+                            height: 54
+                        }}
+                    >
+                        <Image source={require('../assets/icons/location.png')} />
+                    </LinearGradient>
+                </View>
+            </TouchableOpacity>
+            <FlatList
+                data={props.items}
+                renderItem={({ item }) => {
+                    return <TouchableOpacity
+                        style={styles.listItem}
+                        activeOpacity={0.5}
+                        onPress={() => {
+                            props.hideCallback(false);
+                            props.showInfo(true);
+                        }}
+                    >
+                        <H2 color="#000">
+                            {item.title}
+                        </H2>
+                        <View style={{ ...globalStyles.row, alignItems: 'flex-end' }}>
+                            <View style={{
+                                flex: 1,
+                                justifyContent: 'space-evenly',
+                            }}>
+                                <H7 color="#000">{item.subtitle}</H7>
                             </View>
-                        </TouchableOpacity>
-                    }}
-                    ItemSeparatorComponent={() => { return <View style={styles.separator} width="100%"></View> }}
-                    style={{ maxHeight: 82 * 5 + 4, height: (54 + props.items.length * 83) - StatusBar.currentHeight }}
-                />
-            </View>
+                            <H6 color="#6565FC">{item.distance}</H6>
+                        </View>
+                    </TouchableOpacity>
+                }}
+                ItemSeparatorComponent={() => { return <View style={styles.separator} width="100%"></View> }}
+                style={{ maxHeight: 82 * 5 + 4, height: (54 + props.items.length * 83) - StatusBar.currentHeight }}
+            />
         </Animated.View>
     )
 }

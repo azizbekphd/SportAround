@@ -69,6 +69,7 @@ export default function PlaygroundChoiceScreen({ navigation }) {
             </>
             }
             <Maps />
+            {showList && <View width="100%" height="100%" style={{ position: "absolute", zIndex: 750 }} />}
             <FloatingPanel
                 show={showList}
                 showInfo={setShowInfo}

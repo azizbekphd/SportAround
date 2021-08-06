@@ -7,6 +7,7 @@ export default function Indicator(props) {
     return (
         <View style={[globalStyles.row, props.style, {
             width: (props.count.length - 1) * 18 + 8,
+            height: 8
         }]}>
             {props.count.map((index) => {
                 return <View style={styles.dots} key={index.toString()}></View>
@@ -16,18 +17,11 @@ export default function Indicator(props) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        bottom: 250,
-        left: 20,
-        width: 44,
-        justifyContent: "space-between"
-    },
     dots: {
         height: 8,
         width: 8,
         borderWidth: 2,
         borderColor: "#fff",
-        borderRadius: 4
+        borderRadius: 4,
     }
 });
