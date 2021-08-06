@@ -18,6 +18,6 @@ export default function H2(props) {
             fontSize: 18,
             color: props.color ?? '#fff'
         },
-        fontLoaded ?? { fontFamily: 'OpenSans_600SemiBold' }]}>{props.children}</Text>
+        fontLoaded ?? { fontFamily: 'OpenSans_600SemiBold' }, props.style]}>{props.children}</Text>
     )
 }

@@ -100,7 +100,8 @@ export default function Dropdown({
                             onPress={() => {
                                 setSelectedId(item.id);
                                 setValue(item.title);
-                                setOpened(false)
+                                setOpened(false);
+                                onChange(item.id, item.title);
                             }}
                         >
                             {item.id == selectedId ?

@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useState, useRef } from "react";
 import { View, TextInput, Animated, Text, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
 
@@ -5,6 +6,8 @@ export default function NextRouteInput({
     placeholder,
     valid,
     onChange,
+    routeName,
+    data,
     ...others
 }) {
     const floatAnim = useRef(new Animated.Value(20)).current;
@@ -17,8 +20,10 @@ export default function NextRouteInput({
                 value == "" ? "#fff" : "#656b82")
     }
 
+    const navigation = useNavigation();
+
     return (
-        <TouchableOpacity activeOpacity={0.5} style={styles.inputContainer}>
+        <TouchableOpacity activeOpacity={0.5} style={styles.inputContainer} onPress={() => { navigation.navigate(routeName, data) }}>
             <Text style={[
                 styles.placeholder,
                 {

@@ -9,6 +9,8 @@ export default function AnimatedTextInput({
     onFocus,
     mode,
     tel,
+    light,
+    onChangeText,
     ...others
 }) {
     const floatAnim = useRef(new Animated.Value(20)).current;
@@ -18,11 +20,15 @@ export default function AnimatedTextInput({
     const [modal, setModal] = useState(false);
     const [nativeValue, setNativeValue] = useState(new Date());
 
+    const getTheme = function () {
+        return light ? "#000" : "#fff"
+    }
+
     const getColor = function (valid) {
         return valid ? "#29dec8" :
             (valid === false ? "#ff3333" :
-                (focused ? "#fff" :
-                    (value == "" ? "#fff" : "#656b82")))
+                (focused ? getTheme() :
+                    (value == "" ? getTheme() : "#656b82")))
     }
 
     const animate = function (ref, value) {
@@ -66,11 +72,11 @@ export default function AnimatedTextInput({
                     }
                 }}
                 value={value}
-                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) } }}
+                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) }; onChangeText && onChangeText(value) }}
                 style={{
-                    color: "#fff",
+                    color: getTheme(),
                     height: 50,
-                    borderBottomColor: (getColor(valid) == "#fff" && !focused) ? "#656b82" : getColor(valid),
+                    borderBottomColor: (getColor(valid) == getColor() && !focused) ? "#656b82" : getColor(valid),
                     borderBottomWidth: focused ? 2 : 1,
                     fontSize: 16,
                     paddingHorizontal: 5,
@@ -102,11 +108,11 @@ export default function AnimatedTextInput({
                         }
                     }}
                     value={value}
-                    onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) } }}
+                    onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) }; onChangeText && onChangeText(value) }}
                     style={{
-                        color: "#fff",
+                        color: getTheme(),
                         height: 50,
-                        borderBottomColor: (getColor(valid) == "#fff" && !focused) ? "#656b82" : getColor(valid),
+                        borderBottomColor: (getColor(valid) == getColor() && !focused) ? "#656b82" : getColor(valid),
                         borderBottomWidth: focused ? 2 : 1,
                         fontSize: 16,
                         paddingHorizontal: 5,

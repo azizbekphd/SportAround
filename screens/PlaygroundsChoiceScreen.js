@@ -42,7 +42,7 @@ export default function PlaygroundChoiceScreen({ navigation }) {
 
     return (
         <>
-            <Toolbar back title={title} menu />
+            <Toolbar back title={title} onMenu={() => { }} />
             <View style={styles.container}>
                 <View style={styles.searchbarContainer}>
                     <Searchbar ref={ref} onFocus={() => { setShowList(false) }} onChangeText={console.log} />

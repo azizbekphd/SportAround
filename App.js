@@ -13,6 +13,10 @@ import SportChoiceScreen from './screens/SportChoiceScreen';
 import NewGameScreen from './screens/NewGameScreen';
 import PlaygroundChoiceScreen from './screens/PlaygroundsChoiceScreen';
 import AddPlaygroundScreen from './screens/AddPlaygroundScreen';
+import ScheduleScreen from './screens/ScheduleScreen';
+import ScheduleSingleScreen from './screens/ScheduleSingleScreen';
+import PriceScreen from './screens/PriceScreen';
+import PriceSingleScreen from './screens/PriceSingleScreen';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +67,22 @@ export default function App() {
           <Stack.Screen
             name="AddPlayground"
             component={AddPlaygroundScreen}
+          />
+          <Stack.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+          />
+          <Stack.Screen
+            name="ScheduleSingle"
+            component={ScheduleSingleScreen}
+          />
+          <Stack.Screen
+            name="Price"
+            component={PriceScreen}
+          />
+          <Stack.Screen
+            name="PriceSingle"
+            component={PriceSingleScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

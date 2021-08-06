@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
 import H3 from './H3';
+import H6 from './H6'
 
 export default function Toolbar(props) {
 
@@ -57,8 +58,14 @@ export default function Toolbar(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                    {(props.menu) &&
-                        <Image source={require('../assets/icons/three_dots.png')} />
+                    {(props.onMenu) ?
+                        <TouchableOpacity activeOpacity={0.5} onPress={props.onMenu}>
+                            <Image source={require('../assets/icons/three_dots.png')} />
+                        </TouchableOpacity> :
+                        (props.onReady &&
+                            <TouchableOpacity activeOpacity={0.5} onPress={props.onReady} style={{ position: 'absolute', width: 71 }}>
+                                <H6 color="#29DEC8">Готово</H6>
+                            </TouchableOpacity>)
                     }
                 </View>
             </View>
