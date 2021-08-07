@@ -36,7 +36,7 @@ export default function Navbar(props) {
 
     return (
         <View width="100%" style={{
-            height: 49,
+            height: 50,
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center',
