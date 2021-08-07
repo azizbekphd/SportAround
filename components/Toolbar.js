@@ -18,7 +18,7 @@ export default function Toolbar(props) {
             alignItems: 'flex-end',
             padding: 7,
             zIndex: 2000,
-            backgroundColor: "#0E0938"
+            backgroundColor: props.backgroundColor ?? "#0E0938"
         }}>
             <View width="100%" style={{
                 flexDirection: 'row',
@@ -64,7 +64,7 @@ export default function Toolbar(props) {
                         </TouchableOpacity> :
                         (props.onReady &&
                             <TouchableOpacity activeOpacity={0.5} onPress={props.onReady} style={{ position: 'absolute', width: 71 }}>
-                                <H6 color="#29DEC8">Готово</H6>
+                                <H6 color="#29DEC8">{props.readyText ?? "Готово"}</H6>
                             </TouchableOpacity>)
                     }
                 </View>

@@ -91,7 +91,7 @@ export default function RegistrationScreen({ navigation }) {
                             <Button title="Начать" onPress={() => {
                                 navigation.reset({
                                     index: 0,
-                                    routes: [{ name: 'SportChoice' }],
+                                    routes: [{ name: 'Main' }],
                                 });
                             }} />
                         </View>

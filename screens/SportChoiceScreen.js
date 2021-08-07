@@ -8,8 +8,11 @@ import Button from '../components/Button';
 import H2 from '../components/H2';
 import { LinearGradient } from 'expo-linear-gradient';
 import Navbar from '../components/Navbar';
+import { useNavigation } from '@react-navigation/native';
 
-export default function SportChoiceScreen({ navigation }) {
+export default function SportChoiceScreen(props) {
+
+    const navigation = useNavigation()
 
     const openNextPage = (isSoccer) => {
         navigation.navigate('NewGame', { isSoccer: isSoccer })
@@ -48,7 +51,6 @@ export default function SportChoiceScreen({ navigation }) {
                     </View>
                 </View>
             </View>
-            <Navbar />
         </>
     )
 }

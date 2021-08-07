@@ -11,7 +11,8 @@ export default function H1(props) {
             fontSize: 30,
             fontWeight: 'bold',
             ...(fontLoaded ?? { fontLoadedfontFamily: 'OpenSans_700Bold' }),
-            color: props.color ?? '#fff'
+            color: props.color ?? '#fff',
+            ...props.style
         }}>{props.children}</Text>
     )
 }

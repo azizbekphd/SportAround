@@ -9,7 +9,7 @@ import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
 import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, StatusBar } from 'react-native';
 import SignInSignUpScreen from './screens/SignInSignUpScreen';
-import SportChoiceScreen from './screens/SportChoiceScreen';
+import MainScreen from './screens/MainScreen';
 import NewGameScreen from './screens/NewGameScreen';
 import PlaygroundChoiceScreen from './screens/PlaygroundsChoiceScreen';
 import AddPlaygroundScreen from './screens/AddPlaygroundScreen';
@@ -53,8 +53,8 @@ export default function App() {
             component={RegistrationScreen}
           />
           <Stack.Screen
-            name="SportChoice"
-            component={SportChoiceScreen}
+            name="Main"
+            component={MainScreen}
           />
           <Stack.Screen
             name="NewGame"
