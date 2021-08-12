@@ -13,7 +13,7 @@ import Countdown from '../components/Countdown';
 import GameInfo from '../components/GameInfo';
 import TeamInfo from '../components/TeamInfo';
 
-export default function LobbyScreen({ navigation }) {
+export default function PastGameDetailsScreen({ navigation }) {
 
     const openNextPage = (isSoccer) => {
         navigation.navigate('NewGame', { isSoccer: isSoccer })
@@ -22,20 +22,11 @@ export default function LobbyScreen({ navigation }) {
     return (
         <>
             <LinearGradient colors={["#1D0B36", "#4E1470", "#0B1460", "#1C0A32"]} style={{ position: 'absolute', ...StyleSheet.absoluteFill }} />
-            <Toolbar title="Информация о лобби" backgroundColor="rgba(0,0,0,0)" onReady={() => { }} readyText="Выход" />
+            <Toolbar back title="Информация об игре" backgroundColor="rgba(0,0,0,0)" onMenu={() => { }} />
             <ScrollView style={{ padding: 20, flex: 1 }}>
-                <H1>До игры:</H1>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 20 }}>
-                    <View width="48%">
-                        <Countdown value={0} label="ч." />
-                    </View>
-                    <View width="48%">
-                        <Countdown value={0} label="мин." />
-                    </View>
-                </View>
                 <GameInfo date="21.04.2019" startTime="15:00" endTime="17:00" address="Жулебинский бульвар, 29 / 2" />
                 <View style={{ height: 15 }} />
-                <TeamInfo teamSize="3x3" isFree={false} playersInfo={[
+                <TeamInfo teamSize="3x3" isFree={true} playersInfo={[
                     {
                         id: "1",
                         name: "Муминов Азизбек",
@@ -75,6 +66,9 @@ export default function LobbyScreen({ navigation }) {
                 ]} />
                 <View style={{ height: 50 }} />
             </ScrollView>
+            <View style={{ padding: 20 }}>
+                <Button title="Повторить" />
+            </View>
         </>
     )
 }

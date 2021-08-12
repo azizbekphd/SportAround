@@ -61,7 +61,7 @@ export default function PlaygroundInfo(props) {
                     if (nativeEvent.contentOffset.y < 250) {
                         props.hideCallback(false);
                         ref.current.scrollTo({ y: 0, animated: true })
-                        props.setShowList(true)
+                        props.setShowList && props.setShowList(true)
                     } else if (nativeEvent.contentOffset.y > 250) {
                         ref.current.scrollTo({ y: Dimensions.get("screen").height - 47 - StatusBar.currentHeight, animated: true })
                     }

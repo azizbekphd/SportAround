@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
+import SvgUri from 'expo-svg-uri';
 import H3 from './H3';
 
 export default function Navbar(props) {
@@ -8,27 +9,27 @@ export default function Navbar(props) {
     const navigation = useNavigation()
     const navbarData = [
         {
-            icon: require('../assets/icons/timer.png'),
+            icon: require('../assets/icons/timer.svg'),
             index: 0,
             id: "0"
         },
         {
-            icon: require('../assets/icons/date.png'),
+            icon: require('../assets/icons/date.svg'),
             index: 1,
             id: "1"
         },
         {
-            icon: require('../assets/icons/add.png'),
+            icon: require('../assets/icons/add.svg'),
             index: 2,
             id: "2"
         },
         {
-            icon: require('../assets/icons/favourite.png'),
+            icon: require('../assets/icons/favourite.svg'),
             index: 3,
             id: "3"
         },
         {
-            icon: require('../assets/icons/profile.png'),
+            icon: require('../assets/icons/profile.svg'),
             index: 4,
             id: "4"
         },
@@ -47,13 +48,11 @@ export default function Navbar(props) {
                 return <TouchableOpacity
                     key={item.id}
                     onPress={() => {
-                        props.setPageIndex(item.index)
+                        props.setPageIndex(index)
                     }}
-                    style={{
-                        opacity: (props.pageIndex == item.index) ? 1 : 0.7
-                    }}
+                    activeOpacity={0.5}
                 >
-                    <Image source={item.icon} />
+                    <SvgUri source={item.icon} fill={props.pageIndex != index ? "#656B82" : "#fff"} />
                 </TouchableOpacity>
             })}
         </View >

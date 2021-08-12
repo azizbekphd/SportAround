@@ -7,7 +7,7 @@ import IntroScreen from './screens/IntroScreen';
 import AuthorizationScreen from './screens/AuthorizationScreen';
 import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, StatusBar } from 'react-native';
+import { LogBox, StyleSheet, StatusBar } from 'react-native';
 import SignInSignUpScreen from './screens/SignInSignUpScreen';
 import MainScreen from './screens/MainScreen';
 import NewGameScreen from './screens/NewGameScreen';
@@ -17,10 +17,14 @@ import ScheduleScreen from './screens/ScheduleScreen';
 import ScheduleSingleScreen from './screens/ScheduleSingleScreen';
 import PriceScreen from './screens/PriceScreen';
 import PriceSingleScreen from './screens/PriceSingleScreen';
+import EditAccountScreen from './screens/EditAccountScreen';
+import PlaygroundDetailsScreen from './screens/PlaygroundDetailsScreen';
+import PastGameDetailsScreen from './screens/PastGameDetailsScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  LogBox.ignoreLogs(['Remote debugger']);
   return (
     <>
       <NavigationContainer>
@@ -83,6 +87,18 @@ export default function App() {
           <Stack.Screen
             name="PriceSingle"
             component={PriceSingleScreen}
+          />
+          <Stack.Screen
+            name="EditAccount"
+            component={EditAccountScreen}
+          />
+          <Stack.Screen
+            name="PlaygroundDetails"
+            component={PlaygroundDetailsScreen}
+          />
+          <Stack.Screen
+            name="PastGameDetails"
+            component={PastGameDetailsScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -10,13 +10,15 @@ export default function AnimatedTextInput({
     mode,
     tel,
     light,
+    defaultValue,
     onChangeText,
     ...others
 }) {
-    const floatAnim = useRef(new Animated.Value(20)).current;
-    const fontSizeAnim = useRef(new Animated.Value(16)).current;
+    const floatAnim = useRef(new Animated.Value(defaultValue ? 0 : 20)).current;
+    const fontSizeAnim = useRef(new Animated.Value(defaultValue ? 13 : 16)).current;
+    const ref = useRef();
     const [focused, setFocused] = useState(false);
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState(defaultValue ?? "");
     const [modal, setModal] = useState(false);
     const [nativeValue, setNativeValue] = useState(new Date());
 
@@ -29,6 +31,12 @@ export default function AnimatedTextInput({
             (valid === false ? "#ff3333" :
                 (focused ? getTheme() :
                     (value == "" ? getTheme() : "#656b82")))
+    }
+
+    const getPlaceholderColor = function (valid) {
+        return valid === false ? "#ff3333" :
+            (focused ? getTheme() :
+                (value == "" ? getTheme() : "#656b82"))
     }
 
     const animate = function (ref, value) {
@@ -48,7 +56,7 @@ export default function AnimatedTextInput({
             <Animated.Text style={[
                 styles.placeholder,
                 {
-                    color: getColor(valid),
+                    color: getPlaceholderColor(valid),
                     top: floatAnim,
                     fontSize: fontSizeAnim
                 }]}>{placeholder}</Animated.Text>
@@ -72,7 +80,7 @@ export default function AnimatedTextInput({
                     }
                 }}
                 value={value}
-                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) }; onChangeText && onChangeText(value) }}
+                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) }; }}
                 style={{
                     color: getTheme(),
                     height: 50,
@@ -83,6 +91,7 @@ export default function AnimatedTextInput({
                     textAlignVertical: "bottom",
                     paddingBottom: 6
                 }}
+                onPressIn={(e) => { e.target.onFocus(e) }}
             /> :
                 <TextInputMask
                     {...others}
@@ -94,11 +103,7 @@ export default function AnimatedTextInput({
                         setFocused(true);
                         animate(floatAnim, 0)
                         animate(fontSizeAnim, 13)
-                        if (mode == "date" || mode == "time") {
-                            setModal(true)
-                        } else {
-                            onFocus && onFocus(ev);
-                        }
+                        onFocus && onFocus(ev);
                     }}
                     onBlur={() => {
                         setFocused(false);
@@ -107,8 +112,9 @@ export default function AnimatedTextInput({
                             animate(fontSizeAnim, 16)
                         }
                     }}
+                    ref={ref}
                     value={value}
-                    onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) }; onChangeText && onChangeText(value) }}
+                    onChangeText={(value) => { setValue(value); let rawValue = ref.current.getRawValue(); (onChangeText && rawValue) && onChangeText(value, rawValue) }}
                     style={{
                         color: getTheme(),
                         height: 50,
@@ -127,11 +133,12 @@ export default function AnimatedTextInput({
                 isDarkModeEnabled={true}
                 onConfirm={(newDate) => {
                     setNativeValue(newDate)
-                    setValue(
-                        (mode == "date") ?
-                            `${getNull(newDate.getDate())}.${getNull(newDate.getMonth())}.${newDate.getFullYear()}` :
-                            `${getNull(newDate.getHours())}:${getNull(newDate.getMinutes())}`);
-                    setModal(false)
+                    let dateString = (mode == "date") ?
+                        `${getNull(newDate.getDate())}.${getNull(newDate.getMonth())}.${newDate.getFullYear()}` :
+                        `${getNull(newDate.getHours())}:${getNull(newDate.getMinutes())}`
+                    setValue(dateString);
+                    setModal(false);
+                    onChangeText && onChangeText(newDate, dateString)
                 }}
                 date={nativeValue}
                 onCancel={() => { setModal(false) }}

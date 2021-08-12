@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import H3 from './H3';
+import { useNavigation } from '@react-navigation/native';
 
 export default function GameInfo({
     date,
@@ -9,6 +10,9 @@ export default function GameInfo({
     endTime,
     address
 }) {
+
+    const navigation = useNavigation()
+
     return (
         <View width="100%" style={styles.container}>
             <View style={styles.item}>
@@ -26,7 +30,9 @@ export default function GameInfo({
                 <H3 color="#000" style={{ fontWeight: "700" }}>{address ?? ""}</H3>
             </View>
             <View style={{ height: 40 }} width="100%"></View>
-            <TouchableOpacity activeOpacity={0.5} style={styles.button}>
+            <TouchableOpacity activeOpacity={0.5} style={styles.button} onPress={() => {
+                navigation.navigate("PlaygroundDetails")
+            }}>
                 <LinearGradient width="100%" height="100%" style={styles.button} colors={["#29DEC8", "#049DFF"]}>
                     <H3>На карте</H3>
                 </LinearGradient>
