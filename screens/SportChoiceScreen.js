@@ -10,9 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Navbar from '../components/Navbar';
 import { useNavigation } from '@react-navigation/native';
 
-export default function SportChoiceScreen(props) {
-
-    const navigation = useNavigation()
+export default function SportChoiceScreen({ navigation, route }) {
 
     const openNextPage = (isSoccer) => {
         navigation.navigate('NewGame', { isSoccer: isSoccer })

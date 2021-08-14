@@ -62,12 +62,12 @@ export default function EditAccountScreen({ route, navigation }) {
                         onChangeText={(phone, rawPhone) => {
                             setUserData({
                                 ...userData,
-                                phone: rawPhone,
+                                rawPhone: rawPhone,
+                                phone: phone,
                             })
-                            console.log(phone, rawPhone)
                         }}
                         defaultValue={userData.phone}
-                        valid={userData.phone.length == 12}
+                        valid={userData.phone.length == 18}
                     />
                     <AnimatedTextInput
                         placeholder="Дата рождения"
@@ -108,14 +108,11 @@ export default function EditAccountScreen({ route, navigation }) {
                 </ScrollView>
                 <View style={{ alignSelf: "stretch", padding: 20 }}>
                     <Button title="Сохранить изменения" onPress={() => {
-                        navigation.navigate({
-                            name: "Main",
+                        navigation.navigate("Main", {
+                            screen: "PersonalAccount",
                             params: {
-                                userData: userData,
-                                edited: true,
-                                initialTab: 3
-                            },
-                            merge: true
+                                userData: userData
+                            }
                         })
                     }} />
                 </View>

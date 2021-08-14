@@ -12,9 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import Searchbar from '../components/Searchbar';
 import GamesHistory from '../components/GamesHistory';
 
-export default function GamesHistoryScreen(props) {
+export default function GamesHistoryScreen({ navigation, route }) {
 
-    const navigation = useNavigation()
     const ref = useRef()
 
     const openNextPage = (isSoccer) => {

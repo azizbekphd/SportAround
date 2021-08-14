@@ -5,7 +5,7 @@ import { Text, View, StyleSheet, TextInput, Image, Alert, StatusBar } from 'reac
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import RequiredLabel from '../components/RequiredLabel';
 import Toolbar from '../components/Toolbar';
-import ViewPager from 'react-native-pager-view';
+import PagerView from 'react-native-pager-view';
 import H1 from '../components/H1';
 import H6 from '../components/H6';
 import AnimatedTextInput from '../components/AnimatedTextInput';
@@ -31,7 +31,7 @@ export default function RegistrationScreen({ navigation }) {
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
-                <ViewPager
+                <PagerView
                     style={styles.container}
                     initialPage={0}
                     layoutDirection="ltr"
@@ -96,7 +96,7 @@ export default function RegistrationScreen({ navigation }) {
                             }} />
                         </View>
                     </View>
-                </ViewPager>
+                </PagerView>
             </View>
         </>
     )

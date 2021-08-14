@@ -20,8 +20,11 @@ import PriceSingleScreen from './screens/PriceSingleScreen';
 import EditAccountScreen from './screens/EditAccountScreen';
 import PlaygroundDetailsScreen from './screens/PlaygroundDetailsScreen';
 import PastGameDetailsScreen from './screens/PastGameDetailsScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { registerRootComponent } from 'expo';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator()
+const Tab = createBottomTabNavigator()
 
 export default function App() {
   LogBox.ignoreLogs(['Remote debugger']);
@@ -29,7 +32,6 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Loading"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen

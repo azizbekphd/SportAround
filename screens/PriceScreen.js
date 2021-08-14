@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { View, Switch, FlatList, StyleSheet, TouchableHighlight, Image } from 'react-native';
-import ViewPager from 'react-native-pager-view';
+import PagerView from 'react-native-pager-view';
 import H2 from '../components/H2';
 import H3 from '../components/H3';
 import Toolbar from '../components/Toolbar';

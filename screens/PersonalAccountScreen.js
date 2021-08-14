@@ -13,19 +13,30 @@ import Searchbar from '../components/Searchbar';
 import FriendsInfo from '../components/FriendsInfo';
 import SvgUri from 'expo-svg-uri';
 
-export default function PersonalAccountScreen(props) {
+export default function PersonalAccountScreen({ navigation, route }) {
 
-    const navigation = useNavigation()
-    const route = useRoute()
-    const [userData, setUserData] = useState(props.userData ?? {
+    const [userData, setUserData] = useState({
         name: "Алексей",
         surname: "Кузнецов",
         email: "alex.kuznecov@gmail.com",
-        phone: "+79066688800",
+        phone: "+7 (906) 668 88 00",
         birth: "12.08.1992",
         address: "улица Генерала Кузнецова, 24 / 1",
         city: "Москва"
     })
+
+    useEffect(() => {
+        console.log("Hello")
+        setUserData(route.params?.userData ?? {
+            name: "Алексей",
+            surname: "Кузнецов",
+            email: "alex.kuznecov@gmail.com",
+            phone: "+7 (906) 668 88 00",
+            birth: "12.08.1992",
+            address: "улица Генерала Кузнецова, 24 / 1",
+            city: "Москва"
+        })
+    }, [route.params?.userData])
 
     return (
         <>

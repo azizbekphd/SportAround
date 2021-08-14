@@ -13,7 +13,7 @@ import Countdown from '../components/Countdown';
 import GameInfo from '../components/GameInfo';
 import TeamInfo from '../components/TeamInfo';
 
-export default function LobbyScreen({ navigation }) {
+export default function LobbyScreen({ navigation, route }) {
 
     const openNextPage = (isSoccer) => {
         navigation.navigate('NewGame', { isSoccer: isSoccer })

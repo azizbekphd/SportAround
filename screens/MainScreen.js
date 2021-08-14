@@ -13,37 +13,25 @@ import LobbyScreen from './LobbyScreen';
 import GamesHistoryScreen from './GamesHistoryScreen';
 import FriendsScreen from './FriendsScreen';
 import PersonalAccountScreen from './PersonalAccountScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-export default function MainScreen({ route, navigation }) {
+const Tab = createBottomTabNavigator()
 
-    const [pageIndex, setPageIndex] = useState(2)
-    const [userData, setUserData] = useState(null);
-
-    useEffect(() => {
-        if (route.params?.initialTab)
-            setPageIndex(route.params?.initialTab)
-        return () => {
-            delete route.params?.initialTab
-        }
-    }, [route.params?.initialTab])
-
-    useEffect(() => {
-        if (route.params?.edited) { setUserData(route.params?.userData) }
-        return () => {
-            delete route.params?.edited;
-            delete route.params?.userData;
-        }
-    }, [route.params?.edited])
-
+export default function MainScreen(props) {
     return (
-        <>
-            {pageIndex == 0 ? <LobbyScreen /> :
+        <Tab.Navigator initialRouteName="SportChoice" screenOptions={{ headerShown: false }} tabBar={tabbarProps => <Navbar {...tabbarProps} />}>
+            {/*{pageIndex == 0 ? <LobbyScreen /> :
                 (pageIndex == 1 ? <GamesHistoryScreen /> :
                     (pageIndex == 2 ? <SportChoiceScreen /> :
                         (pageIndex == 3 ? <FriendsScreen /> :
                             <PersonalAccountScreen userData={userData} />)))}
-            <Navbar setPageIndex={setPageIndex} pageIndex={pageIndex} />
-        </>
+            <Navbar setPageIndex={setPageIndex} pageIndex={pageIndex} />*/}
+            <Tab.Screen name="Lobby" component={LobbyScreen} />
+            <Tab.Screen name="GamesHistory" component={GamesHistoryScreen} />
+            <Tab.Screen name="SportChoice" component={SportChoiceScreen} />
+            <Tab.Screen name="Friends" component={FriendsScreen} />
+            <Tab.Screen name="PersonalAccount" component={PersonalAccountScreen} />
+        </Tab.Navigator>
     )
 }
 

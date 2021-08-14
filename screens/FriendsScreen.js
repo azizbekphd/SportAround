@@ -12,9 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import Searchbar from '../components/Searchbar';
 import FriendsInfo from '../components/FriendsInfo';
 
-export default function FriendsScreen(props) {
+export default function FriendsScreen({ navigation, route }) {
 
-    const navigation = useNavigation()
     const ref = useRef()
     const [friends, setFriends] = useState([{
         id: "1",

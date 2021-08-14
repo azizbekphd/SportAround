@@ -9,7 +9,7 @@ import H6 from './H6';
 import { useNavigation } from '@react-navigation/native';
 import SvgUri from 'expo-svg-uri';
 import Button from './Button';
-import ViewPager from 'react-native-pager-view';
+import PagerView from 'react-native-pager-view';
 import Indicator from '../components/Indicator';
 import Link from './Link';
 
@@ -134,7 +134,7 @@ export default function PlaygroundInfo(props) {
                             <Indicator count={[1, 2, 3, 4, 5]} index={index} />
                             <Link title="Еще 11 фото" />
                         </View>
-                        <ViewPager
+                        <PagerView
                             width="100%"
                             height="100%"
                             initialPage={0}
@@ -156,7 +156,7 @@ export default function PlaygroundInfo(props) {
                             <View key="5">
                                 <Image width="100%" height="100%" resizeMode="cover" source={require('../assets/images/image.jpg')} />
                             </View>
-                        </ViewPager>
+                        </PagerView>
                     </View>
                 </View>
             </ScrollView>

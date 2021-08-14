@@ -3,6 +3,7 @@ import globalStyles from '../global/Styles';
 import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import ProgressBar from '../components/ProgressBar';
 import H1 from '../components/H1';
+import { CommonActions } from '@react-navigation/routers';
 
 export default function LoadingScreen({ navigation }) {
 
@@ -30,7 +31,9 @@ export default function LoadingScreen({ navigation }) {
 
     useEffect(() => {
         if (progress >= 245) {
-            navigation.replace("Main")
+            navigation.navigate(
+                "Main"
+            )
         } else {
             setTimeout(() => {
                 setProgress(progress + 1)
