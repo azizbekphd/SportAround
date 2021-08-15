@@ -23,10 +23,12 @@ export default function GamesHistoryScreen({ navigation, route }) {
     return (
         <>
             <Toolbar title="История игр" onMenu={() => { }} />
-            <View style={[globalStyles.container, { justifyContent: 'flex-start', paddingHorizontal: 20, paddingTop: 20 }]} >
-                <Searchbar ref={ref} onChangeText={() => { }} />
+            <View style={[globalStyles.container, { justifyContent: 'flex-start', paddingTop: 20 }]} >
+                <View style={{ paddingHorizontal: 20 }}>
+                    <Searchbar ref={ref} onChangeText={() => { }} />
+                </View>
                 <View style={{ height: 16 }} />
-                <ScrollView width="100%">
+                <ScrollView width="100%" style={{ paddingHorizontal: 20 }}>
                     <GamesHistory
                         gamesInfo={[
                             {
@@ -88,6 +90,7 @@ export default function GamesHistoryScreen({ navigation, route }) {
                             }
                         ]}
                     />
+                    <View style={{ height: 30 }} />
                 </ScrollView>
             </View>
         </>

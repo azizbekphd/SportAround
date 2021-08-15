@@ -7,12 +7,14 @@ import SvgUri from 'expo-svg-uri';
 export default function TeamInfo({
     teamSize,
     playersInfo,
-    isFree
+    isFree,
+    legend,
+    agreements
 }) {
     return (
         <View width="100%" style={styles.container}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 44, paddingHorizontal: 10 }}>
-                <H3 color="#000">Команда</H3>
+                <H3 color="#000">{legend ?? "Команда"}</H3>
                 <H3 color="#000" style={{ fontWeight: "700" }}>{teamSize ?? ""}</H3>
             </View>
             {playersInfo &&
@@ -34,9 +36,11 @@ export default function TeamInfo({
                                 <H3 color="#000" style={{ fontWeight: "700" }}>{item.name}</H3>
                                 <H3 color="#000">{item.phone ?? ""}</H3>
                             </View>
-                            {!isFree && (
-                                <SvgUri source={item.card ? require('../assets/icons/card.svg') : require('../assets/icons/cash.svg')} />
-                            )}
+                            {!isFree ?
+                                <SvgUri source={item.card ? require('../assets/icons/card.svg') : require('../assets/icons/cash.svg')} /> :
+                                (agreements && item.accepted) &&
+                                <SvgUri source={require('../assets/icons/checkmark.svg')} />
+                            }
                         </TouchableOpacity>
                         {(index != array.length - 1) && <View style={styles.separator} width="100%"></View>}
                     </View>

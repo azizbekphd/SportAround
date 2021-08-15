@@ -22,6 +22,10 @@ import PlaygroundDetailsScreen from './screens/PlaygroundDetailsScreen';
 import PastGameDetailsScreen from './screens/PastGameDetailsScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { registerRootComponent } from 'expo';
+import OfferedGameDetailsScreen from './screens/OfferedGameDetailsScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AddCardScreen from './screens/AddCardScreen';
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -29,7 +33,7 @@ const Tab = createBottomTabNavigator()
 export default function App() {
   LogBox.ignoreLogs(['Remote debugger']);
   return (
-    <>
+    <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
@@ -102,10 +106,22 @@ export default function App() {
             name="PastGameDetails"
             component={PastGameDetailsScreen}
           />
+          <Stack.Screen
+            name="OfferedGameDetails"
+            component={OfferedGameDetailsScreen}
+          />
+          <Stack.Screen
+            name="Payment"
+            component={PaymentScreen}
+          />
+          <Stack.Screen
+            name="AddCard"
+            component={AddCardScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar translucent={true} barStyle="light-content" backgroundColor="rgba(0,0,0,0)" />
-    </>
+    </SafeAreaProvider>
   );
 }
 

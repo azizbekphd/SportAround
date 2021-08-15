@@ -9,7 +9,7 @@ export default function Button(props) {
         <>
             {props.disabled ?
                 <View width="100%" style={{ ...styles.container, backgroundColor: '#a2a6b4' }}>
-                    <H3>{props.title}</H3>
+                    <H2>{props.title}</H2>
                 </View>
                 :
                 props.outlined ?

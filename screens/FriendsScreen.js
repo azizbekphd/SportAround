@@ -130,14 +130,17 @@ export default function FriendsScreen({ navigation, route }) {
     return (
         <>
             <Toolbar title="Друзья" onMenu={() => { }} />
-            <View style={[globalStyles.container, { justifyContent: 'flex-start', paddingHorizontal: 20, paddingTop: 20 }]} >
-                <Searchbar ref={ref} onChangeText={() => { }} />
+            <View style={[globalStyles.container, { justifyContent: 'flex-start', paddingTop: 20 }]} >
+                <View style={{ paddingHorizontal: 20 }}>
+                    <Searchbar ref={ref} onChangeText={() => { }} />
+                </View>
                 <View style={{ height: 16 }} />
-                <ScrollView width="100%">
+                <ScrollView width="100%" style={{ paddingHorizontal: 20 }}>
                     <FriendsInfo
                         setFriends={setFriends}
                         friendsInfo={friends}
                     />
+                    <View style={{ height: 30 }} />
                 </ScrollView>
             </View>
         </>

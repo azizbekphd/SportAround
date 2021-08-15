@@ -9,6 +9,7 @@ export default function AnimatedTextInput({
     onFocus,
     mode,
     tel,
+    mask,
     light,
     defaultValue,
     onChangeText,
@@ -60,8 +61,9 @@ export default function AnimatedTextInput({
                     top: floatAnim,
                     fontSize: fontSizeAnim
                 }]}>{placeholder}</Animated.Text>
-            {!tel ? <TextInput
+            {!(mask || tel) ? <TextInput
                 {...others}
+                selectionColor="rgba(109, 97, 231, 0.5)"
                 onFocus={(ev) => {
                     setFocused(true);
                     animate(floatAnim, 0)
@@ -95,9 +97,10 @@ export default function AnimatedTextInput({
             /> :
                 <TextInputMask
                     {...others}
+                    selectionColor="rgba(109, 97, 231, 0.5)"
                     type={'custom'}
                     options={{
-                        mask: '+7 (999) 999 99 99'
+                        mask: mask ?? '+7 (999) 999 99 99'
                     }}
                     onFocus={(ev) => {
                         setFocused(true);

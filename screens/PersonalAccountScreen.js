@@ -12,6 +12,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Searchbar from '../components/Searchbar';
 import FriendsInfo from '../components/FriendsInfo';
 import SvgUri from 'expo-svg-uri';
+import Alert from '../components/Alert';
 
 export default function PersonalAccountScreen({ navigation, route }) {
 
@@ -24,9 +25,9 @@ export default function PersonalAccountScreen({ navigation, route }) {
         address: "улица Генерала Кузнецова, 24 / 1",
         city: "Москва"
     })
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
-        console.log("Hello")
         setUserData(route.params?.userData ?? {
             name: "Алексей",
             surname: "Кузнецов",
@@ -104,14 +105,37 @@ export default function PersonalAccountScreen({ navigation, route }) {
                             <SvgUri source={require('../assets/icons/bell.svg')} />
                         </LinearGradient>
                         <H3 style={{ fontWeight: "700", marginVertical: 5 }}>
-                            У вас есть одно новое уведомление:
+                            У вас 2 новых уведомления:
                         </H3>
-                        <H3 style={{ marginVertical: 7 }}>
-                            id max_1976 пригласил вас в игру: 15.06.2019 в 17:00
-                        </H3>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("OfferedGameDetails", {})
+                            }}
+                            activeOpacity={0.5}
+                        >
+                            <H3 style={{ marginVertical: 15 }}>
+                                id max_1976 пригласил вас в игру: 15.06.2019 в 17:00
+                            </H3>
+                        </TouchableOpacity>
+                        <View style={{ height: 1, alignSelf: "stretch", backgroundColor: "#fff" }} />
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("OfferedGameDetails", {})
+                            }}
+                            activeOpacity={0.5}
+                        >
+                            <H3 style={{ marginVertical: 15 }}>
+                                id max_1976 пригласил вас в игру: 15.06.2019 в 17:00
+                            </H3>
+                        </TouchableOpacity>
                     </LinearGradient>
                 </ScrollView>
             </View>
+            <Alert
+                show={showModal}
+                buttonText="Хорошо"
+                buttonCallback={setShowModal}
+            />
         </>
     )
 }
