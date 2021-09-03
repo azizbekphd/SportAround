@@ -1,9 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import globalStyles from '../global/Styles';
-import Link from '../components/Link';
 import { Text, View, StyleSheet, TextInput, Image, Alert, StatusBar } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import RequiredLabel from '../components/RequiredLabel';
 import Toolbar from '../components/Toolbar';
 import PagerView from 'react-native-pager-view';
 import H1 from '../components/H1';
@@ -12,11 +10,15 @@ import AnimatedTextInput from '../components/AnimatedTextInput';
 import IconButton from '../components/IconButton';
 import Button from '../components/Button';
 import { LinearGradient } from 'expo-linear-gradient';
-import Indicator from '../components/Indicator'
+import Indicator from '../components/Indicator';
+import AuthContext from '../api/AuthContext';
 
 export default function RegistrationScreen({ navigation }) {
     const pager = useRef()
     const [page, setPage] = useState(0)
+
+    const { signUp } = useContext(AuthContext)
+
     return (
         <>
             <Toolbar back />
@@ -89,10 +91,11 @@ export default function RegistrationScreen({ navigation }) {
                                 <H6 color="rgba(255,255,255,.5)">Нажимая кнопку «Начать», вы соглашаетесь с политикой конфиденциальности</H6>
                             </View>
                             <Button title="Начать" onPress={() => {
-                                navigation.reset({
+                                /*navigation.reset({
                                     index: 0,
                                     routes: [{ name: 'Main' }],
-                                });
+                                });*/
+                                signUp()
                             }} />
                         </View>
                     </View>

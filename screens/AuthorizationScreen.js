@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import globalStyles from '../global/Styles';
 import Link from '../components/Link';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import AnimatedTextInput from '../components/AnimatedTextInput';
 import Toolbar from '../components/Toolbar';
 import H1 from '../components/H1';
 import Button from '../components/Button';
+import AuthContext from '../api/AuthContext';
 
 export default function RegistrationScreen({ navigation }) {
-
-
     const [isValid, setIsValid] = useState(true);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
+
+    const { signIn } = useContext(AuthContext)
 
     return (
         <View style={[globalStyles.container, { alignItems: 'stretch' }]} >
@@ -36,10 +37,11 @@ export default function RegistrationScreen({ navigation }) {
                     <Link page="PasswordRecovery" title="Забыли пароль?" />
                 </View>
                 <Button title="Войти" onPress={() => {
-                    navigation.reset({
+                    /*navigation.reset({
                         index: 0,
                         routes: [{ name: 'Main' }],
-                    });
+                    });*/
+                    signIn()
                 }} />
             </View>
         </View>

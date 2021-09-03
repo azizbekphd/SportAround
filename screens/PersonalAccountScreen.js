@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import globalStyles from '../global/Styles';
 import { View, StyleSheet, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
 import Toolbar from '../components/Toolbar';
@@ -7,6 +7,7 @@ import H2 from '../components/H2';
 import { LinearGradient } from 'expo-linear-gradient';
 import SvgUri from 'expo-svg-uri';
 import Alert from '../components/Alert';
+import AuthContext from '../api/AuthContext';
 
 export default function PersonalAccountScreen({ navigation, route }) {
 
@@ -20,6 +21,8 @@ export default function PersonalAccountScreen({ navigation, route }) {
         city: "Москва"
     })
     const [showModal, setShowModal] = useState(false)
+
+    const { signOut } = useContext(AuthContext)
 
     useEffect(() => {
         setUserData(route.params?.userData ?? {
@@ -35,7 +38,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
 
     return (
         <>
-            <Toolbar title="Личный кабинет" onReady={() => { }} readyText="Выход" />
+            <Toolbar title="Личный кабинет" onReady={() => { signOut() }} readyText="Выход" />
             <View style={[globalStyles.container, { justifyContent: 'flex-start', paddingHorizontal: 20, paddingTop: 20 }]} >
                 <ScrollView width="100%">
                     <LinearGradient
@@ -57,21 +60,21 @@ export default function PersonalAccountScreen({ navigation, route }) {
                         style={styles.additional}
                     >
                         <View style={styles.cornerButton}>
-                        <TouchableOpacity
-                            style={styles.cornerButton}
-                            onPress={() => {
-                                navigation.navigate("EditAccount", {
-                                    userData: userData,
-                                })
-                            }}
-                        >
-                            <LinearGradient
-                                colors={["#6566FD", "#6843CF"]}
+                            <TouchableOpacity
                                 style={styles.cornerButton}
+                                onPress={() => {
+                                    navigation.navigate("EditAccount", {
+                                        userData: userData,
+                                    })
+                                }}
                             >
-                                <SvgUri source={require('../assets/icons/pencil-edit.svg')} />
-                            </LinearGradient>
-                        </TouchableOpacity>
+                                <LinearGradient
+                                    colors={["#6566FD", "#6843CF"]}
+                                    style={styles.cornerButton}
+                                >
+                                    <SvgUri source={require('../assets/icons/pencil-edit.svg')} />
+                                </LinearGradient>
+                            </TouchableOpacity>
                         </View>
                         <H3 style={{ fontWeight: "700", marginVertical: 5 }}>
                             Личная информация
@@ -170,6 +173,6 @@ const styles = StyleSheet.create({
         right: 0,
         justifyContent: "center",
         alignItems: "center",
-        overflow:"hidden",
+        overflow: "hidden",
     }
 })
