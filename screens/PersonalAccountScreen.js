@@ -1,16 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
 import Toolbar from '../components/Toolbar';
 import H3 from '../components/H3';
-import AnimatedTextInput from '../components/AnimatedTextInput';
-import Button from '../components/Button';
 import H2 from '../components/H2';
 import { LinearGradient } from 'expo-linear-gradient';
-import Navbar from '../components/Navbar';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import Searchbar from '../components/Searchbar';
-import FriendsInfo from '../components/FriendsInfo';
 import SvgUri from 'expo-svg-uri';
 import Alert from '../components/Alert';
 
@@ -62,6 +56,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
                         colors={["rgba(38, 34, 84, 1)", "rgba(38, 34, 84, 0)"]}
                         style={styles.additional}
                     >
+                        <View style={styles.cornerButton}>
                         <TouchableOpacity
                             style={styles.cornerButton}
                             onPress={() => {
@@ -77,6 +72,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
                                 <SvgUri source={require('../assets/icons/pencil-edit.svg')} />
                             </LinearGradient>
                         </TouchableOpacity>
+                        </View>
                         <H3 style={{ fontWeight: "700", marginVertical: 5 }}>
                             Личная информация
                         </H3>
@@ -162,6 +158,10 @@ const styles = StyleSheet.create({
     },
     cornerButton: {
         position: "absolute",
+        borderRadius: Platform.OS == "ios" ? 10 : 0,
+        borderTopLeftRadius: 0,
+        borderBottomStartRadius: 10,
+        borderTopEndRadius: 10,
         borderBottomLeftRadius: 10,
         borderTopRightRadius: 10,
         height: 54,
@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        overflow:"hidden",
     }
 })

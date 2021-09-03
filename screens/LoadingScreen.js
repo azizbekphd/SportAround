@@ -31,7 +31,7 @@ export default function LoadingScreen({ navigation }) {
 
     useEffect(() => {
         if (progress >= 245) {
-            navigation.navigate(
+            navigation.replace(
                 "Main"
             )
         } else {

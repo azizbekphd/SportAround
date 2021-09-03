@@ -133,7 +133,6 @@ export default function AnimatedTextInput({
                 isVisible={modal}
                 mode={mode}
                 headerTextIOS="Выберите дату"
-                isDarkModeEnabled={true}
                 onConfirm={(newDate) => {
                     setNativeValue(newDate)
                     let dateString = (mode == "date") ?

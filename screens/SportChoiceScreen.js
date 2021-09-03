@@ -1,6 +1,6 @@
 import React from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions } from 'react-native';
 import Toolbar from '../components/Toolbar';
 import H3 from '../components/H3';
 import AnimatedTextInput from '../components/AnimatedTextInput';
@@ -36,6 +36,7 @@ export default function SportChoiceScreen({ navigation, route }) {
                                 </View>
                             </LinearGradient>
                         </TouchableOpacity>
+                        <View style={{width:20}}/>
                         <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(false) }}>
                             <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={["#29DEC8", "#049DFF"]}>
                                 <View style={{ alignItems: 'flex-end' }}>
@@ -56,7 +57,8 @@ export default function SportChoiceScreen({ navigation, route }) {
 const styles = StyleSheet.create({
     sport: {
         height: 148,
-        width: 160,
-        borderRadius: 10
+        width: (Dimensions.get("window").width - 80) / 2,
+        borderRadius: 10,
+        overflow: "hidden",
     }
 })

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { View, SafeAreaView, Image, TouchableOpacity, StatusBar } from 'react-native';
 import H3 from './H3';
 import H6 from './H6'
 
@@ -9,8 +9,8 @@ export default function Toolbar(props) {
     const navigation = useNavigation()
 
     return (
-        <View width="100%" style={{
-            height: 47 + StatusBar.currentHeight,
+        <SafeAreaView width="100%" style={{
+            minHeight: 47 + StatusBar.currentHeight,
             position: 'relative',
             top: 0,
             flexDirection: 'row',
@@ -69,6 +69,6 @@ export default function Toolbar(props) {
                     }
                 </View>
             </View>
-        </View >
+        </SafeAreaView >
     )
 }

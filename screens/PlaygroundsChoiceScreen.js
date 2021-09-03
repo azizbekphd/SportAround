@@ -1,6 +1,6 @@
 import React, { useRef, useState, createRef, useEffect, useCallback } from 'react';
 import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
 import Searchbar from '../components/Searchbar';
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         position: 'absolute',
-        top: Dimensions.get("window").height - 74
+        bottom: Platform.OS == "ios" ? 40 : 20,
     },
     button: {
         margin: 20

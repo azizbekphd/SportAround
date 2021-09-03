@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import SvgUri from 'expo-svg-uri';
 import H3 from './H3';
 import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
@@ -14,8 +14,8 @@ export default function Navbar({ state, descriptors, navigation }) {
     require('../assets/icons/profile.svg')]
 
     return (
-        <View width="100%" style={{
-            height: 50,
+        <SafeAreaView width="100%" style={{
+            minHeight: 50,
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center',
@@ -64,7 +64,8 @@ export default function Navbar({ state, descriptors, navigation }) {
                         style={{
                             flex: 1,
                             justifyContent: "center",
-                            alignItems: "center"
+                            alignItems: "center",
+                            minHeight:50,
                         }}
                         key={label}
                     >
@@ -81,6 +82,6 @@ export default function Navbar({ state, descriptors, navigation }) {
                     <SvgUri source={item.icon} fill={props.pageIndex != index ? "#656B82" : "#fff"} />
                 </TouchableOpacity>*/}
             })}
-        </View >
+        </SafeAreaView >
     )
 }

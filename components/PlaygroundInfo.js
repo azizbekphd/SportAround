@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, Dimensions, Animated, TouchableHighlight, TouchableOpacity, Image, FlatList, ScrollView, StatusBar } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated, TouchableHighlight, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import globalStyles from '../global/Styles';
 import H3 from './H3';
@@ -46,6 +46,16 @@ export default function PlaygroundInfo(props) {
             }).start()
     }, [props.show])
 
+    function scrollEvent ({nativeEvent}){
+        if (nativeEvent.contentOffset.y < Dimensions.get("window").height/2) {
+            props.hideCallback(false);
+            ref.current.scrollTo({ y: 0, animated: true })
+            props.setShowList && props.setShowList(true)
+        } else if (nativeEvent.contentOffset.y > 250) {
+            ref.current.scrollTo({ y: Dimensions.get("screen").height - 47 - StatusBar.currentHeight, animated: true })
+        }
+    }
+
     return (
         <Animated.View
             width="100%"
@@ -57,15 +67,8 @@ export default function PlaygroundInfo(props) {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 ref={ref}
-                onMomentumScrollEnd={({ nativeEvent }) => {
-                    if (nativeEvent.contentOffset.y < 250) {
-                        props.hideCallback(false);
-                        ref.current.scrollTo({ y: 0, animated: true })
-                        props.setShowList && props.setShowList(true)
-                    } else if (nativeEvent.contentOffset.y > 250) {
-                        ref.current.scrollTo({ y: Dimensions.get("screen").height - 47 - StatusBar.currentHeight, animated: true })
-                    }
-                }}
+                onScrollEndDrag={Platform.OS == "ios" && scrollEvent}
+                onMomentumScrollEnd={Platform.OS == "android" && scrollEvent}
             >
                 <View width="100%" style={styles.content}>
                     <View style={globalStyles.row}>

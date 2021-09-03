@@ -1,23 +1,13 @@
 import React from 'react';
-import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
+import { View, StyleSheet,ScrollView } from 'react-native';
 import Toolbar from '../components/Toolbar';
-import H3 from '../components/H3';
-import AnimatedTextInput from '../components/AnimatedTextInput';
-import Button from '../components/Button';
-import H2 from '../components/H2';
 import { LinearGradient } from 'expo-linear-gradient';
-import Navbar from '../components/Navbar';
 import H1 from '../components/H1';
 import Countdown from '../components/Countdown';
 import GameInfo from '../components/GameInfo';
 import TeamInfo from '../components/TeamInfo';
 
 export default function LobbyScreen({ navigation, route }) {
-
-    const openNextPage = (isSoccer) => {
-        navigation.navigate('NewGame', { isSoccer: isSoccer })
-    }
 
     return (
         <>

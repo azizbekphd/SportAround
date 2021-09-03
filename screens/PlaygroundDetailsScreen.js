@@ -1,13 +1,10 @@
-import React, { useRef, useState, createRef, useEffect, useCallback } from 'react';
-import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Linking, Platform } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, Dimensions, BackHandler, Linking, Platform, SafeAreaView } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
-import Searchbar from '../components/Searchbar';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import Maps from '../components/Maps';
-import FloatingPanel from '../components/FloatingPanel';
 import PlaygroundInfo from '../components/PlaygroundInfo';
 import SvgUri from 'expo-svg-uri';
 
@@ -46,9 +43,9 @@ export default function PlaygroundDetailsScreen({ navigation }) {
             <Toolbar back title={title} onMenu={() => { }} />
             {!showInfo && <><View style={styles.container}>
             </View>
-                <View style={styles.buttonsContainer} width="100%">
+                <SafeAreaView style={styles.buttonsContainer} width="100%">
                     <View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
-                        <Button title="Подробности" onPress={() => { setShowList(true); ref.current.blur(); }} />
+                        <Button title="Подробности" onPress={() => { setShowInfo(true); }} />
                     </View>
                     <View style={styles.button}>
                         <IconButton onPress={() => {
@@ -67,7 +64,7 @@ export default function PlaygroundDetailsScreen({ navigation }) {
                             <SvgUri source={require('../assets/icons/map.svg')} />
                         </IconButton>
                     </View>
-                </View>
+                </SafeAreaView>
             </>
             }
             <Maps />
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         position: 'absolute',
-        top: Dimensions.get("window").height - 74
+        bottom: Platform.OS == "ios" ? 40 : 20,
     },
     button: {
         margin: 20
