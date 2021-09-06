@@ -12,12 +12,36 @@ import Button from '../components/Button';
 import { LinearGradient } from 'expo-linear-gradient';
 import Indicator from '../components/Indicator';
 import AuthContext from '../api/AuthContext';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function RegistrationScreen({ navigation }) {
     const pager = useRef()
     const [page, setPage] = useState(0)
+    const [data, setData] = useState({
+        imageUri: ''
+    })
 
     const { signUp } = useContext(AuthContext)
+
+    const selectImage = async () => {
+        console.log("start");
+        let permission = await ImagePicker.getMediaLibraryPermissionsAsync();
+        if (permission.status == 'granted') {
+            let result = await ImagePicker.launchImageLibraryAsync();
+            if (!result.cancelled) {
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        imageUri: result.uri,
+                    }
+                })
+            }
+        } else {
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+            selectImage()
+        }
+        console.log("end");
+    }
 
     return (
         <>
@@ -27,9 +51,10 @@ export default function RegistrationScreen({ navigation }) {
                     <View width="100%" style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                         <Indicator index={page} count={[1, 2]} />
                     </View>
-                    <TouchableOpacity activeOpacity={0.5} onPress={() => { console.log("Blabla") }} style={[styles.cameraButton, { top: 50 }]}>
+                    <TouchableOpacity activeOpacity={0.5} onPress={() => { selectImage() }}
+                        style={[styles.cameraButton, { top: 50 }]}>
                         <LinearGradient style={styles.cameraButton} width="100%" height="100%" colors={['rgba(41,222,200,1)', 'rgba(41,222,200,0)']}>
-                            <Image source={require('../assets/icons/camera.png')} />
+                            {data.imageUri ? <Image source={{ uri: data.imageUri }} resizeMode="cover" style={styles.cameraButton} /> : <Image source={require("../assets/icons/camera.png")} />}
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
@@ -124,7 +149,8 @@ const styles = StyleSheet.create({
         height: 96,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 48
+        borderRadius: 48,
+        overflow: 'hidden'
     },
     static: {
         position: 'absolute',

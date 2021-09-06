@@ -82,7 +82,7 @@ export default function AnimatedTextInput({
                     }
                 }}
                 value={value}
-                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value) }; }}
+                onChangeText={(value) => { if (mode == "date" || mode == "time") { setModal(true) } else { setValue(value); onChangeText && onChangeText(value) }; }}
                 style={{
                     color: getTheme(),
                     height: 50,

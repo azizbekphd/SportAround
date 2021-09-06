@@ -9,9 +9,10 @@ import Button from '../components/Button';
 import AuthContext from '../api/AuthContext';
 
 export default function RegistrationScreen({ navigation }) {
-    const [isValid, setIsValid] = useState(true);
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
+    const [data, setData] = useState({
+        email: null,
+        password: null,
+    });
 
     const { signIn } = useContext(AuthContext)
 
@@ -27,12 +28,27 @@ export default function RegistrationScreen({ navigation }) {
                     <AnimatedTextInput
                         placeholder="E-mail"
                         keyboardType="email-address"
+                        onChangeText={(value) => {
+                            setData((prev) => {
+                                return {
+                                    ...prev,
+                                    email: value
+                                }
+                            })
+                        }}
                     />
                     <AnimatedTextInput
                         placeholder="Пароль"
                         secureTextEntry={true}
-
                         keyboardType="visible-password"
+                        onChangeText={(value) => {
+                            setData((prev) => {
+                                return {
+                                    ...prev,
+                                    password: value
+                                }
+                            })
+                        }}
                     />
                     <Link page="PasswordRecovery" title="Забыли пароль?" />
                 </View>
@@ -41,7 +57,7 @@ export default function RegistrationScreen({ navigation }) {
                         index: 0,
                         routes: [{ name: 'Main' }],
                     });*/
-                    signIn()
+                    signIn(data)
                 }} />
             </View>
         </View>
