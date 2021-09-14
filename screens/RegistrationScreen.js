@@ -13,6 +13,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Indicator from '../components/Indicator';
 import AuthContext from '../api/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import Dropdown from '../components/Dropdown';
 
 export default function RegistrationScreen({ navigation }) {
     const pager = useRef()
@@ -139,6 +141,21 @@ export default function RegistrationScreen({ navigation }) {
                             </H1>
                         </View>
                         <View style={styles.inputs}>
+                            <Dropdown
+                                placeholder="Пол"
+                                data={[
+                                    { title: 'Мужской', id: 1 },
+                                    { title: 'Женский', id: 2 },
+                                ]}
+                                onChange={(id, title) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            gender: id,
+                                        }
+                                    })
+                                }}
+                            />
                             <AnimatedTextInput
                                 placeholder="Телефон"
                                 keyboardType="phone-pad"
@@ -209,7 +226,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        top: 120 - StatusBar.currentHeight,
+        top: 120 - getStatusBarHeight(),
         paddingHorizontal: 20,
     },
     inputs: {

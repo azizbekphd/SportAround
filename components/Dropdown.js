@@ -27,23 +27,23 @@ export default function Dropdown({
         if (!opened) {
             Animated.timing(rotateAnim, {
                 toValue: 90,
-                duration: 250,
+                duration: 150,
                 useNativeDriver: false
             }).start()
             Animated.timing(resizeAnim, {
                 toValue: 0,
-                duration: 250,
+                duration: 150,
                 useNativeDriver: false
             }).start()
         } else {
             Animated.timing(rotateAnim, {
                 toValue: 270,
-                duration: 250,
+                duration: 150,
                 useNativeDriver: false
             }).start()
             Animated.timing(resizeAnim, {
-                toValue: data.length * 40 + 68,
-                duration: 250,
+                toValue: data.length * 40,
+                duration: 150,
                 useNativeDriver: false
             }).start()
         }

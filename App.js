@@ -103,8 +103,8 @@ export default function App() {
         },
         body: JSON.stringify(data)
       });
-      console.log(await response.json())
       if (response.ok) {
+        console.log(2)
         let user = await response.json();
         await AsyncStorage.setItem("user", JSON.stringify(user));
         dispatch({
@@ -112,6 +112,7 @@ export default function App() {
           user: new User(user)
         });
       }
+      console.log(3)
     },
   }))
 

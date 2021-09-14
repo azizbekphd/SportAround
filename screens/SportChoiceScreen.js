@@ -23,7 +23,7 @@ export default function SportChoiceScreen({ navigation, route }) {
                 <View height="50%" style={{ justifyContent: "space-evenly", padding: 20 }}>
                     <View style={{ justifyContent: 'space-evenly', height: 100 }}>
                         <H2>Во что хотите сыграть?</H2>
-                        <H3>Выберите вид, чтобы создать или найти игру рядом с вами</H3>
+                        <H3>Выберите вид спорта, чтобы создать или найти игру рядом с вами</H3>
                     </View>
                     <View style={[globalStyles.row, { justifyContent: 'space-around' }]}>
                         <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(true) }}>
@@ -36,7 +36,7 @@ export default function SportChoiceScreen({ navigation, route }) {
                                 </View>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <View style={{width:20}}/>
+                        <View style={{ width: 20 }} />
                         <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(false) }}>
                             <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={["#29DEC8", "#049DFF"]}>
                                 <View style={{ alignItems: 'flex-end' }}>

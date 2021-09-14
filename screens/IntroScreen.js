@@ -65,6 +65,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     page: {
-        flex: 1
+        flex: 1,
     }
 })
