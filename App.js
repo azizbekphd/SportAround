@@ -28,6 +28,8 @@ import AddCardScreen from './screens/AddCardScreen';
 import AuthContext from './api/AuthContext';
 import User from './models/User';
 import LoaderScreen from './screens/LoaderScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from './global/api';
 
 const Stack = createStackNavigator()
 
@@ -44,18 +46,13 @@ export default function App() {
         return {
           ...prevState,
           isLoading: false,
-          user: new User({
-            access_token: action.access_token,
-          })
+          user: action.user
         };
       case 'login':
         return {
           ...prevState,
           isLoading: false,
-          user: new User({
-            email: action.email,
-            access_token: action.access_token,
-          })
+          user: action.user
         };
       case 'logout':
         return {
@@ -67,10 +64,7 @@ export default function App() {
         return {
           ...prevState,
           isLoading: false,
-          user: new User({
-            email: action.email,
-            access_token: action.access_token,
-          })
+          user: action.user
         };
     }
   }
@@ -78,29 +72,57 @@ export default function App() {
   const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
 
   const authContext = useMemo(() => ({
-    signIn: (data) => {
-      let access_token = null;
-      if (data.email == 'name' && data.password == 'pass') {
-        access_token = 'asdfgh'
+    signIn: async (data) => {
+      let response = await fetch(api + 'login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+      });
+      //console.log(JSON.stringify(await response.json()))
+      if (response.ok) {
+        let user = await response.json();
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        dispatch({
+          type: 'login',
+          user: new User(user)
+        });
       }
-      dispatch({ type: 'login', email: data.email, access_token: access_token });
     },
-    signOut: () => {
+    signOut: async () => {
+      await AsyncStorage.removeItem("user")
       dispatch({ type: 'logout' })
     },
-    signUp: (data) => {
-      let access_token = null;
-      if (data.email == 'name' && data.password == 'pass') {
-        access_token = 'asdfgh'
+    signUp: async (data) => {
+      console.log(1)
+      let response = await fetch(api + 'registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+      });
+      console.log(await response.json())
+      if (response.ok) {
+        let user = await response.json();
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        dispatch({
+          type: 'register',
+          user: new User(user)
+        });
       }
-      dispatch({ type: 'register', email: data.email, access_token: access_token });
     },
   }))
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch({ type: 'retrieve_token', access_token: 'asdfgh' });
-    }, 3000);
+    AsyncStorage.getItem("user").then((json) => {
+      console.log(json);
+      dispatch({
+        type: 'retrieve_token',
+        user: json ? new User(JSON.parse(json)) : null,
+      });
+    }).catch((e) => { console.log("err", e) })
   }, [])
 
   LogBox.ignoreLogs(['Remote debugger']);

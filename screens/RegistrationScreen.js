@@ -18,7 +18,14 @@ export default function RegistrationScreen({ navigation }) {
     const pager = useRef()
     const [page, setPage] = useState(0)
     const [data, setData] = useState({
-        imageUri: ''
+        username: '',
+        email: '',
+        password: '',
+        password_repeat: '',
+        email: '',
+        phone: '',
+        birthday: '',
+        gender: 0
     })
 
     const { signUp } = useContext(AuthContext)
@@ -74,19 +81,51 @@ export default function RegistrationScreen({ navigation }) {
                         </View>
                         <View style={styles.inputs}>
                             <AnimatedTextInput
-                                placeholder="Имя и фамилия"
+                                placeholder="Имя пользователя"
+                                onChangeText={(value) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            username: value,
+                                        }
+                                    })
+                                }}
                             />
                             <AnimatedTextInput
                                 placeholder="E-mail"
                                 keyboardType="email-address"
+                                onChangeText={(value) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            email: value,
+                                        }
+                                    })
+                                }}
                             />
                             <AnimatedTextInput
                                 placeholder="Пароль"
                                 secureTextEntry={true}
+                                onChangeText={(value) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            password: value,
+                                        }
+                                    })
+                                }}
                             />
                             <AnimatedTextInput
                                 placeholder="Повторите пароль"
                                 secureTextEntry={true}
+                                onChangeText={(value) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            password_repeat: value,
+                                        }
+                                    })
+                                }}
                             />
                             <IconButton onPress={() => { pager.current.setPage(1) }}>
                                 <Image source={require('../assets/icons/arrow_r.png')} />
@@ -104,13 +143,26 @@ export default function RegistrationScreen({ navigation }) {
                                 placeholder="Телефон"
                                 keyboardType="phone-pad"
                                 tel
+                                onChangeText={(value) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            phone: value,
+                                        }
+                                    })
+                                }}
                             />
                             <AnimatedTextInput
                                 placeholder="Дата рождения"
                                 mode="date"
-                            />
-                            <AnimatedTextInput
-                                placeholder="Адрес"
+                                onChangeText={(value) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            birthday: value,
+                                        }
+                                    })
+                                }}
                             />
                             <View style={{ height: 68 }}>
                                 <H6 color="rgba(255,255,255,.5)">Нажимая кнопку «Начать», вы соглашаетесь с политикой конфиденциальности</H6>
@@ -120,7 +172,7 @@ export default function RegistrationScreen({ navigation }) {
                                     index: 0,
                                     routes: [{ name: 'Main' }],
                                 });*/
-                                signUp()
+                                signUp(data)
                             }} />
                         </View>
                     </View>

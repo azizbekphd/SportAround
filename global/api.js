@@ -1,0 +1,1 @@
+export default api = "http://sport.onyxgp.ru/v1/"
