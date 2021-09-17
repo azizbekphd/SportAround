@@ -8,13 +8,15 @@ export default function Dropdown({
     valid,
     onChange,
     data,
+    initial,
+    initialValue,
     ...others
 }) {
     const resizeAnim = useRef(new Animated.Value(0)).current;
     const rotateAnim = useRef(new Animated.Value(90)).current;
-    const [selectedId, setSelectedId] = useState(null);
+    const [selectedId, setSelectedId] = useState(initial ?? null);
     const [opened, setOpened] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(initialValue ?? null);
 
     const getColor = function (valid) {
         return valid ? "#29dec8" :
@@ -55,7 +57,7 @@ export default function Dropdown({
     })
 
     return (
-        <Animated.View style={{ height: 68, minHeight: 68 }}>
+        <Animated.View style={{ height: 68, backgroundColor: "#ff0000", zIndex: 4000 }}>
             <TouchableOpacity
                 activeOpacity={0.5}
                 style={{ height: 68 }}
@@ -90,7 +92,13 @@ export default function Dropdown({
                     ]}
                 />
             </TouchableOpacity>
-            <Animated.View width="100%" style={{ position: 'absolute', height: resizeAnim, top: 50, zIndex: 500, overflow: "hidden", backgroundColor: "#0E0938" }}>
+            <Animated.View width="100%" style={{
+                position: 'absolute',
+                height: resizeAnim,
+                top: 50,
+                overflow: "hidden",
+                backgroundColor: "#0E0938",
+            }}>
                 {data.map((item) => {
                     return <View key={item.id} width="100%">
                         <TouchableOpacity

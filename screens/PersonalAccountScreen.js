@@ -8,32 +8,25 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SvgUri from 'expo-svg-uri';
 import Alert from '../components/Alert';
 import AuthContext from '../api/AuthContext';
+import User from '../models/User'
+import formatDate from '../global/formatDate';
 
 export default function PersonalAccountScreen({ navigation, route }) {
 
-    const [userData, setUserData] = useState({
-        name: "Алексей",
-        surname: "Кузнецов",
-        email: "alex.kuznecov@gmail.com",
-        phone: "+7 (906) 668 88 00",
-        birth: "12.08.1992",
-        address: "улица Генерала Кузнецова, 24 / 1",
-        city: "Москва"
-    })
+    const [userData, setUserData] = useState(new User({}))
     const [showModal, setShowModal] = useState(false)
 
-    const { signOut } = useContext(AuthContext)
+    const { signOut, getUser } = useContext(AuthContext)
 
     useEffect(() => {
-        setUserData(route.params?.userData ?? {
-            name: "Алексей",
-            surname: "Кузнецов",
-            email: "alex.kuznecov@gmail.com",
-            phone: "+7 (906) 668 88 00",
-            birth: "12.08.1992",
-            address: "улица Генерала Кузнецова, 24 / 1",
-            city: "Москва"
-        })
+        console.log(getUser())
+        setUserData(getUser())
+    }, [])
+
+    useEffect(() => {
+        setUserData(route.params?.userData ??
+            getUser()
+        )
     }, [route.params?.userData])
 
     return (
@@ -50,8 +43,8 @@ export default function PersonalAccountScreen({ navigation, route }) {
                             style={styles.avatar}
                         />
                         <View style={styles.generalInfo}>
-                            <H2 style={{ fontSize: 20 }}>{`${userData.name} ${userData.surname}`}</H2>
-                            <H3>id: ivan_ivanov92</H3>
+                            <H2 style={{ fontSize: 20 }}>{`${userData.username ?? ""}`}</H2>
+                            <H3>{userData.id && `id: #${userData.id}`}</H3>
                         </View>
                     </LinearGradient>
                     <View style={{ height: 16 }} />
@@ -79,19 +72,28 @@ export default function PersonalAccountScreen({ navigation, route }) {
                         <H3 style={{ fontWeight: "700", marginVertical: 5 }}>
                             Личная информация
                         </H3>
-                        <H3 style={{ marginVertical: 7 }}>
+                        {
+                            userData.name &&
+                            <H3 style={{ marginVertical: 7 }}>
+                                {`${userData.name} ${userData.lastName ?? ""}`}
+                            </H3>
+                        }
+                        {userData.email && <H3 style={{ marginVertical: 7 }}>
                             {userData.email}
-                        </H3>
-                        <H3 style={{ marginVertical: 7 }}>
+                        </H3>}
+                        {userData.phone && <H3 style={{ marginVertical: 7 }}>
                             {userData.phone}
-                        </H3>
-                        <H3 style={{ marginVertical: 7 }}>
-                            {userData.birth}
-                        </H3>
-                        <View style={{ marginVertical: 15, height: 1, alignSelf: "stretch", backgroundColor: "#fff" }} />
-                        <H3 style={{ marginVertical: 7 }}>
-                            {userData.address + '\n' + userData.city}
-                        </H3>
+                        </H3>}
+                        {userData.birthday && <H3 style={{ marginVertical: 7 }}>
+                            {formatDate(userData.birthday)}
+                        </H3>}
+                        {userData.address &&
+                            <>
+                                <View style={{ marginVertical: 15, height: 1, alignSelf: "stretch", backgroundColor: "#fff" }} />
+                                <H3 style={{ marginVertical: 7 }}>
+                                    {userData.address}
+                                </H3>
+                            </>}
                     </LinearGradient>
                     <LinearGradient
                         colors={["rgba(38, 34, 84, 1)", "rgba(38, 34, 84, 0)"]}

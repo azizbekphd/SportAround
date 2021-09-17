@@ -7,7 +7,7 @@ import IntroScreen from './screens/IntroScreen';
 import AuthorizationScreen from './screens/AuthorizationScreen';
 import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
-import { LogBox, StyleSheet, StatusBar } from 'react-native';
+import { LogBox, StyleSheet, StatusBar, Alert } from 'react-native';
 import SignInSignUpScreen from './screens/SignInSignUpScreen';
 import MainScreen from './screens/MainScreen';
 import NewGameScreen from './screens/NewGameScreen';
@@ -60,7 +60,13 @@ export default function App() {
           isLoading: false,
           user: null,
         };
-      case 'register':
+      case 'registration':
+        return {
+          ...prevState,
+          isLoading: false,
+          user: action.user
+        };
+      case 'edit':
         return {
           ...prevState,
           isLoading: false,
@@ -80,14 +86,16 @@ export default function App() {
         },
         body: JSON.stringify(data)
       });
-      //console.log(JSON.stringify(await response.json()))
       if (response.ok) {
         let user = await response.json();
+        console.log(user)
         await AsyncStorage.setItem("user", JSON.stringify(user));
         dispatch({
           type: 'login',
           user: new User(user)
         });
+      } else {
+        Alert.alert("Error", JSON.stringify(response))
       }
     },
     signOut: async () => {
@@ -95,7 +103,6 @@ export default function App() {
       dispatch({ type: 'logout' })
     },
     signUp: async (data) => {
-      console.log(1)
       let response = await fetch(api + 'registration', {
         method: 'POST',
         headers: {
@@ -104,16 +111,58 @@ export default function App() {
         body: JSON.stringify(data)
       });
       if (response.ok) {
-        console.log(2)
+        response = await fetch(api + 'login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(data)
+        });
+        if (response.ok) {
+          let user = await response.json();
+          await AsyncStorage.setItem("user", JSON.stringify(user));
+          dispatch({
+            type: 'login',
+            user: new User(user)
+          });
+        } else {
+          Alert.alert("Error", JSON.stringify(response))
+        }
+      } else {
+        Alert.alert("Error", JSON.stringify(response))
+      }
+    },
+    getUser: () => {
+      return loginState.user
+    },
+    editAccount: async (data) => {
+      let response = await fetch(api + 'profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({
+          name: data.name,
+          lastName: data.lastName,
+          username: data.username,
+          phone: data.phone,
+          birthday: data.birthday,
+          email: data.email,
+          address: data.address,
+          gender: data.gender
+        })
+      });
+      if (response.ok) {
         let user = await response.json();
         await AsyncStorage.setItem("user", JSON.stringify(user));
         dispatch({
-          type: 'register',
+          type: 'edit',
           user: new User(user)
         });
+      } else {
+        Alert.alert("Error", response.statusText)
       }
-      console.log(3)
-    },
+    }
   }))
 
   useEffect(() => {
@@ -137,7 +186,7 @@ export default function App() {
               component={LoaderScreen}
             ></Stack.Screen>
             :
-            loginState.user && loginState.user.access_token ?
+            loginState.user && loginState.user.verification_token ?
               <Stack.Navigator
                 screenOptions={{ headerShown: false }}
               >

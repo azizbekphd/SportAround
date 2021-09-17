@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import globalStyles from '../global/Styles';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
 import Toolbar from '../components/Toolbar';
@@ -11,10 +11,17 @@ import Navbar from '../components/Navbar';
 import { useNavigation } from '@react-navigation/native';
 import Searchbar from '../components/Searchbar';
 import FriendsInfo from '../components/FriendsInfo';
+import AuthContext from '../api/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Dropdown from '../components/Dropdown';
+import User from '../models/User';
+import formatDate from '../global/formatDate';
 
 export default function EditAccountScreen({ route, navigation }) {
     const [userData, setUserData] = useState(route.params.userData)
     const [dob, setDob] = useState(new Date())
+
+    const { getUser, editAccount } = useContext(AuthContext)
 
     return (
         <>
@@ -29,19 +36,28 @@ export default function EditAccountScreen({ route, navigation }) {
                                 name: name,
                             })
                         }}
-                        defaultValue={userData.name}
-                        valid={userData.name.trim() != ""}
+                        defaultValue={userData.name ?? ""}
                     />
                     <AnimatedTextInput
                         placeholder="Фамилия"
-                        onChangeText={(surname) => {
+                        onChangeText={(lastName) => {
                             setUserData({
                                 ...userData,
-                                surname: surname,
+                                lastName: lastName,
                             })
                         }}
-                        defaultValue={userData.surname}
-                        valid={userData.surname.trim() != ""}
+                        defaultValue={userData.lastName ?? ""}
+                    />
+                    <AnimatedTextInput
+                        placeholder="Имя пользователя"
+                        onChangeText={(username) => {
+                            setUserData({
+                                ...userData,
+                                username: username,
+                            })
+                        }}
+                        defaultValue={userData.username ?? ""}
+                        valid={userData.username && userData.username.trim() != ""}
                     />
                     <AnimatedTextInput
                         placeholder="E-mail"
@@ -52,8 +68,8 @@ export default function EditAccountScreen({ route, navigation }) {
                                 email: email,
                             })
                         }}
-                        defaultValue={userData.email}
-                        valid={/(.+)@(.+){2,}\.(.+){2,}/.test(userData.email)}
+                        defaultValue={userData.email ?? ""}
+                        valid={userData.email ? /(.+)@(.+){2,}\.(.+){2,}/.test(userData.email) : true}
                     />
                     <AnimatedTextInput
                         placeholder="Телефон"
@@ -66,8 +82,8 @@ export default function EditAccountScreen({ route, navigation }) {
                                 phone: phone,
                             })
                         }}
-                        defaultValue={userData.phone}
-                        valid={userData.phone.length == 18}
+                        defaultValue={userData.phone ?? ""}
+                        valid={userData.phone ? userData.phone.length == 18 : true}
                     />
                     <AnimatedTextInput
                         placeholder="Дата рождения"
@@ -79,8 +95,8 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                             setDob(date)
                         }}
-                        defaultValue={userData.birth}
-                        valid={dob <= new Date()}
+                        defaultValue={userData.birthday ? formatDate(userData.birthday) : ""}
+                        valid={dob ? dob <= new Date() : true}
                     />
                     <AnimatedTextInput
                         placeholder="Адрес"
@@ -90,24 +106,31 @@ export default function EditAccountScreen({ route, navigation }) {
                                 address: address,
                             })
                         }}
-                        defaultValue={userData.address}
-                        valid={userData.address.trim() != ""}
+                        defaultValue={userData.address ?? ""}
+                        valid={userData.address ? userData.address.trim() != "" : null}
                     />
-                    <AnimatedTextInput
-                        placeholder="Город"
-                        onChangeText={(city) => {
-                            setUserData({
-                                ...userData,
-                                city: city,
+                    <Dropdown
+                        placeholder="Пол"
+                        data={[
+                            { title: 'Мужской', id: 1 },
+                            { title: 'Женский', id: 2 },
+                        ]}
+                        onChange={(id, title) => {
+                            setUserData((prev) => {
+                                return {
+                                    ...prev,
+                                    gender: id,
+                                }
                             })
                         }}
-                        defaultValue={userData.city}
-                        valid={userData.city.trim() != ""}
+                        initialValue={userData.gender && userData.gender == 1 ? "Мужской" : "Женский"}
+                        initial={userData.gender ?? 0}
                     />
                     <View style={{ height: 10 }} />
                 </ScrollView>
                 <View style={{ alignSelf: "stretch", padding: 20 }}>
                     <Button title="Сохранить изменения" onPress={() => {
+                        editAccount(userData)
                         navigation.navigate("Main", {
                             screen: "PersonalAccount",
                             params: {
