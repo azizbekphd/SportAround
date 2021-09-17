@@ -40,7 +40,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
                         style={styles.general}
                     >
                         <View style={styles.avatar}>
-                            <H1>{userData.username.charAt(0)}</H1>
+                            <H1>{userData.username && userData.username.charAt(0)}</H1>
                         </View>
                         <View style={styles.generalInfo}>
                             <H2 style={{ fontSize: 20 }}>{`${userData.username ?? ""}`}</H2>
