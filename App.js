@@ -88,14 +88,19 @@ export default function App() {
       });
       if (response.ok) {
         let user = await response.json();
-        console.log(user)
-        await AsyncStorage.setItem("user", JSON.stringify(user));
-        dispatch({
-          type: 'login',
-          user: new User(user)
-        });
+        if (user) {
+          await AsyncStorage.setItem("user", JSON.stringify(user));
+          dispatch({
+            type: 'login',
+            user: new User(user)
+          });
+        } else {
+          Alert.alert("Упс...", "Не удалось войти. Проверьте правильность введенных данных и повторите попытку")
+          return true
+        }
       } else {
-        Alert.alert("Error", JSON.stringify(response))
+        Alert.alert("Упс...", "Не удалось войти. Проверьте правильность введенных данных и повторите попытку")
+        return true
       }
     },
     signOut: async () => {
@@ -120,16 +125,23 @@ export default function App() {
         });
         if (response.ok) {
           let user = await response.json();
-          await AsyncStorage.setItem("user", JSON.stringify(user));
-          dispatch({
-            type: 'login',
-            user: new User(user)
-          });
+          if (user) {
+            await AsyncStorage.setItem("user", JSON.stringify(user));
+            dispatch({
+              type: 'login',
+              user: new User(user)
+            });
+          } else {
+            Alert.alert("Упс...", "Не удалось зарегистрироваться. Проверьте правильность введенных данных и повторите попытку")
+            return true
+          }
         } else {
-          Alert.alert("Error", JSON.stringify(response))
+          Alert.alert("Упс...", "Не удалось зарегистрироваться. Проверьте правильность введенных данных и повторите попытку")
+          return true
         }
       } else {
-        Alert.alert("Error", JSON.stringify(response))
+        Alert.alert("Упс...", "Не удалось зарегистрироваться. Проверьте правильность введенных данных и повторите попытку")
+        return true
       }
     },
     getUser: () => {
@@ -160,9 +172,12 @@ export default function App() {
           user: new User(user)
         });
       } else {
-        Alert.alert("Error", response.statusText)
+        console.log(response)
+        Alert.alert("Что-то пошло не так...", "Не удалось изменить аккаунт. Проверьте правильность введенных данных и повторите попытку")
+        return true
       }
-    }
+    },
+    getLoading: () => loginState.isLoading
   }))
 
   useEffect(() => {

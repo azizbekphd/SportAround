@@ -10,6 +10,7 @@ import Alert from '../components/Alert';
 import AuthContext from '../api/AuthContext';
 import User from '../models/User'
 import formatDate from '../global/formatDate';
+import H1 from '../components/H1';
 
 export default function PersonalAccountScreen({ navigation, route }) {
 
@@ -38,10 +39,9 @@ export default function PersonalAccountScreen({ navigation, route }) {
                         colors={["rgba(38, 34, 84, 1)", "rgba(38, 34, 84, 0)"]}
                         style={styles.general}
                     >
-                        <Image
-                            source={require('../assets/images/person.jpg')}
-                            style={styles.avatar}
-                        />
+                        <View style={styles.avatar}>
+                            <H1>{userData.username.charAt(0)}</H1>
+                        </View>
                         <View style={styles.generalInfo}>
                             <H2 style={{ fontSize: 20 }}>{`${userData.username ?? ""}`}</H2>
                             <H3>{userData.id && `id: #${userData.id}`}</H3>
@@ -149,7 +149,12 @@ const styles = StyleSheet.create({
     },
     avatar: {
         borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10
+        borderBottomLeftRadius: 10,
+        width: 108,
+        height: 108,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#5E5E5E"
     },
     generalInfo: {
         alignSelf: "stretch",

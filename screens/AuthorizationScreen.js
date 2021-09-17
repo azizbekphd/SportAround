@@ -7,18 +7,24 @@ import Toolbar from '../components/Toolbar';
 import H1 from '../components/H1';
 import Button from '../components/Button';
 import AuthContext from '../api/AuthContext';
+import validate, { validateAll } from '../global/validate';
+import Loader from '../components/Loader';
 
-export default function RegistrationScreen({ navigation }) {
+export default function AuthorizationScreen({ navigation }) {
     const [data, setData] = useState({
-        username: null,
-        password: null,
+        username: "",
+        password: "",
     });
+    const [loading, setLoading] = useState(false)
 
     const { signIn } = useContext(AuthContext)
 
     return (
         <View style={[globalStyles.container, { alignItems: 'stretch' }]} >
             <Toolbar back />
+            <Loader
+                loading={loading}
+            />
             <View style={[globalStyles.container, { justifyContent: 'space-between', alignItems: 'flex-start', padding: 20 }]}>
                 <View style={{ width: 248, marginTop: 82 }}>
                     <H1>Добро
@@ -35,6 +41,7 @@ export default function RegistrationScreen({ navigation }) {
                                 }
                             })
                         }}
+                        valid={data.username ? validate("username", data.username) : null}
                     />
                     <AnimatedTextInput
                         placeholder="Пароль"
@@ -47,12 +54,16 @@ export default function RegistrationScreen({ navigation }) {
                                 }
                             })
                         }}
+                        valid={data.password ? validate("password", data.password) : null}
                     />
                     <Link page="PasswordRecovery" title="Забыли пароль?" />
                 </View>
                 <Button title="Войти" onPress={() => {
-                    signIn(data)
-                }} />
+                    setLoading(true)
+                    signIn(data).then((_) => { setLoading(false) })
+                }} disabled={
+                    !validateAll(['username', 'password'], data)
+                } />
             </View>
         </View>
     )

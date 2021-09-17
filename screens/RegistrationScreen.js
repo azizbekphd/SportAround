@@ -15,8 +15,14 @@ import AuthContext from '../api/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import Dropdown from '../components/Dropdown';
+import validate, { validateAll } from '../global/validate';
+import Loader from '../components/Loader';
+import rawPhone from '../global/rawPhone';
 
 export default function RegistrationScreen({ navigation }) {
+
+    const [dob, setDob] = useState(new Date())
+    const [loading, setLoading] = useState(false)
     const pager = useRef()
     const [page, setPage] = useState(0)
     const [data, setData] = useState({
@@ -55,6 +61,9 @@ export default function RegistrationScreen({ navigation }) {
     return (
         <>
             <Toolbar back />
+            <Loader
+                loading={loading}
+            />
             <View style={[globalStyles.container, { justifyContent: 'space-between', alignItems: 'flex-start', overflow: 'visible' }]}>
                 <View width="100%" style={styles.static}>
                     <View width="100%" style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
@@ -92,6 +101,7 @@ export default function RegistrationScreen({ navigation }) {
                                         }
                                     })
                                 }}
+                                valid={data.username && validate("username", data.username)}
                             />
                             <AnimatedTextInput
                                 placeholder="E-mail"
@@ -104,6 +114,7 @@ export default function RegistrationScreen({ navigation }) {
                                         }
                                     })
                                 }}
+                                valid={data.email && validate("email", data.email)}
                             />
                             <AnimatedTextInput
                                 placeholder="Пароль"
@@ -116,6 +127,7 @@ export default function RegistrationScreen({ navigation }) {
                                         }
                                     })
                                 }}
+                                valid={data.password && validate("password", data.password)}
                             />
                             <AnimatedTextInput
                                 placeholder="Повторите пароль"
@@ -128,6 +140,7 @@ export default function RegistrationScreen({ navigation }) {
                                         }
                                     })
                                 }}
+                                valid={data.password_repeat ? data.password && validate("password", data.password) && data.password == data.password_repeat : null}
                             />
                             <IconButton onPress={() => { pager.current.setPage(1) }}>
                                 <Image source={require('../assets/icons/arrow_r.png')} />
@@ -155,6 +168,7 @@ export default function RegistrationScreen({ navigation }) {
                                         }
                                     })
                                 }}
+                                valid={data.gender && validate("gender", data.gender)}
                             />
                             <AnimatedTextInput
                                 placeholder="Телефон"
@@ -164,33 +178,38 @@ export default function RegistrationScreen({ navigation }) {
                                     setData((prev) => {
                                         return {
                                             ...prev,
-                                            phone: value,
+                                            phone: rawPhone(value),
                                         }
                                     })
                                 }}
+                                valid={data.phone && validate("phone", data.phone)}
                             />
                             <AnimatedTextInput
                                 placeholder="Дата рождения"
                                 mode="date"
-                                onChangeText={(value) => {
+                                onChangeText={(value, valueStr) => {
                                     setData((prev) => {
                                         return {
                                             ...prev,
-                                            birthday: value,
+                                            birthday: valueStr,
                                         }
                                     })
+                                    setDob(value)
                                 }}
+                                valid={dob && validate("birthday", dob)}
                             />
                             <View style={{ height: 68 }}>
                                 <H6 color="rgba(255,255,255,.5)">Нажимая кнопку «Начать», вы соглашаетесь с политикой конфиденциальности</H6>
                             </View>
                             <Button title="Начать" onPress={() => {
-                                /*navigation.reset({
-                                    index: 0,
-                                    routes: [{ name: 'Main' }],
-                                });*/
-                                signUp(data)
-                            }} />
+                                setLoading(true)
+                                signUp(data).then((_) => { setLoading(false) })
+                            }} disabled={
+                                !validateAll(
+                                    ['username', 'email', 'password', 'password_repeat', 'gender', 'phone', 'birthday'],
+                                    { ...data, birthday: dob }
+                                )
+                            } />
                         </View>
                     </View>
                 </PagerView>

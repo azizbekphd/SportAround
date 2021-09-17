@@ -16,16 +16,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dropdown from '../components/Dropdown';
 import User from '../models/User';
 import formatDate from '../global/formatDate';
+import rawPhone from '../global/rawPhone';
+import Loader from '../components/Loader';
+import validate, { validateAll } from '../global/validate';
 
 export default function EditAccountScreen({ route, navigation }) {
     const [userData, setUserData] = useState(route.params.userData)
     const [dob, setDob] = useState(new Date())
+    const [loading, setLoading] = useState(false)
 
     const { getUser, editAccount } = useContext(AuthContext)
 
     return (
         <>
             <Toolbar title="Редактировать" back />
+            <Loader loading={loading} />
             <View style={[globalStyles.container, { justifyContent: 'flex-start' }]} >
                 <ScrollView style={{ alignSelf: "stretch", flex: 1, paddingTop: 20, paddingHorizontal: 20 }}>
                     <AnimatedTextInput
@@ -57,7 +62,7 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                         }}
                         defaultValue={userData.username ?? ""}
-                        valid={userData.username && userData.username.trim() != ""}
+                        valid={userData.username && validate('username', userData.username)}
                     />
                     <AnimatedTextInput
                         placeholder="E-mail"
@@ -69,21 +74,20 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                         }}
                         defaultValue={userData.email ?? ""}
-                        valid={userData.email ? /(.+)@(.+){2,}\.(.+){2,}/.test(userData.email) : true}
+                        valid={userData.email && validate("email", userData.email)}
                     />
                     <AnimatedTextInput
                         placeholder="Телефон"
                         keyboardType="phone-pad"
                         tel
-                        onChangeText={(phone, rawPhone) => {
+                        onChangeText={(phone) => {
                             setUserData({
                                 ...userData,
-                                rawPhone: rawPhone,
-                                phone: phone,
+                                phone: rawPhone(phone),
                             })
                         }}
                         defaultValue={userData.phone ?? ""}
-                        valid={userData.phone ? userData.phone.length == 18 : true}
+                        valid={userData.phone && validate("phone", userData.phone)}
                     />
                     <AnimatedTextInput
                         placeholder="Дата рождения"
@@ -96,7 +100,7 @@ export default function EditAccountScreen({ route, navigation }) {
                             setDob(date)
                         }}
                         defaultValue={userData.birthday ? formatDate(userData.birthday) : ""}
-                        valid={dob ? dob <= new Date() : true}
+                        valid={dob && validate("birthday", dob)}
                     />
                     <AnimatedTextInput
                         placeholder="Адрес"
@@ -107,7 +111,6 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                         }}
                         defaultValue={userData.address ?? ""}
-                        valid={userData.address ? userData.address.trim() != "" : null}
                     />
                     <Dropdown
                         placeholder="Пол"
@@ -125,19 +128,27 @@ export default function EditAccountScreen({ route, navigation }) {
                         }}
                         initialValue={userData.gender && userData.gender == 1 ? "Мужской" : "Женский"}
                         initial={userData.gender ?? 0}
+                        valid={userData.gender && validate("gender", userData.gender)}
                     />
-                    <View style={{ height: 10 }} />
+                    <View style={{ height: 50 }} />
                 </ScrollView>
                 <View style={{ alignSelf: "stretch", padding: 20 }}>
                     <Button title="Сохранить изменения" onPress={() => {
-                        editAccount(userData)
-                        navigation.navigate("Main", {
-                            screen: "PersonalAccount",
-                            params: {
-                                userData: userData
+                        setLoading(true)
+                        editAccount(userData).then((_) => {
+                            setLoading(false)
+                            if (!_) {
+                                navigation.navigate("Main", {
+                                    screen: "PersonalAccount",
+                                    params: {
+                                        userData: userData
+                                    }
+                                })
                             }
                         })
-                    }} />
+                    }} disabled={
+                        !validateAll(["username", "email", "phone", "birthday", "gender"], { ...userData, birthday: dob })
+                    } />
                 </View>
             </View>
         </>

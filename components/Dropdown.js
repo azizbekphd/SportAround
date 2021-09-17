@@ -57,10 +57,9 @@ export default function Dropdown({
     })
 
     return (
-        <Animated.View style={{ height: 68, backgroundColor: "#ff0000", zIndex: 4000 }}>
+        <Animated.View style={{ minHeight: 68, maxHeight: data.length * 68, zIndex: 4000 }}>
             <TouchableOpacity
                 activeOpacity={0.5}
-                style={{ height: 68 }}
                 onPress={() => {
                     setOpened(!opened)
                 }}
@@ -93,9 +92,8 @@ export default function Dropdown({
                 />
             </TouchableOpacity>
             <Animated.View width="100%" style={{
-                position: 'absolute',
                 height: resizeAnim,
-                top: 50,
+                maxHeight: (data.length + 1) * 68,
                 overflow: "hidden",
                 backgroundColor: "#0E0938",
             }}>
