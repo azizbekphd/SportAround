@@ -10,7 +10,7 @@ export default function validate(type, value) {
     } else if (type == "username") {
         return value.trim().length >= 3
     } else if (type == "birthday") {
-        return value < new Date()
+        return value ? value < new Date() : false
     } else if (type == "gender") {
         return value != 0
     }
@@ -23,7 +23,7 @@ export function validateAll(fields, user) {
             return false
         }
     }
-    if (fields.includes["password_repeat"]) {
+    if (fields.includes("password_repeat")) {
         if (user.password != user.password_repeat) {
             return false
         }

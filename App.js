@@ -148,22 +148,16 @@ export default function App() {
       return loginState.user
     },
     editAccount: async (data) => {
+      let requestBody = JSON.stringify(data)
+      console.log(requestBody)
       let response = await fetch(api + 'profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json;charset=utf-8'
         },
-        body: JSON.stringify({
-          name: data.name,
-          lastName: data.lastName,
-          username: data.username,
-          phone: data.phone,
-          birthday: data.birthday,
-          email: data.email,
-          address: data.address,
-          gender: data.gender
-        })
+        body: requestBody
       });
+      let user = await response.json();
       if (response.ok) {
         let user = await response.json();
         await AsyncStorage.setItem("user", JSON.stringify(user));
@@ -172,7 +166,7 @@ export default function App() {
           user: new User(user)
         });
       } else {
-        console.log(response)
+        console.log(JSON.stringify(user))
         Alert.alert("Что-то пошло не так...", "Не удалось изменить аккаунт. Проверьте правильность введенных данных и повторите попытку")
         return true
       }

@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, SafeAreaView, Image, TouchableOpacity, StatusBar } from 'react-native';
 import H3 from './H3';
 import H6 from './H6'
@@ -35,7 +35,7 @@ export default function Toolbar(props) {
                     {(props.back === true) &&
                         <TouchableOpacity
                             activeOpacity={0.5}
-                            onPress={() => { navigation.pop() }}
+                            onPress={() => { props.onBack ? props.onBack() : navigation.pop() }}
                             style={{
                                 height: 40,
                                 width: 40,

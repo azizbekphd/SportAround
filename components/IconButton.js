@@ -9,7 +9,7 @@ export default function IconButton(props) {
         <>
             {props.disabled ?
                 <View style={{ ...styles.container, backgroundColor: '#a2a6b4' }}>
-                    <Text>{props.title}</Text>
+                    {props.children}
                 </View>
                 :
                 props.outlined ?
@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
         height: 54,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 27
+        borderRadius: 27,
     }
 })

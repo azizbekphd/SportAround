@@ -1,6 +1,6 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useCallback } from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TextInput, Image, Alert, StatusBar } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, Alert, StatusBar, BackHandler } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toolbar from '../components/Toolbar';
 import PagerView from 'react-native-pager-view';
@@ -18,10 +18,11 @@ import Dropdown from '../components/Dropdown';
 import validate, { validateAll } from '../global/validate';
 import Loader from '../components/Loader';
 import rawPhone from '../global/rawPhone';
+import { useFocusEffect } from '@react-navigation/core';
 
 export default function RegistrationScreen({ navigation }) {
 
-    const [dob, setDob] = useState(new Date())
+    const [dob, setDob] = useState(null)
     const [loading, setLoading] = useState(false)
     const pager = useRef()
     const [page, setPage] = useState(0)
@@ -37,6 +38,24 @@ export default function RegistrationScreen({ navigation }) {
     })
 
     const { signUp } = useContext(AuthContext)
+
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                if (page == 1) {
+                    pager.current.setPage(0)
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [page])
+    );
 
     const selectImage = async () => {
         console.log("start");
@@ -60,7 +79,7 @@ export default function RegistrationScreen({ navigation }) {
 
     return (
         <>
-            <Toolbar back />
+            <Toolbar back onBack={() => { page == 0 ? navigation.pop() : pager.current.setPage(0) }} />
             <Loader
                 loading={loading}
             />
@@ -84,6 +103,7 @@ export default function RegistrationScreen({ navigation }) {
                     onPageSelected={(ev) => { setPage(ev.nativeEvent.position) }}
                     pageMargin={7}
                     ref={pager}
+                    scrollEnabled={page == 0 ? validateAll(['username', 'email', 'password', 'password_repeat'], data) : true}
                 >
                     <View key="1" style={styles.page} collapsable={false}>
                         <View style={{ width: 248 }}>
@@ -142,7 +162,9 @@ export default function RegistrationScreen({ navigation }) {
                                 }}
                                 valid={data.password_repeat ? data.password && validate("password", data.password) && data.password == data.password_repeat : null}
                             />
-                            <IconButton onPress={() => { pager.current.setPage(1) }}>
+                            <IconButton onPress={() => { pager.current.setPage(1) }}
+                                disabled={!(page == 0 ? validateAll(['username', 'email', 'password', 'password_repeat'], data) : true)}
+                            >
                                 <Image source={require('../assets/icons/arrow_r.png')} />
                             </IconButton>
                         </View>
@@ -196,7 +218,7 @@ export default function RegistrationScreen({ navigation }) {
                                     })
                                     setDob(value)
                                 }}
-                                valid={dob && validate("birthday", dob)}
+                                valid={data.birthday ? dob && validate("birthday", dob) : null}
                             />
                             <View style={{ height: 68 }}>
                                 <H6 color="rgba(255,255,255,.5)">Нажимая кнопку «Начать», вы соглашаетесь с политикой конфиденциальности</H6>

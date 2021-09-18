@@ -21,7 +21,7 @@ import Loader from '../components/Loader';
 import validate, { validateAll } from '../global/validate';
 
 export default function EditAccountScreen({ route, navigation }) {
-    const [userData, setUserData] = useState(route.params.userData)
+    const [userData, setUserData] = useState(new User(route.params.userData))
     const [dob, setDob] = useState(new Date())
     const [loading, setLoading] = useState(false)
 
