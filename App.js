@@ -153,9 +153,10 @@ export default function App() {
       let response = await fetch(api + 'profile', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json;charset=utf-8'
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': `Bearer realm="${data.access_token}"`
         },
-        body: requestBody
+        body: requestBody,
       });
       let user = await response.json();
       if (response.ok) {
@@ -166,7 +167,7 @@ export default function App() {
           user: new User(user)
         });
       } else {
-        console.log(JSON.stringify(user))
+        console.log(JSON.stringify(response.headers))
         Alert.alert("Что-то пошло не так...", "Не удалось изменить аккаунт. Проверьте правильность введенных данных и повторите попытку")
         return true
       }
