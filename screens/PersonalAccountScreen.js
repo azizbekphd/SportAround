@@ -20,7 +20,6 @@ export default function PersonalAccountScreen({ navigation, route }) {
     const { signOut, getUser } = useContext(AuthContext)
 
     useEffect(() => {
-        console.log(getUser())
         setUserData(getUser())
     }, [])
 

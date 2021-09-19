@@ -17,7 +17,7 @@ const Loader = props => {
             transparent={true}
             animationType={'none'}
             visible={loading}
-            onRequestClose={() => { console.log('close modal') }}>
+            onRequestClose={() => {  }}>
             <View style={styles.modalBackground}>
                 <View style={styles.activityIndicatorWrapper}>
                     <ActivityIndicator

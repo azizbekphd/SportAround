@@ -148,27 +148,39 @@ export default function App() {
       return loginState.user
     },
     editAccount: async (data) => {
-      let requestBody = JSON.stringify(data)
-      console.log(requestBody)
+      let requestBody = JSON.stringify({
+        username: data.username ?? "",
+        email: data.email ?? "",
+        phone: data.phone ?? "",
+        birthday: data.birthday ?? "",
+        address: data.address ?? "",
+        gender: data.gender ?? 0,
+        name: data.name ?? "",
+        lastName: data.lastName ?? ""
+      }).replace("null", "\"\"")
+      console.log("\n\n"+requestBody)
       let response = await fetch(api + 'profile', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-          'Authorization': `Bearer realm=${data.access_token}`
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer 123`
         },
         body: requestBody,
       });
       let user = await response.json();
       if (response.ok) {
-        let user = await response.json();
         await AsyncStorage.setItem("user", JSON.stringify(user));
         dispatch({
           type: 'edit',
           user: new User(user)
         });
       } else {
-        console.log(JSON.stringify(response.headers))
-        Alert.alert("Что-то пошло не так...", "Не удалось изменить аккаунт. Проверьте правильность введенных данных и повторите попытку")
+        console.log(JSON.stringify(user))
+        Alert.alert(
+          "Что-то пошло не так...",
+          "Не удалось изменить аккаунт. Проверьте правильность введенных данных и повторите попытку",
+          [{text: "OK", onPress: ()=>{}}])
         return true
       }
     },
