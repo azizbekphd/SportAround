@@ -80,7 +80,8 @@ export default function Dropdown({
                         fontSize: 16,
                         paddingHorizontal: 5,
                         textAlignVertical: "bottom",
-                        paddingBottom: 6
+                        paddingBottom: 6,
+                        paddingTop: 17
                     }}
                 >{value}</H3>
                 <Animated.Image

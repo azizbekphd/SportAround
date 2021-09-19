@@ -91,7 +91,8 @@ export default function AnimatedTextInput({
                     fontSize: 16,
                     paddingHorizontal: 5,
                     textAlignVertical: "bottom",
-                    paddingBottom: 6
+                    paddingBottom: 6,
+                    paddingTop: 17
                 }}
                 onPressIn={(e) => { e.target.onFocus(e) }}
             /> :
@@ -126,7 +127,8 @@ export default function AnimatedTextInput({
                         fontSize: 16,
                         paddingHorizontal: 5,
                         textAlignVertical: "bottom",
-                        paddingBottom: 6
+                        paddingBottom: 6,
+                        paddingTop: 17
                     }}
                 />}
             <DateTimePickerModal

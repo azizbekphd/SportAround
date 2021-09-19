@@ -154,7 +154,7 @@ export default function App() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
-          'Authorization': `Bearer realm="${data.access_token}"`
+          'Authorization': `Bearer realm=${data.access_token}`
         },
         body: requestBody,
       });
