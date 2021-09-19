@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TextInput, Animated, Text, StyleSheet, Alert, Image, TouchableOpacity, FlatList } from "react-native";
+import { View, TextInput, Animated, Text, StyleSheet, Alert, Image, TouchableOpacity, FlatList, Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import H3 from "./H3";
 
@@ -75,15 +75,17 @@ export default function Dropdown({
                     style={{
                         color: "#fff",
                         height: 50,
-                        borderBottomColor: getColor(valid) == "#fff" ? "#656b82" : getColor(valid),
-                        borderBottomWidth: 1,
                         fontSize: 16,
                         paddingHorizontal: 5,
                         textAlignVertical: "bottom",
                         paddingBottom: 6,
-                        paddingTop: 17
+                        paddingTop: 22
                     }}
                 >{value}</H3>
+                <View style={{
+                    height:1,
+                    backgroundColor:getColor(valid) == "#fff" ? "#656b82" : getColor(valid)
+                }}/>
                 <Animated.Image
                     source={require('../assets/icons/arrow_r_purple.png')}
                     style={[
