@@ -72,27 +72,28 @@ export default function PersonalAccountScreen({ navigation, route }) {
                             Личная информация
                         </H3>
                         {
-                            userData.name &&
+                            userData.name ?
                             <H3 style={{ marginVertical: 7 }}>
                                 {`${userData.name} ${userData.lastName ?? ""}`}
                             </H3>
+                            : null
                         }
-                        {userData.email && <H3 style={{ marginVertical: 7 }}>
+                        {userData.email ? <H3 style={{ marginVertical: 7 }}>
                             {userData.email}
-                        </H3>}
-                        {userData.phone && <H3 style={{ marginVertical: 7 }}>
+                        </H3> : null}
+                        {userData.phone ? <H3 style={{ marginVertical: 7 }}>
                             {userData.phone}
-                        </H3>}
-                        {userData.birthday && <H3 style={{ marginVertical: 7 }}>
+                        </H3> : null}
+                        {userData.birthday ? <H3 style={{ marginVertical: 7 }}>
                             {formatDate(userData.birthday)}
-                        </H3>}
-                        {userData.address &&
+                        </H3> : null}
+                        {userData.address ?
                             <>
                                 <View style={{ marginVertical: 15, height: 1, alignSelf: "stretch", backgroundColor: "#fff" }} />
                                 <H3 style={{ marginVertical: 7 }}>
                                     {userData.address}
                                 </H3>
-                            </>}
+                            </> : null}
                     </LinearGradient>
                     <LinearGradient
                         colors={["rgba(38, 34, 84, 1)", "rgba(38, 34, 84, 0)"]}

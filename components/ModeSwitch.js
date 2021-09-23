@@ -23,8 +23,10 @@ export default function ModeSwitch(props) {
                 left: ref
             },
             ]}>
-                <LinearGradient height="100%" width="100%" style={{
-                    borderRadius: 18
+                <LinearGradient style={{
+                    alignSelf: "stretch",
+                    flex: 1,
+                    borderRadius: 18,
                 }} colors={["#29DEC8", "#049DFF"]}>
 
                 </LinearGradient>
@@ -32,7 +34,7 @@ export default function ModeSwitch(props) {
             <TouchableOpacity activeOpacity={0.5} width="50%" onPressIn={() => {
                 Animated.timing(ref, {
                     toValue: 0,
-                    duration: 300,
+                    duration: 200,
                     useNativeDriver: false
                 }).start()
                 props.onChange(0)
@@ -42,7 +44,7 @@ export default function ModeSwitch(props) {
             <TouchableOpacity activeOpacity={0.5} width="50%" onPressIn={() => {
                 Animated.timing(ref, {
                     toValue: (Dimensions.get("window").width - 40) / 2,
-                    duration: 300,
+                    duration: 200,
                     useNativeDriver: false
                 }).start()
                 props.onChange(1)

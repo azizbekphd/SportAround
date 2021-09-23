@@ -113,6 +113,7 @@ export default function RegistrationScreen({ navigation }) {
                         <View style={styles.inputs}>
                             <AnimatedTextInput
                                 placeholder="Имя пользователя"
+                                autoCapitalize="none"
                                 onChangeText={(value) => {
                                     setData((prev) => {
                                         return {
@@ -126,6 +127,7 @@ export default function RegistrationScreen({ navigation }) {
                             <AnimatedTextInput
                                 placeholder="E-mail"
                                 keyboardType="email-address"
+                                autoCapitalize="none"
                                 onChangeText={(value) => {
                                     setData((prev) => {
                                         return {
@@ -139,6 +141,7 @@ export default function RegistrationScreen({ navigation }) {
                             <AnimatedTextInput
                                 placeholder="Пароль"
                                 secureTextEntry={true}
+                                autoCapitalize="none"
                                 onChangeText={(value) => {
                                     setData((prev) => {
                                         return {
@@ -152,6 +155,7 @@ export default function RegistrationScreen({ navigation }) {
                             <AnimatedTextInput
                                 placeholder="Повторите пароль"
                                 secureTextEntry={true}
+                                autoCapitalize="none"
                                 onChangeText={(value) => {
                                     setData((prev) => {
                                         return {

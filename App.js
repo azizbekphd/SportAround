@@ -197,13 +197,16 @@ export default function App() {
           'Authorization': `Bearer ${JSON.parse(savedJson).access_token}`
         },
       });
-      console.log(321)
-      let json = await response.json();
-      console.log(json);
-      dispatch({
-        type: 'retrieve_token',
-        user: json ? new User(json) : null,
-      });
+      if(response.status == 404){
+        dispatch({type:'logout'})
+      }else{
+        let json = await response.json();
+        console.log(json);
+        dispatch({
+          type: 'retrieve_token',
+          user: json ? new User(json) : null,
+        });
+      }
     }).catch((e) => { console.log("Error on starting the app", e) })
   }, [])
 
@@ -218,14 +221,15 @@ export default function App() {
               component={LoaderScreen}
             ></Stack.Screen>
             :
-            loginState.user && loginState.user.verification_token ?
+            loginState.isLoading ?
+            <Stack.Screen
+              name="Loading"
+              component={LoadingScreen} 
+            /> :
+            loginState.user && loginState.user.access_token ?
               <Stack.Navigator
                 screenOptions={{ headerShown: false }}
               >
-                <Stack.Screen
-                  name="Loading"
-                  component={LoadingScreen}
-                />
                 <Stack.Screen
                   name="Main"
                   component={MainScreen}

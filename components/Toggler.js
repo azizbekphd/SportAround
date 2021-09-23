@@ -12,7 +12,7 @@ export default function Toggler(props) {
                     activeOpacity={0.9}
                     onPress={() => { setPos(index); props.onChange && props.onChange(pos) }}
                     key={el}
-                    style={[styles.item, index == 0 ? styles.first : (index == arr.length - 1 ? styles.last : {}), {
+                    style={[styles.item, index == 0 ? styles.first : {}, index == arr.length - 1 ? styles.last : {}, {
                         borderColor: (pos == index ? "#29dec8" : "#656B82"),
                         borderWidth: (pos == index ? 2 : 1)
                     }]}

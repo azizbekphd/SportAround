@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import globalStyles from '../global/Styles';
 import { View, StyleSheet } from 'react-native';
 import Toolbar from '../components/Toolbar';
@@ -8,9 +8,18 @@ import H3 from '../components/H3';
 import Toggler from '../components/Toggler';
 import Counter from '../components/Counter';
 import Button from '../components/Button';
+import AuthContext from '../api/AuthContext';
 
 export default function NewGameScreen({ route, navigation }) {
     const [isNewGame, setIsNewGame] = useState(true)
+    const {getUser} = useContext(AuthContext)
+
+    function calculateAge(dob){
+        var diff_ms = Date.now() - dob.getTime();
+        var age_dt = new Date(diff_ms); 
+        return Math.abs(age_dt.getUTCFullYear() - 1970);
+    }
+
     return (
         <>
             <Toolbar back title="Новая игра" />
@@ -37,7 +46,15 @@ export default function NewGameScreen({ route, navigation }) {
                     </View>
                     <View width="100%" style={styles.item}>
                         <H3 style={{ marginBottom: 9 }}>Тип площадки:</H3>
-                        <Toggler items={["Все", "Платные", "Бесплатные"]} />
+                        <Toggler items={getUser()
+                            ? calculateAge(new Date(getUser().birthday)) >= 14
+                            ? ["Все", "Платные", "Бесплатные"]
+                            : ["Бесплатные"]
+                            : ["Бесплатные"]}
+                            onChange={(index)=>{
+                                
+                            }}
+                        />
                     </View>
                     <View width="100%" style={styles.item}>
                         <H3 style={{ marginBottom: 9 }}>Интервал поиска:</H3>
