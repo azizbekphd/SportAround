@@ -164,7 +164,7 @@ export default function App() {
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': `Bearer 123`
+          'Authorization': `Bearer ${data.access_token}`
         },
         body: requestBody,
       });
@@ -188,13 +188,23 @@ export default function App() {
   }))
 
   useEffect(() => {
-    AsyncStorage.getItem("user").then((json) => {
+    AsyncStorage.getItem("user").then(async(savedJson) => {
+      let response = await fetch(api + 'profile', {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${JSON.parse(savedJson).access_token}`
+        },
+      });
+      console.log(321)
+      let json = await response.json();
       console.log(json);
       dispatch({
         type: 'retrieve_token',
-        user: json ? new User(JSON.parse(json)) : null,
+        user: json ? new User(json) : null,
       });
-    }).catch((e) => { console.log("err", e) })
+    }).catch((e) => { console.log("Error on starting the app", e) })
   }, [])
 
   LogBox.ignoreLogs(['Remote debugger']);

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { View, TextInput, Animated, Text, StyleSheet, Alert } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { TextInputMask } from "react-native-masked-text";
+import decodeDate from "../global/decodeDate.js";
 
 export default function AnimatedTextInput({
     placeholder,
@@ -21,7 +22,10 @@ export default function AnimatedTextInput({
     const [focused, setFocused] = useState(false);
     const [value, setValue] = useState(defaultValue ?? "");
     const [modal, setModal] = useState(false);
-    const [nativeValue, setNativeValue] = useState(new Date());
+    const [nativeValue, setNativeValue] = useState((mode=='date' || mode=='time')
+							? defaultValue
+								? new Date(decodeDate(defaultValue)) : new Date()
+							: null);
 
     const getTheme = function () {
         return light ? "#000" : "#fff"
@@ -131,7 +135,8 @@ export default function AnimatedTextInput({
                         paddingTop: 17
                     }}
                 />}
-            <DateTimePickerModal
+            {mode=="date" || mode=="time" ?
+             <DateTimePickerModal
                 isVisible={modal}
                 mode={mode}
                 headerTextIOS="Выберите дату"
@@ -147,6 +152,7 @@ export default function AnimatedTextInput({
                 date={nativeValue}
                 onCancel={() => { setModal(false) }}
             />
+            : null}
         </View>
     )
 }
