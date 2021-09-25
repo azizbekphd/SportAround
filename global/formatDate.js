@@ -4,5 +4,5 @@ const getNull = (number) => {
 
 export default function formatDate(dateStr) {
     let date = new Date(dateStr)
-    return `${getNull(date.getDate())}.${getNull(date.getMonth())}.${getNull(date.getFullYear())}`
+    return `${getNull(date.getDate())}.${getNull(date.getMonth()+1)}.${getNull(date.getFullYear())}`
 }

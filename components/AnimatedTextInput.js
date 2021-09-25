@@ -143,7 +143,7 @@ export default function AnimatedTextInput({
                 onConfirm={(newDate) => {
                     setNativeValue(newDate)
                     let dateString = (mode == "date") ?
-                        `${getNull(newDate.getDate())}.${getNull(newDate.getMonth())}.${newDate.getFullYear()}` :
+                        `${getNull(newDate.getDate())}.${getNull(newDate.getMonth()+1)}.${newDate.getFullYear()}` :
                         `${getNull(newDate.getHours())}:${getNull(newDate.getMinutes())}`
                     setValue(dateString);
                     setModal(false);

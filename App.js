@@ -189,7 +189,8 @@ export default function App() {
 
   useEffect(() => {
     AsyncStorage.getItem("user").then(async(savedJson) => {
-      let response = await fetch(api + 'profile', {
+      if(savedJson){
+        let response = await fetch(api + 'profile', {
         method: 'GET',
         headers: {
           'accept': 'application/json',
@@ -206,6 +207,9 @@ export default function App() {
           type: 'retrieve_token',
           user: json ? new User(json) : null,
         });
+      }
+    }else{
+        dispatch({type: 'logout'})
       }
     }).catch((e) => { console.log("Error on starting the app", e) })
   }, [])
