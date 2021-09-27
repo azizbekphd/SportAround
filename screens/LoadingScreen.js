@@ -11,22 +11,7 @@ export default function LoadingScreen({ navigation }) {
     const [progress, setProgress] = useState(1);
 
     useEffect(() => {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", "https://google.com");
-        xhr.onload = function (ev) {
-            console.log(xhr.response)
-            navigation.replace("Intro")
-        }
-        xhr.onerror = function (ev) {
-            setNetworkState(false)
-        }
-        xhr.onprogress = function (ev) {
-            console.log(`${ev.loaded}/${ev.total}`)
-            if (ev.lengthComputable)
-                setProgress(ev.loaded / ev.total * 100)
-            else setProgress(Infinity)
-        }
-        //xhr.send()
+        
     }, [])
 
     useEffect(() => {

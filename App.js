@@ -147,6 +147,9 @@ export default function App() {
     getUser: () => {
       return loginState.user
     },
+    getToken: () => {
+      return loginState.user.access_token
+    },
     editAccount: async (data) => {
       let requestBody = JSON.stringify({
         username: data.username ?? "",
@@ -202,10 +205,12 @@ export default function App() {
         dispatch({type:'logout'})
       }else{
         let json = await response.json();
-        console.log(json);
         dispatch({
           type: 'retrieve_token',
-          user: json ? new User(json) : null,
+          user: json ? new User({
+            ...json,
+            access_token: JSON.parse(savedJson).access_token
+          }) : null,
         });
       }
     }else{
@@ -219,103 +224,102 @@ export default function App() {
     <AuthContext.Provider value={authContext}>
       <SafeAreaProvider>
         <NavigationContainer>
-          {loginState.isLoading ?
-            <Stack.Screen
-              name="Loader"
-              component={LoaderScreen}
-            ></Stack.Screen>
-            :
-            loginState.isLoading ?
-            <Stack.Screen
-              name="Loading"
-              component={LoadingScreen} 
-            /> :
-            loginState.user && loginState.user.access_token ?
-              <Stack.Navigator
-                screenOptions={{ headerShown: false }}
-              >
-                <Stack.Screen
-                  name="Main"
-                  component={MainScreen}
+          {
+            loginState.user ?
+              loginState.user.access_token ?
+                <Stack.Navigator
+                  screenOptions={{ headerShown: false }}
+                >
+                  <Stack.Screen
+                    name="Loading"
+                    component={LoadingScreen} 
+                  /> 
+                  <Stack.Screen
+                    name="Main"
+                    component={MainScreen}
+                  />
+                  <Stack.Screen
+                    name="NewGame"
+                    component={NewGameScreen}
+                  />
+                  <Stack.Screen
+                    name="PlaygroundChoice"
+                    component={PlaygroundChoiceScreen}
+                  />
+                  <Stack.Screen
+                    name="AddPlayground"
+                    component={AddPlaygroundScreen}
+                  />
+                  <Stack.Screen
+                    name="Schedule"
+                    component={ScheduleScreen}
+                  />
+                  <Stack.Screen
+                    name="ScheduleSingle"
+                    component={ScheduleSingleScreen}
+                  />
+                  <Stack.Screen
+                    name="Price"
+                    component={PriceScreen}
+                  />
+                  <Stack.Screen
+                    name="PriceSingle"
+                    component={PriceSingleScreen}
+                  />
+                  <Stack.Screen
+                    name="EditAccount"
+                    component={EditAccountScreen}
+                  />
+                  <Stack.Screen
+                    name="PlaygroundDetails"
+                    component={PlaygroundDetailsScreen}
+                  />
+                  <Stack.Screen
+                    name="PastGameDetails"
+                    component={PastGameDetailsScreen}
+                  />
+                  <Stack.Screen
+                    name="OfferedGameDetails"
+                    component={OfferedGameDetailsScreen}
+                  />
+                  <Stack.Screen
+                    name="Payment"
+                    component={PaymentScreen}
+                  />
+                  <Stack.Screen
+                    name="AddCard"
+                    component={AddCardScreen}
+                  />
+                </Stack.Navigator>
+                :
+                <Stack.Navigator
+                  screenOptions={{ headerShown: false }}
+                >
+                  <Stack.Screen
+                    name="Intro"
+                    component={IntroScreen}
+                  />
+                  <Stack.Screen
+                    name="SignInSignUp"
+                    component={SignInSignUpScreen}
+                  />
+                  <Stack.Screen
+                    name="Authorization"
+                    component={AuthorizationScreen}
+                  />
+                  <Stack.Screen
+                    name="PasswordRecovery"
+                    component={PasswordRecoveryScreen}
+                  />
+                  <Stack.Screen
+                    name="Registration"
+                    component={RegistrationScreen}
+                  />
+                </Stack.Navigator>
+              : <Stack.Screen
+                  name="Loader"
+                  component={LoaderScreen}
                 />
-                <Stack.Screen
-                  name="NewGame"
-                  component={NewGameScreen}
-                />
-                <Stack.Screen
-                  name="PlaygroundChoice"
-                  component={PlaygroundChoiceScreen}
-                />
-                <Stack.Screen
-                  name="AddPlayground"
-                  component={AddPlaygroundScreen}
-                />
-                <Stack.Screen
-                  name="Schedule"
-                  component={ScheduleScreen}
-                />
-                <Stack.Screen
-                  name="ScheduleSingle"
-                  component={ScheduleSingleScreen}
-                />
-                <Stack.Screen
-                  name="Price"
-                  component={PriceScreen}
-                />
-                <Stack.Screen
-                  name="PriceSingle"
-                  component={PriceSingleScreen}
-                />
-                <Stack.Screen
-                  name="EditAccount"
-                  component={EditAccountScreen}
-                />
-                <Stack.Screen
-                  name="PlaygroundDetails"
-                  component={PlaygroundDetailsScreen}
-                />
-                <Stack.Screen
-                  name="PastGameDetails"
-                  component={PastGameDetailsScreen}
-                />
-                <Stack.Screen
-                  name="OfferedGameDetails"
-                  component={OfferedGameDetailsScreen}
-                />
-                <Stack.Screen
-                  name="Payment"
-                  component={PaymentScreen}
-                />
-                <Stack.Screen
-                  name="AddCard"
-                  component={AddCardScreen}
-                />
-              </Stack.Navigator>
-              :
-              <Stack.Navigator
-                screenOptions={{ headerShown: false }}
-              >
-                <Stack.Screen
-                  name="Intro"
-                  component={IntroScreen}
-                />
-                <Stack.Screen
-                  name="SignInSignUp"
-                  component={SignInSignUpScreen}
-                />
-                <Stack.Screen
-                  name="Authorization"
-                  component={AuthorizationScreen}
-                />
-                <Stack.Screen
-                  name="PasswordRecovery"
-                  component={PasswordRecoveryScreen}
-                />
-                <Stack.Screen
-                  name="Registration"
-                  component={RegistrationScreen}
-                />
-              </Stack.Navigator>
           }
         </NavigationContainer>
         <StatusBar translucent={true} barStyle="light-content" backgroundColor="rgba(0,0,0,0)" />

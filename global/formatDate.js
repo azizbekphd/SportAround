@@ -1,8 +1,9 @@
-const getNull = (number) => {
-    return ((number < 10 ? "0" : "") + number.toString())
-}
+import getNull from "./getNull"
 
 export default function formatDate(dateStr) {
-    let date = new Date(dateStr)
+    let date = (typeof dateStr) == "string" ? new Date(dateStr) : dateStr
+    if(isNaN(date)){
+        return dateStr
+    }
     return `${getNull(date.getDate())}.${getNull(date.getMonth()+1)}.${getNull(date.getFullYear())}`
 }

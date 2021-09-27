@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import globalStyles from '../global/Styles';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions } from 'react-native';
 import Toolbar from '../components/Toolbar';
@@ -9,44 +9,75 @@ import H2 from '../components/H2';
 import { LinearGradient } from 'expo-linear-gradient';
 import Navbar from '../components/Navbar';
 import { useNavigation } from '@react-navigation/native';
+import AuthContext from '../api/AuthContext';
 
 export default function SportChoiceScreen({ navigation, route }) {
 
-    const openNextPage = (isSoccer) => {
-        navigation.navigate('NewGame', { isSoccer: isSoccer })
+    const {getToken} = useContext(AuthContext)
+    const [types, setTypes] = useState()
+
+    const openNextPage = ({typeId, countPlays, status}) => {
+        navigation.navigate('NewGame', {
+            typeId: typeId,
+            countPlays: countPlays,
+            status: status,
+        })
     }
+
+    useEffect(() => {
+        fetch(api+'playground/type', {
+            method: "GET",
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            }
+        }).then((response)=>{
+            response.json().then((typeList)=>{
+                setTypes(typeList)
+            }).catch((reason)=>{
+                console.log(reason)
+            })
+        }).catch((reason)=>{
+            console.log(reason)
+        })
+    }, [])
 
     return (
         <>
             <Toolbar title="Новая игра" />
             <View style={[globalStyles.container, { justifyContent: 'flex-start' }]} >
-                <View height="50%" style={{ justifyContent: "space-evenly", padding: 20 }}>
+                <View style={{ padding: 20 }}>
                     <View style={{ justifyContent: 'space-evenly', height: 100 }}>
                         <H2>Во что хотите сыграть?</H2>
                         <H3>Выберите вид спорта, чтобы создать или найти игру рядом с вами</H3>
                     </View>
-                    <View style={[globalStyles.row, { justifyContent: 'space-around' }]}>
-                        <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(true) }}>
-                            <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={["#6566FD", "#6843CF"]}>
-                                <View style={{ alignItems: 'flex-end' }}>
-                                    <Image source={require('../assets/icons/soccer.png')} />
-                                </View>
-                                <View style={{ alignItems: 'flex-start' }}>
-                                    <H3>Футбол</H3>
-                                </View>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                        <View style={{ width: 20 }} />
-                        <TouchableOpacity style={styles.sport} onPress={() => { openNextPage(false) }}>
-                            <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={["#29DEC8", "#049DFF"]}>
-                                <View style={{ alignItems: 'flex-end' }}>
-                                    <Image source={require('../assets/icons/basketball.png')} />
-                                </View>
-                                <View style={{ alignItems: 'flex-start' }}>
-                                    <H3>Баскетбол</H3>
-                                </View>
-                            </LinearGradient>
-                        </TouchableOpacity>
+                    <View style={{
+                        justifyContent: 'space-around',
+                        flexDirection: 'row',
+                        flexWrap: 'wrap'
+
+                    }}>
+                    {types ? types.map((type, index)=>{
+                        return <TouchableOpacity key={type.id} style={[styles.sport, {margin: 10}]} onPress={() => { openNextPage({
+                                    typeId: type.id,
+                                    countPlays: type.countPlays
+                                }) }}>
+                                    <LinearGradient style={[styles.sport, { padding: 16, justifyContent: 'space-between' }]} colors={index%2==0 ? ["#6566FD", "#6843CF"] : ["#29DEC8", "#049DFF"]}>
+                                        <View style={{ alignItems: 'flex-end' }}>
+                                            <Image source={
+                                                type.name.toLowerCase() == "баскетбол" ?
+                                                    require('../assets/icons/basketball.png')
+                                                : type.name.toLowerCase() == "футбол" ?
+                                                    require('../assets/icons/soccer.png')
+                                                : null } />
+                                        </View>
+                                        <View style={{ alignItems: 'flex-start' }}>
+                                            <H3>{type.name}</H3>
+                                        </View>
+                                    </LinearGradient>
+                            </TouchableOpacity>
+                    }) : null}
                     </View>
                 </View>
             </View>
