@@ -10,10 +10,12 @@ import Maps from '../components/Maps';
 import FloatingPanel from '../components/FloatingPanel';
 import PlaygroundInfo from '../components/PlaygroundInfo';
 
-export default function PlaygroundChoiceScreen({ navigation }) {
+export default function PlaygroundChoiceScreen({ navigation, route }) {
     const [showList, setShowList] = useState(false)
     const [showInfo, setShowInfo] = useState(false)
     const [title, setTitle] = useState("")
+    const [isNewGame, setIsNewGame] = useState(route.params.isNewGame)
+    const [gameData, setGameData] = useState(route.params.gameData)
     const ref = createRef()
 
     useFocusEffect(
@@ -73,43 +75,7 @@ export default function PlaygroundChoiceScreen({ navigation }) {
             <FloatingPanel
                 show={showList}
                 showInfo={setShowInfo}
-                items={[
-                    {
-                        key: "1",
-                        title: "Название",
-                        subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
-                        distance: "200 м"
-                    },
-                    {
-                        key: "2",
-                        title: "Название",
-                        subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
-                        distance: "500 м"
-                    },
-                    {
-                        key: "3",
-                        title: "Название",
-                        subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
-                        distance: "1 км"
-                    },
-                    {
-                        key: "4",
-                        title: "Название",
-                        subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
-                        distance: "1.5 км"
-                    },
-                    {
-                        key: "5",
-                        title: "Название",
-                        subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
-                        distance: "2.4 км"
-                    },
-                    {
-                        key: "6",
-                        title: "Название",
-                        subtitle: "Москва, Привольная улица, 64\nМосква, Россия",
-                        distance: "2.4 км"
-                    }]}
+                items={[]}
                 hideCallback={setShowList} />
             <PlaygroundInfo show={showInfo} data={{
                 title: "Название площадки"

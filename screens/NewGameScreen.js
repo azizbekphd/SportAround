@@ -22,6 +22,7 @@ export default function NewGameScreen({ route, navigation }) {
     const [gameData, setGameData] = useState({
         countPlays: route.params.countPlays,
         typeId: route.params.typeId,
+        pay: 0,
         dateGame: null,
         startHour: null,
         startMin: 0,
@@ -52,10 +53,6 @@ export default function NewGameScreen({ route, navigation }) {
             null
         )
     }, [gameData.startHour, gameData.startMin])
-
-    useEffect(() => {
-        console.log(`${decodeDate(gameData.dateGame)}T${getNull(gameData.startHour)}:${getNull(gameData.startMin)}:00.000Z`)
-    }, [gameData])
 
     return (
         <>
@@ -112,7 +109,12 @@ export default function NewGameScreen({ route, navigation }) {
                             : ["Бесплатные"]
                             : ["Бесплатные"]}
                             onChange={(index)=>{
-                                
+                                setGameData((prev)=>{
+                                    return {
+                                        ...prev,
+
+                                    }
+                                })
                             }}
                         />
                     </View>
@@ -137,6 +139,14 @@ export default function NewGameScreen({ route, navigation }) {
                             <H3 style={{ marginBottom: 9 }}>Тип команды:</H3>
                             <Counter
                                 items={["3x3", "4x4", "5x5", "6x6", "Любой"]}
+                                onChange={(pos)=>{
+                                    setGameData((prev)=>{
+                                        return {
+                                            ...prev,
+                                            countPlays: pos < 4 ? (pos+3)*2 : null
+                                        }
+                                    })
+                                }}
                                 default={route.params.countPlays/2 - 3}
                             />
                         </View>}
@@ -144,9 +154,17 @@ export default function NewGameScreen({ route, navigation }) {
                 <Button
                     title={isNewGame ? "Начать" : "Найти"}
                     onPress={() => {
-                        navigation.navigate("PlaygroundChoice")
+                        navigation.navigate("PlaygroundChoice",
+                            {
+                                isNewGame: isNewGame,
+                                gameData: gameData
+                            })
                     }}
-                    disabled={!(gameData.dateGame && gameData.startHour && gameData.startMin)}
+                    disabled={!(gameData.dateGame !== null &&
+                        dateIsValid &&
+                        gameData.startHour !== null &&
+                        gameData.startMin !== null &&
+                        timeIsValid)}
                 />
             </View>
         </>

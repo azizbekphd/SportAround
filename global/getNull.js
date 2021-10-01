@@ -1,3 +1,3 @@
 export default function getNull(number) {
-    return ((number < 10 ? "0" : "") + number.toString())
+    if(number !== null){return ((number < 10 ? "0" : "") + number.toString())}
 }

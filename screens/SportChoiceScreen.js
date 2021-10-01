@@ -1,6 +1,6 @@
 import React, {useEffect, useContext, useState} from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions, ActivityIndicator } from 'react-native';
 import Toolbar from '../components/Toolbar';
 import H3 from '../components/H3';
 import AnimatedTextInput from '../components/AnimatedTextInput';
@@ -46,8 +46,7 @@ export default function SportChoiceScreen({ navigation, route }) {
     return (
         <>
             <Toolbar title="Новая игра" />
-            <View style={[globalStyles.container, { justifyContent: 'flex-start' }]} >
-                <View style={{ padding: 20 }}>
+            <View style={[globalStyles.container, { justifyContent: 'flex-start', padding: 20, }]} >
                     <View style={{ justifyContent: 'space-evenly', height: 100 }}>
                         <H2>Во что хотите сыграть?</H2>
                         <H3>Выберите вид спорта, чтобы создать или найти игру рядом с вами</H3>
@@ -55,8 +54,8 @@ export default function SportChoiceScreen({ navigation, route }) {
                     <View style={{
                         justifyContent: 'space-around',
                         flexDirection: 'row',
-                        flexWrap: 'wrap'
-
+                        flexWrap: 'wrap',
+                        flex: 1,
                     }}>
                     {types ? types.map((type, index)=>{
                         return <TouchableOpacity key={type.id} style={[styles.sport, {margin: 10}]} onPress={() => { openNextPage({
@@ -77,9 +76,10 @@ export default function SportChoiceScreen({ navigation, route }) {
                                         </View>
                                     </LinearGradient>
                             </TouchableOpacity>
-                    }) : null}
+                    }) : <View style={{alignSelf:"stretch", flex:1, alignItems:"center", justifyContent: "center"}}>
+                        <ActivityIndicator/>
+                        </View>}
                     </View>
-                </View>
             </View>
         </>
     )
