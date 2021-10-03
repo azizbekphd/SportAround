@@ -86,6 +86,7 @@ export default function App() {
         },
         body: JSON.stringify(data)
       });
+      console.log(response.status);
       if (response.ok) {
         let user = await response.json();
         if (user) {
@@ -121,10 +122,12 @@ export default function App() {
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify({username: data.username, password: data.password})
         });
         if (response.ok) {
+          console.log(response.status)
           let user = await response.json();
+          console.log(JSON.stringify(user))
           if (user) {
             await AsyncStorage.setItem("user", JSON.stringify(user));
             dispatch({
@@ -201,7 +204,7 @@ export default function App() {
           'Authorization': `Bearer ${JSON.parse(savedJson).access_token}`
         },
       });
-      if(response.status == 404){
+      if(Math.trunc(response.status/100) != 2){
         dispatch({type:'logout'})
       }else{
         let json = await response.json();
@@ -219,16 +222,21 @@ export default function App() {
     }).catch((e) => { console.log("Error on starting the app", e) })
   }, [])
 
+  useEffect(()=>{
+    console.log(loginState)
+  }, [loginState])
+
   LogBox.ignoreLogs(['Remote debugger']);
   return (
     <AuthContext.Provider value={authContext}>
       <SafeAreaProvider>
         <NavigationContainer>
           {
-            loginState.user ?
-              loginState.user.access_token ?
+            !loginState.isLoading ?
+              loginState.user && loginState.user.access_token ?
                 <Stack.Navigator
                   screenOptions={{ headerShown: false }}
+                  initialRouteName="Loading"
                 >
                   <Stack.Screen
                     name="Loading"
@@ -294,6 +302,7 @@ export default function App() {
                 :
                 <Stack.Navigator
                   screenOptions={{ headerShown: false }}
+                  initialRouteName="Intro"
                 >
                   <Stack.Screen
                     name="Intro"
@@ -316,10 +325,14 @@ export default function App() {
                     component={RegistrationScreen}
                   />
                 </Stack.Navigator>
-              : <Stack.Screen
+              : <Stack.Navigator
+              screenOptions={{headerShown: false}}
+              >
+              <Stack.Screen
                   name="Loader"
                   component={LoaderScreen}
                 />
+              </Stack.Navigator>
           }
         </NavigationContainer>
         <StatusBar translucent={true} barStyle="light-content" backgroundColor="rgba(0,0,0,0)" />

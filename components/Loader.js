@@ -9,6 +9,8 @@ import {
 const Loader = props => {
     const {
         loading,
+        setIsLoading,
+        cancellable,
         ...attributes
     } = props;
 
@@ -17,7 +19,11 @@ const Loader = props => {
             transparent={true}
             animationType={'none'}
             visible={loading}
-            onRequestClose={() => {  }}>
+            onRequestClose={() => { 
+                if(cancellable){
+                    setIsLoading && setIsLoading(false);
+                }
+             }}>
             <View style={styles.modalBackground}>
                 <View style={styles.activityIndicatorWrapper}>
                     <ActivityIndicator

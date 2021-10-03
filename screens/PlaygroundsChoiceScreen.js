@@ -1,6 +1,6 @@
 import React, { useRef, useState, createRef, useEffect, useCallback } from 'react';
 import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform, AppState } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
 import Searchbar from '../components/Searchbar';
@@ -9,8 +9,13 @@ import IconButton from '../components/IconButton';
 import Maps from '../components/Maps';
 import FloatingPanel from '../components/FloatingPanel';
 import PlaygroundInfo from '../components/PlaygroundInfo';
+import Loader from '../components/Loader';
+import * as Location from 'expo-location';
+import checkIfLocationEnabled from '../global/checkIfLocationEnabled';
+import checkLocationPermission from '../global/checkLocationPermission';
 
 export default function PlaygroundChoiceScreen({ navigation, route }) {
+    const [isLoading, setIsLoading] = useState(null)
     const [showList, setShowList] = useState(false)
     const [showInfo, setShowInfo] = useState(false)
     const [title, setTitle] = useState("")
@@ -50,6 +55,33 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
         }
     }, [showList, showInfo])
 
+    function init() {
+        checkIfLocationEnabled().then((enabled)=>{
+            if (enabled){
+                setIsLoading(true)
+                checkLocationPermission().then((granted)=>{
+                    if(granted){
+                            Location.getCurrentPositionAsync().then((location)=>{
+                                if(location){
+                                    
+                                }
+                    })
+                }
+                })
+            } else {
+                AppState.addEventListener("change", (nextAppState)=>{
+                    if(nextAppState === "active"){
+                        init()
+                    }
+                })
+            }
+        })
+    }
+
+    useEffect(() => {
+        init();
+    }, [])
+
     return (
         <>
             <Toolbar back title={title} onMenu={() => { }} />
@@ -80,6 +112,16 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
             <PlaygroundInfo show={showInfo} data={{
                 title: "Название площадки"
             }} hideCallback={setShowInfo} setShowList={setShowList} />
+            <Loader
+                loading={isLoading}
+                cancellable={true}
+                setIsLoading={(value)=>{
+                    setIsLoading(value);
+                    if(!value){
+                        navigation.pop()
+                    }
+                }}
+            /> 
         </>
     )
 }

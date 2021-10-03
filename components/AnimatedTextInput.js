@@ -14,6 +14,7 @@ export default function AnimatedTextInput({
     light,
     defaultValue,
     onChangeText,
+    required,
     ...others
 }) {
     const floatAnim = useRef(new Animated.Value(defaultValue ? 0 : 20)).current;
@@ -64,7 +65,7 @@ export default function AnimatedTextInput({
                     color: getPlaceholderColor(valid),
                     top: floatAnim,
                     fontSize: fontSizeAnim
-                }]}>{placeholder}</Animated.Text>
+                }]}>{placeholder}<Text style={{color: "#ff3333"}}>{required ? " *" : ""}</Text></Animated.Text>
             {!(mask || tel) ? <TextInput
                 {...others}
                 selectionColor="rgba(109, 97, 231, 0.5)"

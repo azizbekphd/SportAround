@@ -39,7 +39,7 @@ export default function NewGameScreen({ route, navigation }) {
     useEffect(() => {
         if(gameData.dateGame)
         setDateIsValid(
-            gameData.dateGame && new Date(decodeDate(gameData.dateGame)) >= new Date(decodeDate(new Date()))
+            gameData.dateGame ? new Date(decodeDate(gameData.dateGame)) >= new Date(decodeDate(new Date())) : false
         )
     }, [gameData.dateGame])
 
@@ -47,10 +47,10 @@ export default function NewGameScreen({ route, navigation }) {
         if(gameData.dateGame && gameData.startHour!==null)
         setTimeIsValid(
             gameData.startHour!==null ?
-            gameData.dateGame &&
+            gameData.dateGame ?
             new Date(`${decodeDate(gameData.dateGame)}T${getNull(gameData.startHour)}:${getNull(gameData.startMin)}:00.000Z`)
                 > new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000) :
-            null
+            false : false
         )
     }, [gameData.startHour, gameData.startMin])
 
@@ -67,6 +67,7 @@ export default function NewGameScreen({ route, navigation }) {
                     }}>
                         <View width="49%">
                             <AnimatedTextInput
+                                required
                                 placeholder="Дата"
                                 mode="date"
                                 valid={dateIsValid}
@@ -82,6 +83,7 @@ export default function NewGameScreen({ route, navigation }) {
                         </View>
                         <View width="49%">
                             <AnimatedTextInput
+                                required
                                 placeholder="Время"
                                 mode="time"
                                 onChangeText={(value, valueStr)=>{
