@@ -1,6 +1,6 @@
 import React, { useRef, useState, createRef, useEffect, useCallback } from 'react';
 import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform, AppState } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform, AppState, ScrollView } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
 import Searchbar from '../components/Searchbar';
@@ -13,15 +13,19 @@ import Loader from '../components/Loader';
 import * as Location from 'expo-location';
 import checkIfLocationEnabled from '../global/checkIfLocationEnabled';
 import checkLocationPermission from '../global/checkLocationPermission';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
 export default function PlaygroundChoiceScreen({ navigation, route }) {
     const [isLoading, setIsLoading] = useState(null)
     const [showList, setShowList] = useState(false)
     const [showInfo, setShowInfo] = useState(false)
     const [title, setTitle] = useState("")
+    const [playgrounds, setPlaygrounds] = useState([])
+    const [coords, setCoords] = useState(null)
     const [isNewGame, setIsNewGame] = useState(route.params.isNewGame)
     const [gameData, setGameData] = useState(route.params.gameData)
-    const ref = createRef()
+    const ref = useRef(null)
+    const map = useRef(null)
 
     useFocusEffect(
         useCallback(() => {
@@ -61,19 +65,36 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 setIsLoading(true)
                 checkLocationPermission().then((granted)=>{
                     if(granted){
-                            Location.getCurrentPositionAsync().then((location)=>{
-                                if(location){
-                                    
-                                }
-                    })
-                }
-                })
-            } else {
-                AppState.addEventListener("change", (nextAppState)=>{
-                    if(nextAppState === "active"){
-                        init()
+                        Location.getCurrentPositionAsync({}).then((location)=>{
+                            if(location.coords){
+                                setCoords(location.coords)
+                                map.animateCamera({
+                                    center: {
+                                        latitude: location.coords.latitude,
+                                        longitude: location.coords.longitude,
+                                    },
+                                    pitch: 2,
+                                    heading: 20,
+                                    altitude: 200,
+                                    zoom: 40,
+                                }, 1000)
+                                Location.reverseGeocodeAsync({
+                                    latitude: location.coords.latitude,
+                                    longitude: location.coords.longitude,
+                                }).then((address)=>{
+                                    setIsLoading(false)
+                                    console.log(address)
+                                })
+                            }
+                        }).catch((reason)=>{
+                            console.log(reason)
+                        })
+                    } else {
+                        navigation.pop()
                     }
                 })
+            } else {
+                window.location.reload()
             }
         })
     }
@@ -102,12 +123,28 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 </View>
             </>
             }
-            <Maps />
+            <ScrollView style={{
+                zIndex: 500,
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height,
+                position: 'absolute',
+                top: StatusBar.currentHeight,
+            }}>
+                <MapView
+                    provider={PROVIDER_GOOGLE}
+                    style={{
+                        zIndex: 500,
+                        width: Dimensions.get("window").width,
+                        height: Dimensions.get("window").height,
+                    }}
+                    ref={map}
+                ></MapView>
+        </ScrollView>
             {showList && <View width="100%" height="100%" style={{ position: "absolute", zIndex: 750 }} />}
             <FloatingPanel
                 show={showList}
                 showInfo={setShowInfo}
-                items={[]}
+                items={playgrounds}
                 hideCallback={setShowList} />
             <PlaygroundInfo show={showInfo} data={{
                 title: "Название площадки"

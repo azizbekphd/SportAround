@@ -3,11 +3,6 @@ import { StyleSheet, StatusBar, Dimensions, ScrollView } from 'react-native';
 import MapView from 'react-native-maps';
 
 export default function Maps(props) {
-    const [location, setLocation] = useState(null)
-
-    useEffect(() => {
-
-    }, [])
 
     return (
         <ScrollView style={{
@@ -17,6 +12,7 @@ export default function Maps(props) {
         }}>
             <MapView
                 style={styles.mapview}
+                {...props}
             ></MapView>
         </ScrollView>
     )
