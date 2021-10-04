@@ -1,6 +1,6 @@
 import React, { useRef, useState, createRef, useEffect, useCallback } from 'react';
 import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform, AppState, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform,  ScrollView } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
 import Searchbar from '../components/Searchbar';
@@ -22,6 +22,8 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
     const [title, setTitle] = useState("")
     const [playgrounds, setPlaygrounds] = useState([])
     const [coords, setCoords] = useState(null)
+    const [address, setAddress] = useState("")
+    const [addressObj, setAddressObj] = useState({})
     const [isNewGame, setIsNewGame] = useState(route.params.isNewGame)
     const [gameData, setGameData] = useState(route.params.gameData)
     const ref = useRef(null)
@@ -59,42 +61,59 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
         }
     }, [showList, showInfo])
 
+    useEffect(()=>{
+        let a = addressObj.district ??
+            addressObj.city ??
+            addressObj.subregion ??
+            addressObj.region ??
+            addressObj.name
+        a = `${a ?? ""} ${addressObj.street ?? ""}`.trim()
+        setAddress(a)
+        console.log(a)
+        ref.current.value = a
+    }, [addressObj])
+
     function init() {
         checkIfLocationEnabled().then((enabled)=>{
             if (enabled){
                 setIsLoading(true)
                 checkLocationPermission().then((granted)=>{
                     if(granted){
-                        Location.getCurrentPositionAsync({}).then((location)=>{
-                            if(location.coords){
+                        Location.getCurrentPositionAsync({
+                            accuracy: Location.LocationAccuracy.Highest
+                        }).then((location)=>{
+                            if(location && location.coords){
                                 setCoords(location.coords)
-                                map.animateCamera({
+                                map.current.animateCamera ? map.current.animateCamera({
                                     center: {
                                         latitude: location.coords.latitude,
                                         longitude: location.coords.longitude,
                                     },
-                                    pitch: 2,
+                                    pitch: 12,
                                     heading: 20,
                                     altitude: 200,
-                                    zoom: 40,
-                                }, 1000)
+                                    zoom: 13,
+                                }, {duration:1000}) : console.log(123)
                                 Location.reverseGeocodeAsync({
                                     latitude: location.coords.latitude,
                                     longitude: location.coords.longitude,
                                 }).then((address)=>{
                                     setIsLoading(false)
-                                    console.log(address)
+                                    setAddressObj(address[0])
                                 })
                             }
                         }).catch((reason)=>{
-                            console.log(reason)
+                            console.log("reason -",reason)
+                            if(!coords){
+                                init()
+                            }
                         })
                     } else {
                         navigation.pop()
                     }
                 })
             } else {
-                window.location.reload()
+                navigation.pop()
             }
         })
     }
@@ -138,6 +157,8 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                         height: Dimensions.get("window").height,
                     }}
                     ref={map}
+                    showsMyLocationButton={true}
+                    showsUserLocation={true}
                 ></MapView>
         </ScrollView>
             {showList && <View width="100%" height="100%" style={{ position: "absolute", zIndex: 750 }} />}

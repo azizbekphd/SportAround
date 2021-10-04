@@ -219,7 +219,7 @@ export default function App() {
     }else{
         dispatch({type: 'logout'})
       }
-    }).catch((e) => { console.log("Error on starting the app", e) })
+    }).catch((e) => { console.log("Error on starting the app", e.stackTrace) })
   }, [])
 
   useEffect(()=>{
@@ -240,8 +240,8 @@ export default function App() {
                 >
                   <Stack.Screen
                     name="Loading"
-                    component={LoadingScreen} 
-                  /> 
+                    component={LoadingScreen}
+                  />
                   <Stack.Screen
                     name="Main"
                     component={MainScreen}
