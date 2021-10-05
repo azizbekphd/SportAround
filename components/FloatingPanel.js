@@ -38,7 +38,8 @@ export default function FloatingPanel(props) {
         <Animated.View
             style={{
                 ...styles.container,
-                transform: [{ translateY: anim }]
+                transform: [{ translateY: anim }],
+                height: screenHeight - 150,
             }}
         >
             <TouchableOpacity activeOpacity={0.5} width="100%" onPress={handleHideCallback}>
@@ -69,6 +70,7 @@ export default function FloatingPanel(props) {
                         onPress={() => {
                             props.hideCallback(false);
                             props.showInfo(true);
+                            props.onItemPressed ?? props.onItemPressed(item)
                         }}
                     >
                         <H2 color="#000">
@@ -79,16 +81,16 @@ export default function FloatingPanel(props) {
                                 flex: 1,
                                 justifyContent: 'space-evenly',
                             }}>
-                                <H7 color="#000">{item.address}</H7>
+                                <H7 color="#999">{item.address}</H7>
                             </View>
                             <H6 color="#6565FC">{distance(
                                 item.latitude, props.coords.latitude,
-                                item.longitude, props.coords.longitude)}</H6>
+                                item.longitude ?? item.longtitude, props.coords.longitude)}</H6>
                         </View>
                     </TouchableOpacity>
                 }}
                 ItemSeparatorComponent={() => { return <View style={styles.separator} width="100%"></View> }}
-                style={{ maxHeight: screenHeight - 300, height: (54 + props.items.length * 83) - StatusBar.currentHeight }}
+                style={{ maxHeight: screenHeight - 270, height: (54 + props.items.length * 83) - StatusBar.currentHeight }}
             /> : null}
         </Animated.View>
     )
@@ -110,6 +112,7 @@ const styles = StyleSheet.create({
     listItem: {
         maxHeight: 150,
         paddingHorizontal: 10,
+        paddingVertical: 10,
         marginHorizontal: 5,
         justifyContent: 'space-evenly'
     },

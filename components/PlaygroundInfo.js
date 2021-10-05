@@ -12,6 +12,7 @@ import Button from './Button';
 import PagerView from 'react-native-pager-view';
 import Indicator from '../components/Indicator';
 import Link from './Link';
+import distance from '../global/distance';
 
 export default function PlaygroundInfo(props) {
     const [index, setIndex] = useState(0);
@@ -47,11 +48,12 @@ export default function PlaygroundInfo(props) {
     }, [props.show])
 
     function scrollEvent ({nativeEvent}){
-        if (nativeEvent.contentOffset.y < Dimensions.get("window").height/2) {
+        let y = nativeEvent.contentOffset.y
+        if (y < Dimensions.get("window").height/2 && y > StatusBar.currentHeight + 47) {
             props.hideCallback(false);
             ref.current.scrollTo({ y: 0, animated: true })
             props.setShowList && props.setShowList(true)
-        } else if (nativeEvent.contentOffset.y > 250) {
+        } else if (y > 250) {
             ref.current.scrollTo({ y: Dimensions.get("screen").height - 47 - StatusBar.currentHeight, animated: true })
         }
     }
@@ -71,38 +73,48 @@ export default function PlaygroundInfo(props) {
                 onMomentumScrollEnd={Platform.OS == "android" && scrollEvent}
             >
                 <View width="100%" style={styles.content}>
+                    {props.data.name &&
                     <View style={globalStyles.row}>
-                        <H3 color="#000" style={{ fontWeight: '600' }}>{props.data.title}</H3>
-                        <H6 color="#6D61E7">25 мин.</H6>
-                    </View>
+                        <H3 color="#000" style={{ fontWeight: '700', flex: 0.8 }}>
+                            {props.data.name.charAt(0).toUpperCase() + props.data.name.slice(1)}
+                        </H3>
+                        <H6 color="#6D61E7">{distance(
+                                props.data.latitude, props.coords.latitude,
+                                props.data.longitude ?? props.data.longtitude, props.coords.longitude)}</H6>
+                    </View>}
+                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 10 }} width="100%" />
                     <View style={styles.item}>
                         <View style={styles.itemIcon}>
                             <SvgUri source={require('../assets/icons/address.svg')} />
                         </View>
-                        <H3 color="#000">Привольная улица, 64</H3>
+                        <H3 color="#000">{props.data.address}</H3>
                     </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5' }} width="100%" />
+                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
                     <View style={styles.item}>
                         <View style={styles.itemIcon}>
                             <SvgUri source={require('../assets/icons/phone.svg')} />
                         </View>
                         <H3 color="#000">+7 000 000 00 00</H3>
                     </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5' }} width="100%" />
-                    <View style={styles.item}>
-                        <View style={styles.itemIcon}>
-                            <SvgUri source={require('../assets/icons/target.svg')} />
+                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
+                    {props.data.latitude && (props.data.longitude || props.data.longtitude) &&
+                    <>
+                        <View style={styles.item}>
+                            <View style={styles.itemIcon}>
+                                <SvgUri source={require('../assets/icons/target.svg')} />
+                            </View>
+                            <H3 color="#000">{`${props.data.latitude}, ${props.data.longitude ?? props.data.longtitude}`}</H3>
                         </View>
-                        <H3 color="#000">координаты по карте</H3>
-                    </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5' }} width="100%" />
+                        <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
+                    </>
+                    }
                     <View style={styles.item}>
                         <View style={styles.itemIcon}>
                             <SvgUri source={require('../assets/icons/clock.svg')} />
                         </View>
                         <H3 color="#000">08:00 - 22:00</H3>
                     </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5' }} width="100%" />
+                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
                     <View style={{ ...styles.item, height: 72, alignItems: 'flex-start', paddingTop: 5 }}>
                         <View style={{ ...styles.itemIcon, paddingTop: 5 }}>
                             <SvgUri source={require('../assets/icons/star_purple.svg')} />
@@ -112,18 +124,19 @@ export default function PlaygroundInfo(props) {
                             <H3 color="#000">0 руб. / 1 ч.</H3>
                         </View>
                     </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5' }} width="100%" />
+                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
                     <Button title="Забронировать" onPress={() => {
                         navigation.pop()
                     }} />
+                    {props.data.coverage ?
                     <View style={styles.item}>
                         <H3 color="#000">
                             Покрытие:{'\u00A0'}
                         </H3>
                         <H3 color="#656b82">
-                            искусственный газон
+                            {props.data.coverage}
                         </H3>
-                    </View>
+                    </View> : null}
                     <View style={styles.item}>
                         <H3 color="#000">
                             Игра:{'\u00A0'}
@@ -183,7 +196,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "center",
-        height: 48
+        minHeight: 48
     },
     itemIcon: {
         marginRight: 8,
@@ -201,7 +214,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         backgroundColor: 'rgba(14, 9, 56, 0.5)',
-        height: 48,
+        minHeight: 48,
         zIndex: 1501,
         paddingHorizontal: 20
     }

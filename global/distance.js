@@ -24,5 +24,18 @@ let c = 2 * Math.asin(Math.sqrt(a));
 let r = 6371;
 
 // calculate the result
-return(c * r);
+let result = c*r;
+if (result > 10) {
+    result = Math.round(result)
+    return `${result} км`
+}else if (result > 1) {
+    result = Math.round(result * 10)/10
+    return `${result} км`
+}else if (result > 0.5) {
+    result = Math.round(result * 1000)/1000
+    return `${result} км`
+} else {
+    result = Math.round(result * 1000)
+    return `${result} м`
+}
 }

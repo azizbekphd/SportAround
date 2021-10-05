@@ -29,6 +29,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
     const [addressObj, setAddressObj] = useState({})
     const [isNewGame, setIsNewGame] = useState(route.params.isNewGame)
     const [gameData, setGameData] = useState(route.params.gameData)
+    const [selectedPlayground, setSelectedPlayground] = useState({})
     const ref = useRef(null)
     const map = useRef(null)
 
@@ -123,10 +124,14 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
     }
 
     useEffect(() => {
-        if(!coords){
+        if(!coords && !address){
             init();
         }
     }, [])
+
+    useEffect(()=>{
+        console.log(selectedPlayground)
+    },[selectedPlayground])
 
     return (
         <>
@@ -176,7 +181,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 <View style={styles.buttonsContainer} width="100%">
                     <View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
                         <Button
-                            title="Список"
+                            title={ isLoading ? "Загрузка..." : playgrounds.length === 0 ? "Список пуст" : "Список"}
                             onPress={() => { setShowList(true); ref.current.blur(); }}
                             disabled={playgrounds.length === 0}
                         />
@@ -224,24 +229,52 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                                         latitude: item.latitude,
                                         longitude: item.longitude ?? item.longtitude,
                                     }}
-                                    key={item.id.toString()}
-                                    icon={require("../assets/images/marker.png")}
-                                    anchor={}
-                                />
+                                    key={item.id.toString()+"_marker"}
+                                    anchor={{x: 0.5, y: 0.5}}
+                                    onPress={()=>{
+                                        setSelectedPlayground(item)
+                                        setShowInfo(true)
+                                    }}
+                                >
+                                    <View style={{justifyContent: "center", alignItems: "center"}}>
+                                        <Image source={require("../assets/images/marker.png")} style={{width: 20, height: 20}}/>
+                                    </View>
+                                </Marker>
                     })}
                     {playgrounds && playgrounds.length>0 &&
                     playgrounds.map((item, index)=>{
-                        return <Circle 
-                                    center={{
-                                        latitude: item.latitude,
-                                        longitude: item.longitude ?? item.longtitude,
-                                    }}
-                                    radius={100}
-                                    fillColor="rgba(100,100,255,0.3)"
-                                    strokeWidth={1}
-                                    strokeColor="rgb(100,100,255)"
-                                    key={item.id.toString()}
-                                />
+                        return <View key={item.id.toString()+"_circles"}>
+                                    <Circle 
+                                        center={{
+                                            latitude: item.latitude,
+                                            longitude: item.longitude ?? item.longtitude,
+                                        }}
+                                        radius={50}
+                                        fillColor="rgba(100,255,255,0.3)"
+                                        strokeWidth={1}
+                                        strokeColor="rgb(100,255,255)"
+                                    />
+                                    <Circle 
+                                        center={{
+                                            latitude: item.latitude,
+                                            longitude: item.longitude ?? item.longtitude,
+                                        }}
+                                        radius={100}
+                                        fillColor="rgba(100,255,255,0.3)"
+                                        strokeWidth={1}
+                                        strokeColor="rgb(100,255,255)"
+                                    />
+                                    <Circle 
+                                        center={{
+                                            latitude: item.latitude,
+                                            longitude: item.longitude ?? item.longtitude,
+                                        }}
+                                        radius={150}
+                                        fillColor="rgba(100,255,255,0.3)"
+                                        strokeWidth={1}
+                                        strokeColor="rgb(100,255,255)"
+                                    />
+                                </View>
                     })
                     }
                 </MapView>
@@ -252,10 +285,18 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 showInfo={setShowInfo}
                 coords={coords}
                 items={playgrounds}
-            hideCallback={setShowList} />
-            <PlaygroundInfo show={showInfo} data={{
-                title: "Название площадки"
-            }} hideCallback={setShowInfo} setShowList={setShowList} />
+                hideCallback={setShowList}
+                onItemPressed={(data)=>{
+                    console.log(data)
+                    setSelectedPlayground(data)
+                }}
+            />
+            <PlaygroundInfo
+                coords={coords}
+                show={showInfo}
+                data={selectedPlayground}
+                hideCallback={setShowInfo}
+                setShowList={setShowList} />
             <Loader
                 loading={isLoading}
                 cancellable={true}
