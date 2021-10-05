@@ -1,10 +1,16 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { TextInput, View, Image, StyleSheet } from 'react-native';
 import H3 from './H3';
 
 export default Searchbar = forwardRef((props, ref) => {
     const [focused, setFocused] = useState(false);
-    const [value, setValue] = useState("")
+    const [value, setValue] = useState(props.value ?? "")
+
+    useEffect(()=>{
+        if(props.value){
+            setValue(props.value)
+        }
+    },[props.value])
 
     return (
         <View style={styles.container} width="100%">
@@ -22,12 +28,19 @@ export default Searchbar = forwardRef((props, ref) => {
             <TextInput
                 height="100%"
                 style={styles.input}
+                value={value ?? ""}
                 onFocus={() => { setFocused(true); props.onFocus && props.onFocus() }}
                 onBlur={() => { setFocused(false) }}
                 onChangeText={(newValue) => {
                     setValue(newValue)
+                    props.onChangeText ?? props.onChangeText(newValue)
+                }}
+                blurOnSubmit={true}
+                onSubmitEditing={({nativeEvent})=>{
+                    props.onSubmit ? props.onSubmit(nativeEvent.text) : console.log(31)
                 }}
                 ref={ref}
+                returnKeyType="search"
             />
         </View>
     )

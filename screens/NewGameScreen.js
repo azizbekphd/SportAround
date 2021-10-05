@@ -44,15 +44,16 @@ export default function NewGameScreen({ route, navigation }) {
     }, [gameData.dateGame])
 
     useEffect(() => {
-        if(gameData.dateGame && gameData.startHour!==null)
+        if(gameData.dateGame && gameData.startHour!==null && gameData.startMin!==null)
         setTimeIsValid(
             gameData.startHour!==null ?
+            gameData.startMin!==null ?
             gameData.dateGame ?
             new Date(`${decodeDate(gameData.dateGame)}T${getNull(gameData.startHour)}:${getNull(gameData.startMin)}:00.000Z`)
                 > new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000) :
-            false : false
+            false : false : false
         )
-    }, [gameData.startHour, gameData.startMin])
+    }, [gameData.dateGame, gameData.startHour, gameData.startMin])
 
     return (
         <>
@@ -107,7 +108,7 @@ export default function NewGameScreen({ route, navigation }) {
                         <H3 style={{ marginBottom: 9 }}>Тип площадки:</H3>
                         <Toggler items={getUser()
                             ? calculateAge(new Date(decodeDate(getUser().birthday))) >= 14
-                            ? ["Все", "Платные", "Бесплатные"]
+                            ? ["Все", "Бесплатные", "Платные"]
                             : ["Бесплатные"]
                             : ["Бесплатные"]}
                             onChange={(index)=>{

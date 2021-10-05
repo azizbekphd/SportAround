@@ -7,6 +7,7 @@ import H2 from './H2';
 import H7 from './H7';
 import H6 from './H6';
 import { useNavigation } from '@react-navigation/native';
+import distance from '../global/distance';
 
 export default function FloatingPanel(props) {
     const screenHeight = Dimensions.get("screen").height;
@@ -21,7 +22,7 @@ export default function FloatingPanel(props) {
     useEffect(() => {
         if (props.show)
             Animated.timing(anim, {
-                toValue: screenHeight - (54 + (props.items.length) * 83),
+                toValue: 150,
                 duration: 400,
                 useNativeDriver: false
             }).start()
@@ -57,8 +58,10 @@ export default function FloatingPanel(props) {
                     </LinearGradient>
                 </View>
             </TouchableOpacity>
+            {props.items && props.items.length > 0 ?
             <FlatList
                 data={props.items}
+                keyExtractor={ item =>item.id.toString() }
                 renderItem={({ item }) => {
                     return <TouchableOpacity
                         style={styles.listItem}
@@ -69,22 +72,24 @@ export default function FloatingPanel(props) {
                         }}
                     >
                         <H2 color="#000">
-                            {item.title}
+                            {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                         </H2>
                         <View style={{ ...globalStyles.row, alignItems: 'flex-end' }}>
                             <View style={{
                                 flex: 1,
                                 justifyContent: 'space-evenly',
                             }}>
-                                <H7 color="#000">{item.subtitle}</H7>
+                                <H7 color="#000">{item.address}</H7>
                             </View>
-                            <H6 color="#6565FC">{item.distance}</H6>
+                            <H6 color="#6565FC">{distance(
+                                item.latitude, props.coords.latitude,
+                                item.longitude, props.coords.longitude)}</H6>
                         </View>
                     </TouchableOpacity>
                 }}
                 ItemSeparatorComponent={() => { return <View style={styles.separator} width="100%"></View> }}
-                style={{ maxHeight: 82 * 5 + 4, height: (54 + props.items.length * 83) - StatusBar.currentHeight }}
-            />
+                style={{ maxHeight: screenHeight - 300, height: (54 + props.items.length * 83) - StatusBar.currentHeight }}
+            /> : null}
         </Animated.View>
     )
 }
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
         zIndex: 1500
     },
     listItem: {
-        height: 83,
+        maxHeight: 150,
         paddingHorizontal: 10,
         marginHorizontal: 5,
         justifyContent: 'space-evenly'
