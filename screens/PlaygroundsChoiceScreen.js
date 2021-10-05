@@ -226,7 +226,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                                     }}
                                     key={item.id.toString()}
                                     icon={require("../assets/images/marker.png")}
-                                    anchor={[0.5,0.5]}
+                                    anchor={}
                                 />
                     })}
                     {playgrounds && playgrounds.length>0 &&
