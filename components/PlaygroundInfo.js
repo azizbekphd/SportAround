@@ -108,12 +108,12 @@ export default function PlaygroundInfo(props) {
                         <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
                     </>
                     }
-                    <View style={styles.item}>
+                    {props.data.hourWork ? <View style={styles.item}>
                         <View style={styles.itemIcon}>
                             <SvgUri source={require('../assets/icons/clock.svg')} />
                         </View>
                         <H3 color="#000">08:00 - 22:00</H3>
-                    </View>
+                    </View> : null}
                     <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
                     <View style={{ ...styles.item, height: 72, alignItems: 'flex-start', paddingTop: 5 }}>
                         <View style={{ ...styles.itemIcon, paddingTop: 5 }}>
@@ -145,10 +145,9 @@ export default function PlaygroundInfo(props) {
                             футбол
                         </H3>
                     </View>
-                    <View width="100%" style={styles.slider}>
+                    {props.photos && <View width="100%" style={styles.slider}>
                         <View width="100%" style={styles.sliderTop}>
-                            <Indicator count={[1, 2, 3, 4, 5]} index={index} />
-                            <Link title="Еще 11 фото" />
+                            <Indicator count={props.photos.map((e,i)=>{return i})} index={index} />
                         </View>
                         <PagerView
                             width="100%"
@@ -157,23 +156,12 @@ export default function PlaygroundInfo(props) {
                             onPageSelected={({ nativeEvent }) => { setIndex(nativeEvent.position) }}
 
                         >
-                            <View key="1">
-                                <Image width="100%" height="100%" resizeMode="cover" source={require('../assets/images/image.jpg')} />
-                            </View>
-                            <View key="2">
-                                <Image width="100%" height="100%" resizeMode="cover" source={require('../assets/images/image.jpg')} />
-                            </View>
-                            <View key="3">
-                                <Image width="100%" height="100%" resizeMode="cover" source={require('../assets/images/image.jpg')} />
-                            </View>
-                            <View key="4">
-                                <Image width="100%" height="100%" resizeMode="cover" source={require('../assets/images/image.jpg')} />
-                            </View>
-                            <View key="5">
-                                <Image width="100%" height="100%" resizeMode="cover" source={require('../assets/images/image.jpg')} />
-                            </View>
+                           {props.photos.map((e,i)=>{
+                            return <View key={e.photo}>
+                                <Image width="100%" height="100%" resizeMode="cover" source={uri(e.photo)} />
+                            </View>})}
                         </PagerView>
-                    </View>
+                    </View>}
                 </View>
             </ScrollView>
         </Animated.View>

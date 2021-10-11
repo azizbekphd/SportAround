@@ -68,13 +68,15 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
     }, [showList, showInfo])
 
     useEffect(()=>{
-        let a = addressObj.district ??
-            addressObj.city ??
-            addressObj.subregion ??
-            addressObj.region ??
-            addressObj.name
-        a = `${a ?? ""} ${addressObj.street ?? ""}`.trim()
-        setAddress(a)
+	if(addressObj){
+            let a = addressObj.district ??
+                addressObj.city ??
+                addressObj.subregion ??
+                addressObj.region ??
+                addressObj.name
+            a = `${a ?? ""} ${addressObj.street ?? ""}`.trim()
+            setAddress(a)
+        }
     }, [addressObj])
 
     function init() {
