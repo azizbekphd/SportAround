@@ -115,7 +115,7 @@ export default function NewGameScreen({ route, navigation }) {
                                 setGameData((prev)=>{
                                     return {
                                         ...prev,
-
+                                        pay: index,
                                     }
                                 })
                             }}

@@ -35,20 +35,32 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 
     const {getToken} = useContext(AuthContext)
 
+    useEffect(()=>{
+        map.current.animateCamera({
+            center: {
+                latitude: selectedPlayground.latitude,
+                longitude: selectedPlayground.longitude,
+            },
+            zoom: 15
+        }, 1000)
+    },[selectedPlayground])
+
+    const onBack = () => {
+        if (showList) {
+            setShowList(false);
+            return true;
+        } else if (showInfo) {
+            setShowInfo(false);
+            setShowList(true);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     useFocusEffect(
         useCallback(() => {
-            const onBackPress = () => {
-                if (showList) {
-                    setShowList(false);
-                    return true;
-                } else if (showInfo) {
-                    setShowInfo(false);
-                    setShowList(true);
-                    return true;
-                } else {
-                    return false;
-                }
-            };
+            const onBackPress = onBack;
 
             BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
@@ -125,19 +137,40 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
         })
     }
 
+    function usePlayground(){
+        setIsLoading(true)
+        fetch(api+"use-playground/create",{
+            method: "POST",
+            headers:{
+                "accept": "application/json",
+                "Authorization": `Bearer ${getToken()}`,
+            },
+            body: {
+                playgroundId: selectedPlayground.id,
+                dateGame: gameData.dateGame,
+                startHour: gameData.startHour,
+                startMin: gameData.startMin,
+                endHour: gameData.endHour,
+                endMin: gameData.endMin,
+            }
+        }).then((response)=>{
+            if(response.status == 200){
+
+            }
+        }).finally(()=>{
+            setIsLoading(false)
+        })
+    }
+
     useEffect(() => {
-        if(!coords && !address){
+        if(!coords || !address){
             init();
         }
     }, [])
 
-    useEffect(()=>{
-        console.log(selectedPlayground)
-    },[selectedPlayground])
-
     return (
         <>
-            <Toolbar back title={title} onMenu={() => { }} />
+            <Toolbar back title={title} onMenu={() => { }} onBack={onBack} />
             {!showInfo && <><View style={styles.container}>
                 <View style={styles.searchbarContainer}>
                     <Searchbar
@@ -289,7 +322,6 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 items={playgrounds}
                 hideCallback={setShowList}
                 onItemPressed={(data)=>{
-                    console.log(data)
                     setSelectedPlayground(data)
                 }}
             />
@@ -298,7 +330,8 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 show={showInfo}
                 data={selectedPlayground}
                 hideCallback={setShowInfo}
-                setShowList={setShowList} />
+                setShowList={setShowList}
+                usePlayground={usePlayground} />
             <Loader
                 loading={isLoading}
                 cancellable={true}

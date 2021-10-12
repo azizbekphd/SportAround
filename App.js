@@ -30,6 +30,7 @@ import User from './models/User';
 import LoaderScreen from './screens/LoaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './global/api';
+import ImageGalleryScreen from './screens/ImageGalleryScreen';
 
 const Stack = createStackNavigator()
 
@@ -253,6 +254,10 @@ export default function App() {
                   <Stack.Screen
                     name="PlaygroundChoice"
                     component={PlaygroundChoiceScreen}
+                  />
+                  <Stack.Screen
+                    name="ImageGallery"
+                    component={ImageGalleryScreen}
                   />
                   <Stack.Screen
                     name="AddPlayground"

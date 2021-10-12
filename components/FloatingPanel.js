@@ -70,7 +70,7 @@ export default function FloatingPanel(props) {
                         onPress={() => {
                             props.hideCallback(false);
                             props.showInfo(true);
-                            props.onItemPressed ?? props.onItemPressed(item)
+                            props.onItemPressed && props.onItemPressed(item)
                         }}
                     >
                         <H2 color="#000">

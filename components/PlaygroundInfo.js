@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
 import { View, StyleSheet, Dimensions, Animated, TouchableHighlight, TouchableOpacity, Image, FlatList, ScrollView, StatusBar, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import globalStyles from '../global/Styles';
@@ -13,6 +13,8 @@ import PagerView from 'react-native-pager-view';
 import Indicator from '../components/Indicator';
 import Link from './Link';
 import distance from '../global/distance';
+import api from '../global/api';
+import AuthContext from '../api/AuthContext';
 
 export default function PlaygroundInfo(props) {
     const [index, setIndex] = useState(0);
@@ -30,6 +32,8 @@ export default function PlaygroundInfo(props) {
     }, [props.listHideCallback])
 
     const navigation = useNavigation()
+
+    const {getToken} = useContext(AuthContext)
 
     useEffect(() => {
         if (props.show) {
@@ -73,30 +77,32 @@ export default function PlaygroundInfo(props) {
                 onMomentumScrollEnd={Platform.OS == "android" && scrollEvent}
             >
                 <View width="100%" style={styles.content}>
-                    {props.data.name &&
-                    <View style={globalStyles.row}>
-                        <H3 color="#000" style={{ fontWeight: '700', flex: 0.8 }}>
-                            {props.data.name.charAt(0).toUpperCase() + props.data.name.slice(1)}
-                        </H3>
-                        <H6 color="#6D61E7">{distance(
-                                props.data.latitude, props.coords.latitude,
-                                props.data.longitude ?? props.data.longtitude, props.coords.longitude)}</H6>
-                    </View>}
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 10 }} width="100%" />
-                    <View style={styles.item}>
-                        <View style={styles.itemIcon}>
-                            <SvgUri source={require('../assets/icons/address.svg')} />
+                    {props.data.name ?
+                    <>
+                        <View style={globalStyles.row}>
+                            <H3 color="#000" style={{ fontWeight: '700', flex: 0.8 }}>
+                                {props.data.name.charAt(0).toUpperCase() + props.data.name.slice(1)}
+                            </H3>
+                            <H6 color="#6D61E7">{distance(
+                                    props.data.latitude, props.coords.latitude,
+                                    props.data.longitude ?? props.data.longtitude, props.coords.longitude)}</H6>
                         </View>
-                        <H3 color="#000">{props.data.address}</H3>
-                    </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
-                    <View style={styles.item}>
-                        <View style={styles.itemIcon}>
-                            <SvgUri source={require('../assets/icons/phone.svg')} />
+                        <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 10 }} width="100%" />
+                    </> : null
+                    }
+
+                    {props.data.address ?
+                    <>
+                        <View style={styles.item}>
+                            <View style={styles.itemIcon}>
+                                <SvgUri source={require('../assets/icons/address.svg')} />
+                            </View>
+                            <H3 color="#000">{props.data.address}</H3>
                         </View>
-                        <H3 color="#000">+7 000 000 00 00</H3>
-                    </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
+                        <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
+                    </> : null
+                    }
+
                     {props.data.latitude && (props.data.longitude || props.data.longtitude) &&
                     <>
                         <View style={styles.item}>
@@ -108,26 +114,35 @@ export default function PlaygroundInfo(props) {
                         <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
                     </>
                     }
-                    {props.data.hourWork ? <View style={styles.item}>
-                        <View style={styles.itemIcon}>
-                            <SvgUri source={require('../assets/icons/clock.svg')} />
+
+                    {props.data.hourWork && props.data.hourWork.length > 0
+                     ?<> 
+                        <View style={styles.item}>
+                            <View style={styles.itemIcon}>
+                                <SvgUri source={require('../assets/icons/clock.svg')} />
+                            </View>
+                            <H3 color="#000">08:00 - 22:00</H3>
                         </View>
-                        <H3 color="#000">08:00 - 22:00</H3>
-                    </View> : null}
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
-                    <View style={{ ...styles.item, height: 72, alignItems: 'flex-start', paddingTop: 5 }}>
-                        <View style={{ ...styles.itemIcon, paddingTop: 5 }}>
-                            <SvgUri source={require('../assets/icons/star_purple.svg')} />
+                        <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
+                    </> : null
+                    }
+                    {props.data.pay !== null ? 
+                    <>
+                        <View style={{ ...styles.item, height: 72, alignItems: 'flex-start', paddingTop: 5 }}>
+                            <View style={{ ...styles.itemIcon, paddingTop: 5 }}>
+                                <SvgUri source={require('../assets/icons/star_purple.svg')} />
+                            </View>
+                            <View>
+                                {props.data.pay == 0 ? <H3 color="#6D61E7">Бесплатно</H3> : null}
+                                {props.data.costHour !== null ? <H3 color="#000"> {props.data.costHour} руб. / 1 ч.</H3> : null}
+                            </View>
                         </View>
-                        <View>
-                            <H3 color="#6D61E7">Бесплатно</H3>
-                            <H3 color="#000">0 руб. / 1 ч.</H3>
-                        </View>
-                    </View>
-                    <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
-                    <Button title="Забронировать" onPress={() => {
-                        navigation.pop()
-                    }} />
+                        <View style={{ height: 1, backgroundColor: '#E5E5E5', marginVertical: 5 }} width="100%" />
+                    </> : null
+                    }
+
+                    <Button title="Забронировать" onPress={props.usePlayground} />
+
                     {props.data.coverage ?
                     <View style={styles.item}>
                         <H3 color="#000">
@@ -136,32 +151,58 @@ export default function PlaygroundInfo(props) {
                         <H3 color="#656b82">
                             {props.data.coverage}
                         </H3>
-                    </View> : null}
-                    <View style={styles.item}>
-                        <H3 color="#000">
-                            Игра:{'\u00A0'}
-                        </H3>
-                        <H3 color="#656b82">
-                            футбол
-                        </H3>
-                    </View>
-                    {props.photos && <View width="100%" style={styles.slider}>
-                        <View width="100%" style={styles.sliderTop}>
-                            <Indicator count={props.photos.map((e,i)=>{return i})} index={index} />
-                        </View>
+                    </View> : null
+                    }
+
+                    {props.data.photos && props.data.photos.length > 0 ?
+                    <View style={styles.slider}>
+                        {props.data.photos.length > 1 ? <View width="100%" style={styles.sliderTop}>
+                            <Indicator count={props.data.photos.map((e,i)=>{return i})} index={index} />
+                        </View> : null}
                         <PagerView
                             width="100%"
                             height="100%"
                             initialPage={0}
                             onPageSelected={({ nativeEvent }) => { setIndex(nativeEvent.position) }}
-
                         >
-                           {props.photos.map((e,i)=>{
+                           {props.data.photos.map((e,i)=>{
                             return <View key={e.photo}>
-                                <Image width="100%" height="100%" resizeMode="cover" source={uri(e.photo)} />
+                                <TouchableOpacity
+                                    style={{
+                                        alignSelf: "stretch",
+                                        flex: 1,
+                                    }}
+                                    onPress={()=>{
+                                        navigation.navigate("ImageGallery",{
+                                            images: props.data.photos.map((photo)=>{
+                                                return {
+                                                    source: {
+                                                        uri: photo.photo
+                                                    }
+                                                }
+                                            })
+                                        })
+                                    }}
+                                >
+                                    <Image
+                                        style={{
+                                            alignSelf: "stretch",
+                                            flex: 1,
+                                        }}
+                                        resizeMode="cover" source={{uri:e.photo}} />
+                                </TouchableOpacity>
                             </View>})}
                         </PagerView>
-                    </View>}
+                    </View> : 
+                    <View style={{
+                        ...styles.slider,
+                        backgroundColor: "#E5E5E5",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}>
+                        <H2>Нет фото</H2>
+                    </View>
+                    }
                 </View>
             </ScrollView>
         </Animated.View>
@@ -194,7 +235,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     slider: {
-        height: 250,
+        maxHeight: 250,
+        flex: 1,
     },
     sliderTop: {
         position: 'absolute',
