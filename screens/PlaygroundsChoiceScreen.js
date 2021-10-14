@@ -58,6 +58,29 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
         }
     };
 
+    useEffect(()=>{
+        map.current.animateCamera({
+            center: {
+                latitude: selectedPlayground.latitude,
+                longitude: selectedPlayground.longitude,
+            },
+            zoom: 15
+        }, 1000)
+    },[selectedPlayground])
+
+    const onBack = () => {
+        if (showList) {
+            setShowList(false);
+            return true;
+        } else if (showInfo) {
+            setShowInfo(false);
+            setShowList(true);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     useFocusEffect(
         useCallback(() => {
             const onBackPress = onBack;
