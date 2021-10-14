@@ -1,21 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Toolbar from '../components/Toolbar';
-import H3 from '../components/H3';
 import AnimatedTextInput from '../components/AnimatedTextInput';
 import Button from '../components/Button';
-import H2 from '../components/H2';
-import { LinearGradient } from 'expo-linear-gradient';
-import Navbar from '../components/Navbar';
-import { useNavigation } from '@react-navigation/native';
-import Searchbar from '../components/Searchbar';
-import FriendsInfo from '../components/FriendsInfo';
-import AuthContext from '../api/AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthContext from '../contexts/AuthContext';
 import Dropdown from '../components/Dropdown';
 import User from '../models/User';
 import formatDate from '../global/formatDate';
+import decodeDate from '../global/decodeDate';
 import rawPhone from '../global/rawPhone';
 import Loader from '../components/Loader';
 import validate, { validateAll } from '../global/validate';
@@ -26,6 +19,11 @@ export default function EditAccountScreen({ route, navigation }) {
     const [loading, setLoading] = useState(false)
 
     const { getUser, editAccount } = useContext(AuthContext)
+
+    useEffect(()=>{
+        setDob(new Date(userData.birthday.includes(".") ? decodeDate(userData.birthday) : userData.birthday))
+        return ()=>{setDob({})}
+    },[userData.birthday])
 
     return (
         <>
@@ -42,6 +40,7 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                         }}
                         defaultValue={userData.name ?? ""}
+                        valid={userData.name ?? null}
                     />
                     <AnimatedTextInput
                         placeholder="Фамилия"
@@ -52,6 +51,7 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                         }}
                         defaultValue={userData.lastName ?? ""}
+                        valid={userData.lastName ?? null}
                     />
                     <AnimatedTextInput
                         placeholder="Имя пользователя"
@@ -97,9 +97,12 @@ export default function EditAccountScreen({ route, navigation }) {
                                 ...userData,
                                 birth: dateString,
                             })
-                            setDob(date)
                         }}
-                        defaultValue={userData.birthday ? formatDate(userData.birthday) : ""}
+                        defaultValue={userData.birthday ? formatDate(
+                            userData.birthday.includes(".") ?
+                                decodeDate(userData.birthday) :
+                                userData.birthday
+                            ) : ""}
                         valid={dob && validate("birthday", dob)}
                     />
                     <AnimatedTextInput
@@ -111,6 +114,7 @@ export default function EditAccountScreen({ route, navigation }) {
                             })
                         }}
                         defaultValue={userData.address ?? ""}
+                        valid={userData.address ?? null}
                     />
                     <Dropdown
                         placeholder="Пол"

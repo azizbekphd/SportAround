@@ -11,7 +11,7 @@ import IconButton from '../components/IconButton';
 import Button from '../components/Button';
 import { LinearGradient } from 'expo-linear-gradient';
 import Indicator from '../components/Indicator';
-import AuthContext from '../api/AuthContext';
+import AuthContext from '../contexts/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import Dropdown from '../components/Dropdown';

@@ -1,6 +1,6 @@
 import React, { useRef, useState, createRef, useEffect, useCallback, useContext } from 'react';
 import globalStyles from '../global/Styles';
-import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform,  ScrollView } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar, BackHandler, Platform, ScrollView } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from '../components/Toolbar';
 import Searchbar from '../components/Searchbar';
@@ -13,9 +13,9 @@ import Loader from '../components/Loader';
 import * as Location from 'expo-location';
 import checkIfLocationEnabled from '../global/checkIfLocationEnabled';
 import checkLocationPermission from '../global/checkLocationPermission';
-import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import api from '../global/api';
-import AuthContext from "../api/AuthContext"
+import AuthContext from "../contexts/AuthContext"
 import searchPlaygrounds from '../api/searchPlaygrounds';
 
 export default function PlaygroundChoiceScreen({ navigation, route }) {
@@ -33,22 +33,34 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
     const ref = useRef(null)
     const map = useRef(null)
 
-    const {getToken} = useContext(AuthContext)
+    const { getToken } = useContext(AuthContext)
+
+    useEffect(()=>{
+        map.current.animateCamera({
+            center: {
+                latitude: selectedPlayground.latitude,
+                longitude: selectedPlayground.longitude,
+            },
+            zoom: 15
+        }, 1000)
+    },[selectedPlayground])
+
+    const onBack = () => {
+        if (showList) {
+            setShowList(false);
+            return true;
+        } else if (showInfo) {
+            setShowInfo(false);
+            setShowList(true);
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     useFocusEffect(
         useCallback(() => {
-            const onBackPress = () => {
-                if (showList) {
-                    setShowList(false);
-                    return true;
-                } else if (showInfo) {
-                    setShowInfo(false);
-                    setShowList(true);
-                    return true;
-                } else {
-                    return false;
-                }
-            };
+            const onBackPress = onBack;
 
             BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
@@ -67,28 +79,31 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
         }
     }, [showList, showInfo])
 
-    useEffect(()=>{
-        let a = addressObj.district ??
+    useEffect(() => {
+        if(!address){
+            let a = addressObj ?
+            addressObj.district ??
             addressObj.city ??
             addressObj.subregion ??
             addressObj.region ??
-            addressObj.name
-        a = `${a ?? ""} ${addressObj.street ?? ""}`.trim()
+            addressObj.name : ""
+        a = `${a ?? ""}`.trim()
         setAddress(a)
+    }
     }, [addressObj])
 
     function init() {
-        checkIfLocationEnabled().then((enabled)=>{
-            if (enabled){
+        checkIfLocationEnabled().then((enabled) => {
+            if (enabled) {
                 setIsLoading(true)
-                checkLocationPermission().then((granted)=>{
-                    if(granted){
+                checkLocationPermission().then((granted) => {
+                    if (granted) {
                         Location.getCurrentPositionAsync({
                             accuracy: Location.LocationAccuracy.Highest
-                        }).then((location)=>{
-                            if(location && location.coords){
+                        }).then((location) => {
+                            if (location && location.coords) {
                                 setCoords(location.coords)
-                                if(map.current.animateCamera){
+                                if (map.current.animateCamera) {
                                     map.current.animateCamera({
                                         center: {
                                             latitude: location.coords.latitude,
@@ -98,18 +113,18 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                                         heading: 20,
                                         altitude: 200,
                                         zoom: 14,
-                                    }, {duration:1000})
+                                    }, { duration: 1000 })
                                 }
                                 Location.reverseGeocodeAsync({
                                     latitude: location.coords.latitude,
                                     longitude: location.coords.longitude,
-                                }).then((address)=>{
+                                }).then((address) => {
                                     setIsLoading(false)
                                     setAddressObj(address[0])
                                 })
                             }
-                        }).catch((reason)=>{
-                            if(!coords){
+                        }).catch((reason) => {
+                            if (!coords) {
                                 init()
                             }
                         })
@@ -123,38 +138,59 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
         })
     }
 
+    function usePlayground(){
+        setIsLoading(true)
+        fetch(api+"use-playground/create",{
+            method: "POST",
+            headers:{
+                "accept": "application/json",
+                "Authorization": `Bearer ${getToken()}`,
+            },
+            body: {
+                playgroundId: selectedPlayground.id,
+                dateGame: gameData.dateGame,
+                startHour: gameData.startHour,
+                startMin: gameData.startMin,
+                endHour: gameData.endHour,
+                endMin: gameData.endMin,
+            }
+        }).then(async (response)=>{
+            console.log(await response.json())
+            if(response.status == 200){
+                
+            }
+        }).finally(()=>{
+            setIsLoading(false)
+        })
+    }
+
     useEffect(() => {
-        if(!coords && !address){
+        if (!coords || !address) {
             init();
         }
     }, [])
 
-    useEffect(()=>{
-        console.log(selectedPlayground)
-    },[selectedPlayground])
-
     return (
         <>
-            <Toolbar back title={title} onMenu={() => { }} />
+            <Toolbar back title={title} onMenu={() => { }} onBack={onBack} />
             {!showInfo && <><View style={styles.container}>
                 <View style={styles.searchbarContainer}>
                     <Searchbar
                         ref={ref}
                         value={address}
                         onFocus={() => { setShowList(false) }}
-                        onChangeText={(newValue)=>{
+                        onChangeText={(newValue) => {
                             setAddress(newValue)
                         }}
-                        onSubmit={(text)=>{
-                            console.log(text)
+                        onSubmit={(text) => {
                             setIsLoading(true)
-                            if(isNewGame){
+                            if (isNewGame) {
                                 searchPlaygrounds({
                                     typeId: gameData.typeId,
                                     address: text,
                                     pay: gameData.pay,
                                     token: getToken()
-                                }).then(async(response)=>{
+                                }).then(async (response) => {
                                     let json = await response.json()
                                     console.log(json)
                                     setPlaygrounds(json)
@@ -167,10 +203,10 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                                         heading: 20,
                                         altitude: 200,
                                         zoom: 14,
-                                    }, {duration:1000})
-                                }).catch((reason)=>{
-                                    console.log("reason -",reason)
-                                }).finally(()=>{
+                                    }, { duration: 1000 })
+                                }).catch((reason) => {
+                                    console.log("reason -", reason)
+                                }).finally(() => {
                                     setIsLoading(false)
                                 })
                             }
@@ -181,7 +217,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 <View style={styles.buttonsContainer} width="100%">
                     <View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
                         <Button
-                            title={ isLoading ? "Загрузка..." : playgrounds.length === 0 ? "Список пуст" : "Список"}
+                            title={isLoading ? "Загрузка..." : playgrounds.length === 0 ? "Список пуст" : "Список"}
                             onPress={() => { setShowList(true); ref.current.blur(); }}
                             disabled={playgrounds.length === 0}
                         />
@@ -222,63 +258,63 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                         zoom: 14,
                     }}
                 >
-                    {playgrounds && playgrounds.length>0 &&
-                    playgrounds.map((item, index)=>{
-                        return <Marker
-                                    coordinate={{
+                    {playgrounds && playgrounds.length > 0 &&
+                        playgrounds.map((item, index) => {
+                            return <Marker
+                                coordinate={{
+                                    latitude: item.latitude,
+                                    longitude: item.longitude ?? item.longtitude,
+                                }}
+                                key={item.id.toString() + "_marker"}
+                                anchor={{ x: 0.5, y: 0.5 }}
+                                onPress={() => {
+                                    setSelectedPlayground(item)
+                                    setShowInfo(true)
+                                }}
+                            >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Image source={require("../assets/images/marker.png")} style={{ width: 20, height: 20 }} />
+                                </View>
+                            </Marker>
+                        })}
+                    {playgrounds && playgrounds.length > 0 &&
+                        playgrounds.map((item, index) => {
+                            return <View key={item.id.toString() + "_circles"}>
+                                <Circle
+                                    center={{
                                         latitude: item.latitude,
                                         longitude: item.longitude ?? item.longtitude,
                                     }}
-                                    key={item.id.toString()+"_marker"}
-                                    anchor={{x: 0.5, y: 0.5}}
-                                    onPress={()=>{
-                                        setSelectedPlayground(item)
-                                        setShowInfo(true)
+                                    radius={50}
+                                    fillColor="rgba(100,255,255,0.3)"
+                                    strokeWidth={1}
+                                    strokeColor="rgb(100,255,255)"
+                                />
+                                <Circle
+                                    center={{
+                                        latitude: item.latitude,
+                                        longitude: item.longitude ?? item.longtitude,
                                     }}
-                                >
-                                    <View style={{justifyContent: "center", alignItems: "center"}}>
-                                        <Image source={require("../assets/images/marker.png")} style={{width: 20, height: 20}}/>
-                                    </View>
-                                </Marker>
-                    })}
-                    {playgrounds && playgrounds.length>0 &&
-                    playgrounds.map((item, index)=>{
-                        return <View key={item.id.toString()+"_circles"}>
-                                    <Circle 
-                                        center={{
-                                            latitude: item.latitude,
-                                            longitude: item.longitude ?? item.longtitude,
-                                        }}
-                                        radius={50}
-                                        fillColor="rgba(100,255,255,0.3)"
-                                        strokeWidth={1}
-                                        strokeColor="rgb(100,255,255)"
-                                    />
-                                    <Circle 
-                                        center={{
-                                            latitude: item.latitude,
-                                            longitude: item.longitude ?? item.longtitude,
-                                        }}
-                                        radius={100}
-                                        fillColor="rgba(100,255,255,0.3)"
-                                        strokeWidth={1}
-                                        strokeColor="rgb(100,255,255)"
-                                    />
-                                    <Circle 
-                                        center={{
-                                            latitude: item.latitude,
-                                            longitude: item.longitude ?? item.longtitude,
-                                        }}
-                                        radius={150}
-                                        fillColor="rgba(100,255,255,0.3)"
-                                        strokeWidth={1}
-                                        strokeColor="rgb(100,255,255)"
-                                    />
-                                </View>
-                    })
+                                    radius={100}
+                                    fillColor="rgba(100,255,255,0.3)"
+                                    strokeWidth={1}
+                                    strokeColor="rgb(100,255,255)"
+                                />
+                                <Circle
+                                    center={{
+                                        latitude: item.latitude,
+                                        longitude: item.longitude ?? item.longtitude,
+                                    }}
+                                    radius={150}
+                                    fillColor="rgba(100,255,255,0.3)"
+                                    strokeWidth={1}
+                                    strokeColor="rgb(100,255,255)"
+                                />
+                            </View>
+                        })
                     }
                 </MapView>
-        </ScrollView>
+            </ScrollView>
             {showList && <View width="100%" height="100%" style={{ position: "absolute", zIndex: 750 }} />}
             <FloatingPanel
                 show={showList}
@@ -286,7 +322,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 coords={coords}
                 items={playgrounds}
                 hideCallback={setShowList}
-                onItemPressed={(data)=>{
+                onItemPressed={(data) => {
                     console.log(data)
                     setSelectedPlayground(data)
                 }}
@@ -296,17 +332,18 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
                 show={showInfo}
                 data={selectedPlayground}
                 hideCallback={setShowInfo}
-                setShowList={setShowList} />
+                setShowList={setShowList}
+                usePlayground={usePlayground}  />
             <Loader
                 loading={isLoading}
                 cancellable={true}
-                setIsLoading={(value)=>{
+                setIsLoading={(value) => {
                     setIsLoading(value);
-                    if(!value){
+                    if (!value) {
                         navigation.pop()
                     }
                 }}
-            /> 
+            />
         </>
     )
 }

@@ -6,7 +6,7 @@ import AnimatedTextInput from '../components/AnimatedTextInput';
 import Toolbar from '../components/Toolbar';
 import H1 from '../components/H1';
 import Button from '../components/Button';
-import AuthContext from '../api/AuthContext';
+import AuthContext from '../contexts/AuthContext';
 import validate, { validateAll } from '../global/validate';
 import Loader from '../components/Loader';
 

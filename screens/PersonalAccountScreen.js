@@ -7,10 +7,11 @@ import H2 from '../components/H2';
 import { LinearGradient } from 'expo-linear-gradient';
 import SvgUri from 'expo-svg-uri';
 import Alert from '../components/Alert';
-import AuthContext from '../api/AuthContext';
+import AuthContext from '../contexts/AuthContext';
 import User from '../models/User'
 import formatDate from '../global/formatDate';
 import H1 from '../components/H1';
+import decodeDate from '../global/decodeDate';
 
 export default function PersonalAccountScreen({ navigation, route }) {
 
@@ -73,10 +74,10 @@ export default function PersonalAccountScreen({ navigation, route }) {
                         </H3>
                         {
                             userData.name ?
-                            <H3 style={{ marginVertical: 7 }}>
-                                {`${userData.name} ${userData.lastName ?? ""}`}
-                            </H3>
-                            : null
+                                <H3 style={{ marginVertical: 7 }}>
+                                    {`${userData.name} ${userData.lastName ?? ""}`}
+                                </H3>
+                                : null
                         }
                         {userData.email ? <H3 style={{ marginVertical: 7 }}>
                             {userData.email}
@@ -85,7 +86,10 @@ export default function PersonalAccountScreen({ navigation, route }) {
                             {userData.phone}
                         </H3> : null}
                         {userData.birthday ? <H3 style={{ marginVertical: 7 }}>
-                            {formatDate(userData.birthday)}
+                            {formatDate(userData.birthday.includes(".") ?
+                                decodeDate(userData.birthday) :
+                                userData.birthday
+                            )}
                         </H3> : null}
                         {userData.address ?
                             <>

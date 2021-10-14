@@ -1,24 +1,13 @@
 import React, { useRef } from 'react';
 import globalStyles from '../global/Styles';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Toolbar from '../components/Toolbar';
-import H3 from '../components/H3';
-import AnimatedTextInput from '../components/AnimatedTextInput';
-import Button from '../components/Button';
-import H2 from '../components/H2';
-import { LinearGradient } from 'expo-linear-gradient';
-import Navbar from '../components/Navbar';
-import { useNavigation } from '@react-navigation/native';
 import Searchbar from '../components/Searchbar';
 import GamesHistory from '../components/GamesHistory';
 
 export default function GamesHistoryScreen({ navigation, route }) {
 
     const ref = useRef()
-
-    const openNextPage = (isSoccer) => {
-        navigation.navigate('NewGame', { isSoccer: isSoccer })
-    }
 
     return (
         <>

@@ -20,62 +20,24 @@ import PriceSingleScreen from './screens/PriceSingleScreen';
 import EditAccountScreen from './screens/EditAccountScreen';
 import PlaygroundDetailsScreen from './screens/PlaygroundDetailsScreen';
 import PastGameDetailsScreen from './screens/PastGameDetailsScreen';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import OfferedGameDetailsScreen from './screens/OfferedGameDetailsScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AddCardScreen from './screens/AddCardScreen';
-import AuthContext from './api/AuthContext';
+import AuthContext from './contexts/AuthContext';
 import User from './models/User';
 import LoaderScreen from './screens/LoaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './global/api';
+import { loginReducer, initialLoginState } from './reducers/loginReducer';
+import ImageGalleryScreen from './screens/ImageGalleryScreen';
 
 const Stack = createStackNavigator()
 
 export default function App() {
 
-  const initialLoginState = {
-    isLoading: true,
-    user: null,
-  }
-
-  const loginReducer = (prevState, action) => {
-    switch (action.type) {
-      case 'retrieve_token':
-        return {
-          ...prevState,
-          isLoading: false,
-          user: action.user
-        };
-      case 'login':
-        return {
-          ...prevState,
-          isLoading: false,
-          user: action.user
-        };
-      case 'logout':
-        return {
-          ...prevState,
-          isLoading: false,
-          user: null,
-        };
-      case 'registration':
-        return {
-          ...prevState,
-          isLoading: false,
-          user: action.user
-        };
-      case 'edit':
-        return {
-          ...prevState,
-          isLoading: false,
-          user: action.user
-        };
-    }
-  }
-
-  const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
+  /* Auth */
+  const [loginState, dispatchLoginState] = useReducer(loginReducer, initialLoginState);
 
   const authContext = useMemo(() => ({
     signIn: async (data) => {
@@ -91,7 +53,7 @@ export default function App() {
         let user = await response.json();
         if (user) {
           await AsyncStorage.setItem("user", JSON.stringify(user));
-          dispatch({
+          dispatchLoginState({
             type: 'login',
             user: new User(user)
           });
@@ -106,7 +68,7 @@ export default function App() {
     },
     signOut: async () => {
       await AsyncStorage.removeItem("user")
-      dispatch({ type: 'logout' })
+      dispatchLoginState({ type: 'logout' })
     },
     signUp: async (data) => {
       let response = await fetch(api + 'registration', {
@@ -122,7 +84,7 @@ export default function App() {
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
           },
-          body: JSON.stringify({username: data.username, password: data.password})
+          body: JSON.stringify({ username: data.username, password: data.password })
         });
         if (response.ok) {
           console.log(response.status)
@@ -130,7 +92,7 @@ export default function App() {
           console.log(JSON.stringify(user))
           if (user) {
             await AsyncStorage.setItem("user", JSON.stringify(user));
-            dispatch({
+            dispatchLoginState({
               type: 'login',
               user: new User(user)
             });
@@ -164,7 +126,7 @@ export default function App() {
         name: data.name ?? "",
         lastName: data.lastName ?? ""
       }).replace("null", "\"\"")
-      console.log("\n\n"+requestBody)
+      console.log("\n\n" + requestBody)
       let response = await fetch(api + 'profile', {
         method: 'PUT',
         headers: {
@@ -177,7 +139,7 @@ export default function App() {
       let user = await response.json();
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(user));
-        dispatch({
+        dispatchLoginState({
           type: 'edit',
           user: new User(user)
         });
@@ -186,7 +148,7 @@ export default function App() {
         Alert.alert(
           "Что-то пошло не так...",
           "Не удалось изменить аккаунт. Проверьте правильность введенных данных и повторите попытку",
-          [{text: "OK", onPress: ()=>{}}])
+          [{ text: "OK", onPress: () => { } }])
         return true
       }
     },
@@ -194,35 +156,35 @@ export default function App() {
   }))
 
   useEffect(() => {
-    AsyncStorage.getItem("user").then(async(savedJson) => {
-      if(savedJson){
+    AsyncStorage.getItem("user").then(async (savedJson) => {
+      if (savedJson) {
         let response = await fetch(api + 'profile', {
-        method: 'GET',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${JSON.parse(savedJson).access_token}`
-        },
-      });
-      if(Math.trunc(response.status/100) != 2){
-        dispatch({type:'logout'})
-      }else{
-        let json = await response.json();
-        dispatch({
-          type: 'retrieve_token',
-          user: json ? new User({
-            ...json,
-            access_token: JSON.parse(savedJson).access_token
-          }) : null,
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(savedJson).access_token}`
+          },
         });
-      }
-    }else{
-        dispatch({type: 'logout'})
+        if (Math.trunc(response.status / 100) != 2) {
+          dispatchLoginState({ type: 'logout' })
+        } else {
+          let json = await response.json();
+          dispatchLoginState({
+            type: 'retrieve_token',
+            user: json ? new User({
+              ...json,
+              access_token: JSON.parse(savedJson).access_token
+            }) : null,
+          });
+        }
+      } else {
+        dispatchLoginState({ type: 'logout' })
       }
     }).catch((e) => { console.log("Error on starting the app", e.stackTrace) })
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(loginState)
   }, [loginState])
 
@@ -234,71 +196,76 @@ export default function App() {
           {
             !loginState.isLoading ?
               loginState.user && loginState.user.access_token ?
-                <Stack.Navigator
-                  screenOptions={{ headerShown: false }}
-                  initialRouteName="Loading"
-                >
+                  <Stack.Navigator
+                    screenOptions={{ headerShown: false }}
+                    initialRouteName="Loading"
+                  >
+                    <Stack.Screen
+                      name="Loading"
+                      component={LoadingScreen}
+                    />
+                    <Stack.Screen
+                      name="Main"
+                      component={MainScreen}
+                    />
+                    <Stack.Screen
+                      name="NewGame"
+                      component={NewGameScreen}
+                    />
+                    <Stack.Screen
+                      name="PlaygroundChoice"
+                      component={PlaygroundChoiceScreen}
+                    />
+                    <Stack.Screen
+                      name="AddPlayground"
+                      component={AddPlaygroundScreen}
+                    />
+                    <Stack.Screen
+                      name="Schedule"
+                      component={ScheduleScreen}
+                    />
+                    <Stack.Screen
+                      name="ScheduleSingle"
+                      component={ScheduleSingleScreen}
+                    />
+                    <Stack.Screen
+                      name="Price"
+                      component={PriceScreen}
+                    />
+                    <Stack.Screen
+                      name="PriceSingle"
+                      component={PriceSingleScreen}
+                    />
+                    <Stack.Screen
+                      name="EditAccount"
+                      component={EditAccountScreen}
+                    />
+                    <Stack.Screen
+                      name="PlaygroundDetails"
+                      component={PlaygroundDetailsScreen}
+                    />
+                    <Stack.Screen
+                      name="PastGameDetails"
+                      component={PastGameDetailsScreen}
+                    />
+                    <Stack.Screen
+                      name="OfferedGameDetails"
+                      component={OfferedGameDetailsScreen}
+                    />
+                    <Stack.Screen
+                      name="Payment"
+                      component={PaymentScreen}
+                    />
+                    
                   <Stack.Screen
-                    name="Loading"
-                    component={LoadingScreen}
+                    name="ImageGallery"
+                    component={ImageGalleryScreen}
                   />
-                  <Stack.Screen
-                    name="Main"
-                    component={MainScreen}
-                  />
-                  <Stack.Screen
-                    name="NewGame"
-                    component={NewGameScreen}
-                  />
-                  <Stack.Screen
-                    name="PlaygroundChoice"
-                    component={PlaygroundChoiceScreen}
-                  />
-                  <Stack.Screen
-                    name="AddPlayground"
-                    component={AddPlaygroundScreen}
-                  />
-                  <Stack.Screen
-                    name="Schedule"
-                    component={ScheduleScreen}
-                  />
-                  <Stack.Screen
-                    name="ScheduleSingle"
-                    component={ScheduleSingleScreen}
-                  />
-                  <Stack.Screen
-                    name="Price"
-                    component={PriceScreen}
-                  />
-                  <Stack.Screen
-                    name="PriceSingle"
-                    component={PriceSingleScreen}
-                  />
-                  <Stack.Screen
-                    name="EditAccount"
-                    component={EditAccountScreen}
-                  />
-                  <Stack.Screen
-                    name="PlaygroundDetails"
-                    component={PlaygroundDetailsScreen}
-                  />
-                  <Stack.Screen
-                    name="PastGameDetails"
-                    component={PastGameDetailsScreen}
-                  />
-                  <Stack.Screen
-                    name="OfferedGameDetails"
-                    component={OfferedGameDetailsScreen}
-                  />
-                  <Stack.Screen
-                    name="Payment"
-                    component={PaymentScreen}
-                  />
-                  <Stack.Screen
-                    name="AddCard"
-                    component={AddCardScreen}
-                  />
-                </Stack.Navigator>
+                    <Stack.Screen
+                      name="AddCard"
+                      component={AddCardScreen}
+                    />
+                  </Stack.Navigator>
                 :
                 <Stack.Navigator
                   screenOptions={{ headerShown: false }}
@@ -326,9 +293,9 @@ export default function App() {
                   />
                 </Stack.Navigator>
               : <Stack.Navigator
-              screenOptions={{headerShown: false}}
+                screenOptions={{ headerShown: false }}
               >
-              <Stack.Screen
+                <Stack.Screen
                   name="Loader"
                   component={LoaderScreen}
                 />
