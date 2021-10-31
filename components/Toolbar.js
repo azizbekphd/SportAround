@@ -58,7 +58,7 @@ export default function Toolbar(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                    {(props.onMenu) ?
+                    {/*(props.onMenu) ?
                         <TouchableOpacity activeOpacity={0.5} onPress={props.onMenu}>
                             <Image source={require('../assets/icons/three_dots.png')} />
                         </TouchableOpacity> :
@@ -66,7 +66,7 @@ export default function Toolbar(props) {
                             <TouchableOpacity activeOpacity={0.5} onPress={props.onReady} style={{ position: 'absolute', width: 71 }}>
                                 <H6 color="#29DEC8">{props.readyText ?? "Готово"}</H6>
                             </TouchableOpacity>)
-                    }
+                        */}
                 </View>
             </View>
         </SafeAreaView >

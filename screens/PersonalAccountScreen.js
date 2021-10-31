@@ -99,6 +99,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
                                 </H3>
                             </> : null}
                     </LinearGradient>
+                    {/*
                     <LinearGradient
                         colors={["rgba(38, 34, 84, 1)", "rgba(38, 34, 84, 0)"]}
                         style={styles.additional}
@@ -134,6 +135,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
                             </H3>
                         </TouchableOpacity>
                     </LinearGradient>
+                        */}
                 </ScrollView>
             </View>
             <Alert

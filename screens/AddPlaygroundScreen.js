@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import AnimatedTextInput from '../components/AnimatedTextInput';
 import Button from '../components/Button';
@@ -8,7 +8,15 @@ import NextRouteInput from '../components/NextRouteInput';
 import Toolbar from '../components/Toolbar';
 import globalStyles from '../global/Styles'
 
-export default function AddPlaygroundScreen({ navigation }) {
+export default function AddPlaygroundScreen({ navigation, route }) {
+    const [playgroundData, setPlaygroundData] = useState({
+        typeId: route.params.typeId,
+        latitude: route.params.location.latitude,
+        longitude: route.params.location.longitude,
+        address: route.params.address,
+    })
+    const usePlayground = route.params.usePlayground;
+
     return (
         <>
             <Toolbar back title="Добавить площадку" />

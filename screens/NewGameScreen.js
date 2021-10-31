@@ -157,11 +157,19 @@ export default function NewGameScreen({ route, navigation }) {
                 <Button
                     title={isNewGame ? "Начать" : "Найти"}
                     onPress={() => {
-                        navigation.navigate("PlaygroundChoice",
+                        if(isNewGame){
+                            navigation.navigate("PlaygroundChoice",
                             {
                                 isNewGame: isNewGame,
                                 gameData: gameData
                             })
+                        }else{
+                            navigation.navigate("UsePlaygroundChoice",
+                            {
+                                isNewGame: isNewGame,
+                                gameData: gameData
+                            })
+                        }
                     }}
                     disabled={!(gameData.dateGame !== null &&
                         dateIsValid &&
