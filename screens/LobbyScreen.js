@@ -14,9 +14,28 @@ import getNull from "../global/getNull";
 export default function LobbyScreen({ navigation, route }) {
 	const [game, setGame] = useState({});
 	const { getLobby } = useContext(UsePlaygroundContext);
+	const [minutesLeft, setMinutesLeft] = useState(0);
 
 	useEffect(() => {
-		setGame(getLobby());
+		let interval = setInterval(() => {
+			let lobby = getLobby();
+			setGame(lobby);
+			console.log(new Date());
+			setMinutesLeft(
+				Math.floor(
+					(new Date(
+						`${lobby.dateGame}T${getNull(lobby.startHour)}:${getNull(
+							lobby.startMin
+						)}:00.000Z`
+					) -
+						new Date()) /
+						60000
+				)
+			);
+		}, 1000);
+		return () => {
+			clearInterval(interval);
+		};
 	}, []);
 
 	return (
@@ -42,10 +61,10 @@ export default function LobbyScreen({ navigation, route }) {
 						}}
 					>
 						<View width="48%">
-							<Countdown value={0} label="ч." />
+							<Countdown value={Math.floor(minutesLeft / 60)} label="ч." />
 						</View>
 						<View width="48%">
-							<Countdown value={0} label="мин." />
+							<Countdown value={Math.floor(minutesLeft % 60)} label="мин." />
 						</View>
 					</View>
 					<GameInfo game={game} />

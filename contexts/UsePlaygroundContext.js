@@ -49,14 +49,6 @@ export const usePlaygroundContext = (
 				.slice()
 				.reverse()
 				.find((e) => {
-					console.log(new Date());
-					console.log(
-						new Date(
-							`${e.dateGame}T${getNull(e.startHour)}:${getNull(
-								e.startMin
-							)}:00.000Z`
-						)
-					);
 					return (
 						new Date() <
 						new Date(

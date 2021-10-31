@@ -21,9 +21,11 @@ export default function GameInfo({ game }) {
 			<View style={styles.item}>
 				<H3 color="#000">Время</H3>
 				<H3 color="#000" style={{ fontWeight: "700" }}>
-					{`с ${getNull(game.startHour)}:${getNull(game.startMin)} до ${getNull(
-						game.endHour
-					)}:${getNull(game.endMin)}`}
+					{`с ${
+						game.startHour !== undefined ? getNull(game.startHour) : "--"
+					}:${game.startMin !== undefined ? getNull(game.startMin) : "--"} до ${
+						game.endHour !== undefined ? getNull(game.endHour) : "--"
+					}:${game.endMin !== undefined ? getNull(game.endMin) : "--"}`}
 				</H3>
 			</View>
 			<View style={styles.separator} width="100%"></View>
