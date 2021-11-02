@@ -17,6 +17,7 @@ import {
 	Platform,
 	ScrollView,
 } from "react-native";
+import { StackActions, CommonActions } from "@react-navigation/routers";
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from "../components/Toolbar";
 import Searchbar from "../components/Searchbar";
@@ -181,8 +182,13 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 			}),
 		})
 			.then(async (response) => {
+				console.log("Use playground");
+				console.log(response.status);
+				console.log(await response.text());
 				if (response.status == 200) {
 					load(getToken());
+					const resetAction = StackActions.replace("Main", { screen: "Lobby" });
+					navigation.dispatch(resetAction);
 				}
 			})
 			.catch((reason) => {})

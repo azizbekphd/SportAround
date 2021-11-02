@@ -19,7 +19,6 @@ export const usePlaygroundContext = (
 					},
 				}
 			).catch((reason) => {});
-			console.log(response.status);
 			if (response.status == 200) {
 				responseObj = await response.json();
 				console.log(responseObj);
@@ -58,5 +57,11 @@ export const usePlaygroundContext = (
 						)
 					);
 				});
+		},
+		deleteUsePlayground: (id) => {
+			dispatchUsePlaygroundState({
+				type: "delete",
+				id: id,
+			});
 		},
 	}));

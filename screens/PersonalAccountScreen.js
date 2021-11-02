@@ -39,7 +39,7 @@ export default function PersonalAccountScreen({ navigation, route }) {
 			<Toolbar
 				title="Личный кабинет"
 				onReady={() => {
-					signOut();
+					setShowModal(true);
 				}}
 				readyText="Выход"
 			/>
@@ -166,8 +166,23 @@ export default function PersonalAccountScreen({ navigation, route }) {
 			</View>
 			<Alert
 				show={showModal}
-				buttonText="Хорошо"
-				buttonCallback={setShowModal}
+				text="Вы точно хотите выйти из аккаунта на этом устройстве?"
+				buttons={[
+					{
+						text: "Нет",
+						callback: () => {
+							setShowModal(false);
+						},
+					},
+					{
+						text: "Да",
+						color: "#ff0000",
+						callback: () => {
+							setShowModal(false);
+							signOut();
+						},
+					},
+				]}
 			/>
 		</>
 	);

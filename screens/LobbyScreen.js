@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import Toolbar from "../components/Toolbar";
 import { LinearGradient } from "expo-linear-gradient";
 import H1 from "../components/H1";
@@ -10,28 +10,35 @@ import UsePlaygroundContext from "../contexts/UsePlaygroundContext";
 import formatDate from "../global/formatDate";
 import H2 from "../components/H2";
 import getNull from "../global/getNull";
+import Alert from "../components/Alert";
+import AuthContext from "../contexts/AuthContext";
 
 export default function LobbyScreen({ navigation, route }) {
-	const [game, setGame] = useState({});
-	const { getLobby } = useContext(UsePlaygroundContext);
+	const [game, setGame] = useState(false);
 	const [minutesLeft, setMinutesLeft] = useState(0);
+	const [showAlert, setShowAlert] = useState(false);
+
+	const { getLobby, deleteUsePlayground } = useContext(UsePlaygroundContext);
+	const { getToken } = useContext(AuthContext);
 
 	useEffect(() => {
 		let interval = setInterval(() => {
 			let lobby = getLobby();
 			setGame(lobby);
-			console.log(new Date());
-			setMinutesLeft(
-				Math.floor(
-					(new Date(
-						`${lobby.dateGame}T${getNull(lobby.startHour)}:${getNull(
-							lobby.startMin
-						)}:00.000Z`
-					) -
-						new Date()) /
-						60000
-				)
-			);
+			if (lobby) {
+				console.log(new Date());
+				setMinutesLeft(
+					Math.floor(
+						(new Date(
+							`${lobby.dateGame}T${getNull(lobby.startHour)}:${getNull(
+								lobby.startMin
+							)}:00.000Z`
+						) -
+							new Date()) /
+							60000
+					)
+				);
+			}
 		}, 1000);
 		return () => {
 			clearInterval(interval);
@@ -45,12 +52,28 @@ export default function LobbyScreen({ navigation, route }) {
 				style={{ position: "absolute", ...StyleSheet.absoluteFill }}
 			/>
 			<Toolbar
-				title="Информация о лобби"
+				title="Лобби"
 				backgroundColor="rgba(0,0,0,0)"
-				onReady={() => {}}
-				readyText="Выход"
+				onReady={
+					game
+						? () => {
+								setShowAlert(true);
+						  }
+						: null
+				}
+				readyText={game ? "Выход" : null}
 			/>
-			{game ? (
+			{game === false ? (
+				<View
+					style={{
+						...StyleSheet.absoluteFill,
+						alignItems: "center",
+						justifyContent: "center",
+					}}
+				>
+					<ActivityIndicator size="large" color="#ffffff" />
+				</View>
+			) : game ? (
 				<ScrollView style={{ padding: 20, flex: 1 }}>
 					<H1>До игры:</H1>
 					<View
@@ -125,6 +148,45 @@ export default function LobbyScreen({ navigation, route }) {
 					<H2>Нет предстоящих игр</H2>
 				</View>
 			)}
+			<Alert
+				text="Вы уверены, что хотите покинуть лобби?"
+				buttonText="Да"
+				buttons={[
+					{
+						text: "Нет",
+						callback: () => {
+							console.log(getLobby());
+							setShowAlert(false);
+						},
+					},
+					{
+						text: "Да",
+						color: "#ff0000",
+						callback: async () => {
+							setShowAlert(false);
+							setGame(false);
+							let response = await fetch(
+								api + "/use-playground/exit-game/" + game.id,
+								{
+									method: "POST",
+									headers: {
+										accept: "application/json",
+										Authorization: `Bearer ${getToken()}`,
+										"Content-Type": "application/json",
+									},
+								}
+							);
+							if (response) {
+								if (!(await response.text()).includes("error")) {
+									deleteUsePlayground(game.id);
+									setGame(getLobby());
+								}
+							}
+						},
+					},
+				]}
+				show={showAlert}
+			/>
 		</>
 	);
 }

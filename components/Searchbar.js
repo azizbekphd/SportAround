@@ -66,7 +66,7 @@ export default Searchbar = forwardRef((props, ref) => {
 					props.onChangeText ?? props.onChangeText(newValue);
 				}}
 			>
-				<H3>&#10006;</H3>
+				<H1 style={{ textAlignVertical: "top", lineHeight: 35 }}>&times;</H1>
 			</TouchableOpacity>
 		</View>
 	);

@@ -5,6 +5,13 @@ export const usePlaygroundReducer = (prevState, action) => {
 				...prevState,
 				usePlaygrounds: action.usePlaygrounds,
 			};
+		case "delete":
+			return {
+				...prevState,
+				usePlaygrounds: prevState.usePlaygrounds.filter((e) => {
+					return e.id != action.id;
+				}),
+			};
 	}
 };
 
