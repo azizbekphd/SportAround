@@ -287,9 +287,17 @@ export default function AddPlaygroundScreen({ navigation, route }) {
 								flex: 1,
 							}}
 						>
+							<H2>График работы:</H2>
+							<View
+								width="100%"
+								style={{
+									height: 1,
+									backgroundColor: "#656B82",
+									marginVertical: 20,
+								}}
+							/>
 							<View
 								style={{
-									marginTop: 20,
 									flexDirection: "row",
 									justifyContent: "space-between",
 								}}
@@ -314,42 +322,46 @@ export default function AddPlaygroundScreen({ navigation, route }) {
 									marginVertical: 20,
 								}}
 							/>
-							<AnimatedTextInput
-								mode="time"
-								onChangeText={(d, s) => {
-									let p = s.split(":");
-									setSchedule((prev) => {
-										return {
-											...prev,
-											startHour: p[0] * 1,
-											startMin: p[1] * 1,
-										};
-									});
-								}}
-								placeholder="Время открытия"
-								valid={scheduleIsValid()}
-								required
-							/>
-							<AnimatedTextInput
-								mode="time"
-								onChangeText={(d, s) => {
-									let p = s.split(":");
-									setSchedule((prev) => {
-										return {
-											...prev,
-											endHour: p[0] * 1,
-											endMin: p[1] * 1,
-										};
-									});
-								}}
-								placeholder="Время закрытия"
-								valid={scheduleIsValid()}
-								required
-							/>
+							{!tfs ? (
+								<>
+									<AnimatedTextInput
+										mode="time"
+										onChangeText={(d, s) => {
+											let p = s.split(":");
+											setSchedule((prev) => {
+												return {
+													...prev,
+													startHour: p[0] * 1,
+													startMin: p[1] * 1,
+												};
+											});
+										}}
+										placeholder="Время открытия"
+										valid={scheduleIsValid()}
+										required
+									/>
+									<AnimatedTextInput
+										mode="time"
+										onChangeText={(d, s) => {
+											let p = s.split(":");
+											setSchedule((prev) => {
+												return {
+													...prev,
+													endHour: p[0] * 1,
+													endMin: p[1] * 1,
+												};
+											});
+										}}
+										placeholder="Время закрытия"
+										valid={scheduleIsValid()}
+										required
+									/>
+								</>
+							) : null}
 						</View>
 						<Button
 							title="Дальше"
-							disabled={!scheduleIsValid()}
+							disabled={!scheduleIsValid() && !tfs}
 							onPress={() => {
 								setIsLoading(true);
 								fetch(api + `playground/hour-work/${playgroundData.id}`, {
@@ -359,7 +371,14 @@ export default function AddPlaygroundScreen({ navigation, route }) {
 										"Content-Type": "application/json",
 										Authorization: `Bearer ${getToken()}`,
 									},
-									body: JSON.stringify(schedule),
+									body: tfs
+										? {
+												startHour: 0,
+												startMin: 0,
+												endHour: 23,
+												endMin: 59,
+										  }
+										: JSON.stringify(schedule),
 								})
 									.then(async (resp) => {
 										if (resp && resp.status == 200) {
