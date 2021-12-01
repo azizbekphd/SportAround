@@ -54,7 +54,15 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 	const map = useRef(null);
 
 	const { getToken } = useContext(AuthContext);
-	const { load } = useContext(UsePlaygroundContext);
+	const { load, addUsePlayground } = useContext(UsePlaygroundContext);
+
+	useEffect(() => {
+		if (route.params?.playground) {
+			setPlaygrounds((prev) => {
+				return [...prev, route.params?.playground];
+			});
+		}
+	}, [route.params?.playground]);
 
 	useEffect(() => {
 		map.current.animateCamera(
@@ -186,7 +194,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 				console.log(response.status);
 				console.log(await response.text());
 				if (response.status == 200) {
-					load(getToken());
+					addUsePlayground(await response.json());
 					const resetAction = StackActions.replace("Main", { screen: "Lobby" });
 					navigation.dispatch(resetAction);
 				}
@@ -291,7 +299,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 									navigation.push("AddPlayground", {
 										typeId: gameData.typeId,
 										location: location,
-										address: address,
+										address: getAddressString(addressObj),
 									});
 								}}
 							>

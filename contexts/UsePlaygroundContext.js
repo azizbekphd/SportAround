@@ -20,7 +20,7 @@ export const usePlaygroundContext = (
 				}
 			).catch((reason) => {});
 			if (response.status == 200) {
-				responseObj = await response.json();
+				var responseObj = await response.json();
 				console.log(responseObj);
 			}
 			dispatchUsePlaygroundState({
@@ -45,23 +45,31 @@ export const usePlaygroundContext = (
 		},
 		getLobby: () => {
 			return usePlaygroundState.usePlaygrounds
-				.slice()
-				.reverse()
-				.find((e) => {
-					return (
-						new Date() <
-						new Date(
-							`${e.dateGame}T${getNull(e.startHour)}:${getNull(
-								e.startMin
-							)}:00.000Z`
-						)
-					);
-				});
+				? usePlaygroundState.usePlaygrounds
+						.slice()
+						.reverse()
+						.find((e) => {
+							return (
+								new Date() <
+								new Date(
+									`${e.dateGame}T${getNull(e.startHour)}:${getNull(
+										e.startMin
+									)}:00.000Z`
+								)
+							);
+						})
+				: null;
 		},
 		deleteUsePlayground: (id) => {
 			dispatchUsePlaygroundState({
 				type: "delete",
 				id: id,
+			});
+		},
+		addUsePlayground: (usePlayground) => {
+			dispatchUsePlaygroundState({
+				type: "add",
+				usePlayground: usePlayground,
 			});
 		},
 	}));
