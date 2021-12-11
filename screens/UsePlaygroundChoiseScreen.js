@@ -43,13 +43,17 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 	const [coords, setCoords] = useState(null);
 	const [address, setAddress] = useState("");
 	const [addressObj, setAddressObj] = useState({});
-	const [isNewGame, setIsNewGame] = useState(route.params.isNewGame);
+	// const [isNewGame, setIsNewGame] = useState(route.params.isNewGame);
+	const [isNewGame, setIsNewGame] = useState(true);
+
 	const [gameData, setGameData] = useState(route.params.gameData);
 	const [selectedUsePlayground, setSelectedUsePlayground] = useState({
 		playground: {},
 	});
 	const ref = useRef(null);
 	const map = useRef(null);
+
+	console.log(isNewGame)
 
 	const { getToken } = useContext(AuthContext);
 
@@ -211,6 +215,7 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									setAddress(newValue);
 								}}
 								onSubmit={(text) => {
+									console.log(text)
 									setIsLoading(true);
 									if (isNewGame) {
 										searchPlaygrounds({
@@ -220,15 +225,20 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 											token: getToken(),
 										})
 											.then(async (response) => {
+												setPlaygrounds([])
 												let json = await response.json();
-												console.log(json);
-												setPlaygrounds(json);
+												await json.map(item => {
+													item.playground.address.includes(text) ?
+													setPlaygrounds([...playgrounds, item]) : null;
+													item.playground.address.includes(text) ?
+													console.log(item.playground.address) : null
+												})
 												map.current.animateCamera(
 													{
 														center: {
-															latitude: json[0].latitude,
+															latitude: json[0].playground.latitude ?? json[0].playground.latitude,
 															longitude:
-																json[0].longitude ?? json[0].longtitude,
+																json[0].playground.longitude ?? json[0].playground.longitude,
 														},
 														pitch: 12,
 														heading: 20,
@@ -269,7 +279,9 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 						<View style={styles.button}>
 							<IconButton
 								onPress={() => {
-									navigation.push("AddPlayground");
+									navigation.push("AddPlayground", {
+										gameData: gameData
+									});
 								}}
 							>
 								<Image source={require("../assets/icons/add_location.png")} />
@@ -314,8 +326,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 							return (
 								<Marker
 									coordinate={{
-										latitude: item.latitude,
-										longitude: item.longitude ?? item.longtitude,
+										latitude: item.playground.latitude,
+										longitude: item.playground.longtitude ?? item.playground.longtitude,
 									}}
 									key={item.id.toString() + "_marker"}
 									anchor={{ x: 0.5, y: 0.5 }}
@@ -342,8 +354,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 								<View key={item.id.toString() + "_circles"}>
 									<Circle
 										center={{
-											latitude: item.latitude,
-											longitude: item.longitude ?? item.longtitude,
+											latitude: item.playground.latitude,
+											longitude: item.playground.longtitude ?? item.playground.longtitude,
 										}}
 										radius={50}
 										fillColor="rgba(100,255,255,0.3)"
@@ -352,8 +364,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									/>
 									<Circle
 										center={{
-											latitude: item.latitude,
-											longitude: item.longitude ?? item.longtitude,
+											latitude: item.playground.latitude,
+											longitude: item.playground.longtitude ?? item.playground.longtitude,
 										}}
 										radius={100}
 										fillColor="rgba(100,255,255,0.3)"
@@ -362,8 +374,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									/>
 									<Circle
 										center={{
-											latitude: item.latitude,
-											longitude: item.longitude ?? item.longtitude,
+											latitude: item.playground.latitude,
+											longitude: item.playground.longtitude ?? item.playground.longtitude,
 										}}
 										radius={150}
 										fillColor="rgba(100,255,255,0.3)"

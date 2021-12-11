@@ -74,7 +74,7 @@ export default function FloatingPanel(props) {
                         }}
                     >
                         <H2 color="#000">
-                            {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                            {item.playground.name.charAt(0).toUpperCase() + item.playground.name.slice(1)}
                         </H2>
                         <View style={{ ...globalStyles.row, alignItems: 'flex-end' }}>
                             <View style={{
@@ -84,8 +84,8 @@ export default function FloatingPanel(props) {
                                 <H7 color="#999">{item.address}</H7>
                             </View>
                             <H6 color="#6565FC">{distance(
-                                item.latitude, props.coords.latitude,
-                                item.longitude ?? item.longtitude, props.coords.longitude)}</H6>
+                                item.playground.latitude, props.coords.latitude,
+                                item.playground.longitude ?? item.playground.longtitude, props.coords.longitude)}</H6>
                         </View>
                     </TouchableOpacity>
                 }}
