@@ -24,11 +24,19 @@ export default function NewGameScreen({ route, navigation }) {
 		countPlays: route.params.countPlays,
 		typeId: route.params.typeId,
 		pay: 0,
-		dateGame: null,
+		dateGame: "",
 		startHour: null,
 		startMin: 0,
 		endHour: 0,
 		endMin: 0,
+	});
+	const [searchParams, setSearchParams] = useState({
+		expand: "user, playground",
+		address: "",
+		dateGameFirst: "",
+		dateGameSecond: "",
+		typeId: route.params.typeId,
+		pay: 0,
 	});
 
 	function calculateAge(dob) {
@@ -38,8 +46,20 @@ export default function NewGameScreen({ route, navigation }) {
 	}
 
 	useEffect(() => {
+		setSearchParams((prev) => {
+			return Object.fromEntries([
+				...Object.entries(prev),
+				...Object.entries(gameData).filter((e) => {
+					return prev.hasOwnProperty(e[0]);
+				}),
+			]);
+		});
 		console.log(gameData);
 	}, [gameData]);
+
+	useEffect(() => {
+		console.log(searchParams);
+	}, [searchParams]);
 
 	useEffect(() => {
 		if (gameData.dateGame)
@@ -49,6 +69,7 @@ export default function NewGameScreen({ route, navigation }) {
 							new Date(decodeDate(new Date()))
 					: false
 			);
+		console.log(gameData.dateGame);
 	}, [gameData.dateGame]);
 
 	useEffect(() => {
@@ -72,6 +93,35 @@ export default function NewGameScreen({ route, navigation }) {
 					: false
 			);
 	}, [gameData.dateGame, gameData.startHour, gameData.startMin]);
+
+	useEffect(() => {
+		let date = new Date(
+			`${decodeDate(gameData.dateGame)}T${[
+				gameData.startHour,
+				gameData.startMin,
+				0,
+			]
+				.map((a) => getNull(a))
+				.join(":")}`
+		);
+		let dateS = new Date(date.setHours(date.getHours() - duration));
+		let dateE = new Date(date.setHours(date.getHours() + duration));
+		setSearchParams((prev) => {
+			return {
+				...prev,
+				dateGameFirst: date
+					? `${decodeDate(dateS)}T${[dateS.getHours(), dateS.getMinutes(), 0]
+							.map((a) => getNull(a))
+							.join(":")}`
+					: "",
+				dateGameSecond: date
+					? `${decodeDate(dateE)}T${[dateE.getHours(), dateE.getMinutes(), 0]
+							.map((a) => getNull(a))
+							.join(":")}`
+					: "",
+			};
+		});
+	}, [duration, gameData.startHour, gameData.startMin]);
 
 	return (
 		<>
@@ -164,26 +214,28 @@ export default function NewGameScreen({ route, navigation }) {
 						<Counter
 							items={
 								isNewGame
-									? ["0 ч.", "1 ч.", "2 ч.", "3 ч.", "4 ч.", "5 ч."]
+									? [
+											{ t: "0 ч.", v: 0 },
+											{ t: "1 ч.", v: 1 },
+											{ t: "2 ч.", v: 2 },
+											{ t: "3 ч.", v: 3 },
+											{ t: "4 ч.", v: 4 },
+											{ t: "5 ч.", v: 5 },
+									  ]
 									: [
-											"0 ч.",
-											"1 ч.",
-											"2 ч.",
-											"3 ч.",
-											"4 ч.",
-											"5 ч.",
-											"1 день",
-											"2 дня",
-											"Любой",
+											{ t: "0 ч.", v: 0 },
+											{ t: "1 ч.", v: 1 },
+											{ t: "2 ч.", v: 2 },
+											{ t: "3 ч.", v: 3 },
+											{ t: "4 ч.", v: 4 },
+											{ t: "5 ч.", v: 5 },
+											{ t: "1 день", v: 24 },
+											{ t: "2 дня", v: 48 },
+											{ t: "3 дня", v: 72 },
+											{ t: "Любой", v: "" },
 									  ]
 							}
-							onChange={(pos) => {
-								setGameData((prev) => {
-									return {
-										...prev,
-										endHour: (gameData.startHour + pos) % 24,
-									};
-								});
+							onChange={(pos, v, t) => {
 								setDuration(pos);
 							}}
 							default={duration}
@@ -193,12 +245,18 @@ export default function NewGameScreen({ route, navigation }) {
 						<View width="100%" style={styles.item}>
 							<H3 style={{ marginBottom: 9 }}>Тип команды:</H3>
 							<Counter
-								items={["3x3", "4x4", "5x5", "6x6", "Любой"]}
-								onChange={(pos) => {
+								items={[
+									{ t: "3x3", v: 6 },
+									{ t: "4x4", v: 8 },
+									{ t: "5x5", v: 10 },
+									{ t: "6x6", v: 12 },
+									{ t: "Любой", v: "" },
+								]}
+								onChange={(pos, v, t) => {
 									setGameData((prev) => {
 										return {
 											...prev,
-											countPlays: pos < 4 ? (pos + 3) * 2 : null,
+											countPlays: pos < 4 ? v : null,
 										};
 									});
 								}}

@@ -10,7 +10,8 @@ export default function Counter(props) {
 	}, [props.items]);
 
 	useEffect(() => {
-		props.onChange && props.onChange(count);
+		props.onChange &&
+			props.onChange(count, props.items[count]["v"], props.items[count]["t"]);
 	}, [count]);
 
 	return (
@@ -39,7 +40,7 @@ export default function Counter(props) {
 					},
 				]}
 			>
-				<H3 color="#fff">{props.items[count]}</H3>
+				<H3 color="#fff">{props.items[count]["t"]}</H3>
 			</View>
 			<TouchableOpacity
 				disabled={count == props.items.length - 1}

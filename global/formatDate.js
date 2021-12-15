@@ -1,6 +1,7 @@
 import getNull from "./getNull";
 
 export default function formatDate(dateStr) {
+	console.log(`${dateStr} is ${typeof dateStr}`);
 	if (dateStr != null) {
 		let date =
 			typeof dateStr == "string"
