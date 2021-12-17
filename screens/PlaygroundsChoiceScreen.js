@@ -16,6 +16,7 @@ import {
 	BackHandler,
 	Platform,
 	ScrollView,
+	TouchableOpacity,
 } from "react-native";
 import { StackActions, CommonActions } from "@react-navigation/routers";
 import { useFocusEffect } from "@react-navigation/native";
@@ -36,6 +37,10 @@ import AuthContext from "../contexts/AuthContext";
 import searchPlaygrounds from "../api/searchPlaygrounds";
 import getAddressString from "../global/getAddressString";
 import UsePlaygroundContext from "../contexts/UsePlaygroundContext";
+import H2 from "../components/H2";
+import H7 from "../components/H7";
+import H6 from "../components/H6";
+import distance from "../global/distance";
 
 export default function PlaygroundChoiceScreen({ navigation, route }) {
 	const [isLoading, setIsLoading] = useState(null);
@@ -151,7 +156,6 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 									}).then((address) => {
 										setIsLoading(false);
 										setAddressObj(address[0]);
-										console.log(getAddressString(address[0]));
 										search(getAddressString(address[0]));
 									});
 								}
@@ -171,7 +175,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 		});
 	}
 
-	function usePlayground() {
+	function bookPlayground() {
 		setIsLoading(true);
 		fetch(api + "use-playground/create", {
 			method: "POST",
@@ -192,14 +196,16 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 			.then(async (response) => {
 				console.log("Use playground");
 				console.log(response.status);
-				console.log(await response.text());
 				if (response.status == 200) {
 					addUsePlayground(await response.json());
+					await load({ token: getToken() });
 					const resetAction = StackActions.replace("Main", { screen: "Lobby" });
 					navigation.dispatch(resetAction);
 				}
 			})
-			.catch((reason) => {})
+			.catch((reason) => {
+				console.log(reason);
+			})
 			.finally(() => {
 				setIsLoading(false);
 			});
@@ -249,16 +255,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 
 	return (
 		<>
-			<Toolbar
-				back
-				title={title}
-				onMenu={() => {}}
-				onBack={() => {
-					if (!onBack()) {
-						navigation.pop();
-					}
-				}}
-			/>
+			<Toolbar back title={title} onMenu={() => {}} onBack={onBack} />
 			{!showInfo && (
 				<>
 					<View style={styles.container}>
@@ -400,9 +397,40 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 				coords={coords}
 				items={playgrounds}
 				hideCallback={setShowList}
-				onItemPressed={(data) => {
-					console.log(data);
-					setSelectedPlayground(data);
+				renderItem={({ item }) => {
+					return (
+						<TouchableOpacity
+							style={styles.listItem}
+							activeOpacity={0.5}
+							onPress={() => {
+								setShowList(false);
+								setShowInfo(true);
+								setSelectedPlayground(item);
+							}}
+						>
+							<H2 color="#000">
+								{item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+							</H2>
+							<View style={{ ...globalStyles.row, alignItems: "flex-end" }}>
+								<View
+									style={{
+										flex: 1,
+										justifyContent: "space-evenly",
+									}}
+								>
+									<H7 color="#999">{item.address}</H7>
+								</View>
+								<H6 color="#6565FC">
+									{distance(
+										item.latitude,
+										coords.latitude,
+										item.longitude ?? item.longtitude,
+										coords.longitude
+									)}
+								</H6>
+							</View>
+						</TouchableOpacity>
+					);
 				}}
 			/>
 			<PlaygroundInfo
@@ -411,7 +439,7 @@ export default function PlaygroundChoiceScreen({ navigation, route }) {
 				data={selectedPlayground}
 				hideCallback={setShowInfo}
 				setShowList={setShowList}
-				usePlayground={usePlayground}
+				usePlayground={bookPlayground}
 			/>
 			<Loader
 				loading={isLoading}
@@ -444,5 +472,12 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		margin: 20,
+	},
+	listItem: {
+		maxHeight: 150,
+		paddingHorizontal: 10,
+		paddingVertical: 10,
+		marginHorizontal: 5,
+		justifyContent: "space-evenly",
 	},
 });

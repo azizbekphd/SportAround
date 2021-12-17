@@ -16,6 +16,7 @@ import {
 	BackHandler,
 	Platform,
 	ScrollView,
+	TouchableOpacity,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import Toolbar from "../components/Toolbar";
@@ -32,14 +33,20 @@ import checkLocationPermission from "../global/checkLocationPermission";
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import api from "../global/api";
 import AuthContext from "../contexts/AuthContext";
-import searchPlaygrounds from "../api/searchPlaygrounds";
+import searchUsePlaygrounds from "../api/searchUsePlaygrounds";
+import UsePlaygroundContext from "../contexts/UsePlaygroundContext";
+import distance from "../global/distance";
+import H6 from "../components/H6";
+import H2 from "../components/H2";
+import H7 from "../components/H7";
+import UsePlaygroundInfo from "../components/UsePlaygroundInfo";
 
 export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 	const [isLoading, setIsLoading] = useState(null);
 	const [showList, setShowList] = useState(false);
 	const [showInfo, setShowInfo] = useState(false);
 	const [title, setTitle] = useState("");
-	const [playgrounds, setPlaygrounds] = useState([]);
+	const [usePlaygrounds, setUsePlaygrounds] = useState([]);
 	const [coords, setCoords] = useState(null);
 	const [address, setAddress] = useState("");
 	const [addressObj, setAddressObj] = useState({});
@@ -53,9 +60,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 	const ref = useRef(null);
 	const map = useRef(null);
 
-	console.log(isNewGame)
-
 	const { getToken } = useContext(AuthContext);
+	const { load } = useContext(UsePlaygroundContext);
 
 	useEffect(() => {
 		map.current.animateCamera(
@@ -182,8 +188,12 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 			},
 		})
 			.then(async (response) => {
+				console.log(response.status);
 				console.log(await response.json());
 				if (response.status == 200) {
+					await load({ token: getToken() });
+					const resetAction = StackActions.replace("Main", { screen: "Lobby" });
+					navigation.dispatch(resetAction);
 				}
 			})
 			.catch((reason) => {})
@@ -215,30 +225,35 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									setAddress(newValue);
 								}}
 								onSubmit={(text) => {
-									console.log(text)
+									console.log(text);
 									setIsLoading(true);
 									if (isNewGame) {
-										searchPlaygrounds({
+										searchUsePlaygrounds({
 											typeId: gameData.typeId,
 											address: text,
 											pay: gameData.pay,
 											token: getToken(),
 										})
 											.then(async (response) => {
-												setPlaygrounds([])
 												let json = await response.json();
-												await json.map(item => {
-													item.playground.address.includes(text) ?
-													setPlaygrounds([...playgrounds, item]) : null;
-													item.playground.address.includes(text) ?
-													console.log(item.playground.address) : null
-												})
+												console.log(json);
+												await json.map((item) => {
+													item.playground.address.includes(text)
+														? setUsePlaygrounds([...usePlaygrounds, item])
+														: null;
+													item.playground.address.includes(text)
+														? console.log(item.playground.address)
+														: null;
+												});
 												map.current.animateCamera(
 													{
 														center: {
-															latitude: json[0].playground.latitude ?? json[0].playground.latitude,
+															latitude:
+																json[0].playground.latitude ??
+																json[0].playground.latitude,
 															longitude:
-																json[0].playground.longitude ?? json[0].playground.longitude,
+																json[0].playground.longitude ??
+																json[0].playground.longitude,
 														},
 														pitch: 12,
 														heading: 20,
@@ -260,12 +275,12 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 						</View>
 					</View>
 					<View style={styles.buttonsContainer} width="100%">
-						<View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
+						<View style={{ ...styles.button, flex: 1 }}>
 							<Button
 								title={
 									isLoading
 										? "Загрузка..."
-										: playgrounds.length === 0
+										: usePlaygrounds.length === 0
 										? "Список пуст"
 										: "Список"
 								}
@@ -273,19 +288,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									setShowList(true);
 									ref.current.blur();
 								}}
-								disabled={playgrounds.length === 0}
+								disabled={usePlaygrounds.length === 0}
 							/>
-						</View>
-						<View style={styles.button}>
-							<IconButton
-								onPress={() => {
-									navigation.push("AddPlayground", {
-										gameData: gameData
-									});
-								}}
-							>
-								<Image source={require("../assets/icons/add_location.png")} />
-							</IconButton>
 						</View>
 					</View>
 				</>
@@ -320,14 +324,15 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 						zoom: 14,
 					}}
 				>
-					{playgrounds &&
-						playgrounds.length > 0 &&
-						playgrounds.map((item, index) => {
+					{usePlaygrounds &&
+						usePlaygrounds.length > 0 &&
+						usePlaygrounds.map((item, index) => {
 							return (
 								<Marker
 									coordinate={{
 										latitude: item.playground.latitude,
-										longitude: item.playground.longtitude ?? item.playground.longtitude,
+										longitude:
+											item.playground.longtitude ?? item.playground.longtitude,
 									}}
 									key={item.id.toString() + "_marker"}
 									anchor={{ x: 0.5, y: 0.5 }}
@@ -347,15 +352,17 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 								</Marker>
 							);
 						})}
-					{playgrounds &&
-						playgrounds.length > 0 &&
-						playgrounds.map((item, index) => {
+					{usePlaygrounds &&
+						usePlaygrounds.length > 0 &&
+						usePlaygrounds.map((item, index) => {
 							return (
 								<View key={item.id.toString() + "_circles"}>
 									<Circle
 										center={{
 											latitude: item.playground.latitude,
-											longitude: item.playground.longtitude ?? item.playground.longtitude,
+											longitude:
+												item.playground.longtitude ??
+												item.playground.longtitude,
 										}}
 										radius={50}
 										fillColor="rgba(100,255,255,0.3)"
@@ -365,7 +372,9 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									<Circle
 										center={{
 											latitude: item.playground.latitude,
-											longitude: item.playground.longtitude ?? item.playground.longtitude,
+											longitude:
+												item.playground.longtitude ??
+												item.playground.longtitude,
 										}}
 										radius={100}
 										fillColor="rgba(100,255,255,0.3)"
@@ -375,7 +384,9 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 									<Circle
 										center={{
 											latitude: item.playground.latitude,
-											longitude: item.playground.longtitude ?? item.playground.longtitude,
+											longitude:
+												item.playground.longtitude ??
+												item.playground.longtitude,
 										}}
 										radius={150}
 										fillColor="rgba(100,255,255,0.3)"
@@ -398,14 +409,46 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 				show={showList}
 				showInfo={setShowInfo}
 				coords={coords}
-				items={playgrounds}
+				items={usePlaygrounds}
 				hideCallback={setShowList}
-				onItemPressed={(data) => {
-					console.log(data);
-					setSelectedUsePlayground(data);
+				renderItem={({ item }) => {
+					return (
+						<TouchableOpacity
+							style={styles.listItem}
+							activeOpacity={0.5}
+							onPress={() => {
+								setShowList(false);
+								setShowInfo(true);
+								setSelectedUsePlayground(item);
+							}}
+						>
+							<H2 color="#000">
+								{item.playground.name.charAt(0).toUpperCase() +
+									item.playground.name.slice(1)}
+							</H2>
+							<View style={{ ...globalStyles.row, alignItems: "flex-end" }}>
+								<View
+									style={{
+										flex: 1,
+										justifyContent: "space-evenly",
+									}}
+								>
+									<H7 color="#999">{item.playground.address}</H7>
+								</View>
+								<H6 color="#6565FC">
+									{distance(
+										item.playground.latitude,
+										coords.latitude,
+										item.playground.longitude ?? item.playground.longtitude,
+										coords.longitude
+									)}
+								</H6>
+							</View>
+						</TouchableOpacity>
+					);
 				}}
 			/>
-			<PlaygroundInfo
+			<UsePlaygroundInfo
 				coords={coords}
 				show={showInfo}
 				data={selectedUsePlayground}
@@ -444,5 +487,12 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		margin: 20,
+	},
+	listItem: {
+		maxHeight: 150,
+		paddingHorizontal: 10,
+		paddingVertical: 10,
+		marginHorizontal: 5,
+		justifyContent: "space-evenly",
 	},
 });

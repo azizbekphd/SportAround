@@ -76,6 +76,10 @@ export default function PlaygroundInfo(props) {
 			}).start();
 	}, [props.show]);
 
+	useEffect(() => {
+		console.log(props);
+	}, [props]);
+
 	function scrollEvent({ nativeEvent }) {
 		let y = nativeEvent.contentOffset.y;
 		if (y < Dimensions.get("window").height / 2) {

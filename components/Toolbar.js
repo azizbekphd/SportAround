@@ -48,7 +48,9 @@ export default function Toolbar(props) {
 						<TouchableOpacity
 							activeOpacity={0.5}
 							onPress={() => {
-								props.onBack ? props.onBack() : navigation.pop();
+								if (!props.onBack || (props.onBack && !props.onBack())) {
+									navigation.pop();
+								}
 							}}
 							style={{
 								height: 40,

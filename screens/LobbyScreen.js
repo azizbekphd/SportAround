@@ -18,7 +18,8 @@ export default function LobbyScreen({ navigation, route }) {
 	const [minutesLeft, setMinutesLeft] = useState(0);
 	const [showAlert, setShowAlert] = useState(false);
 
-	const { getLobby, deleteUsePlayground } = useContext(UsePlaygroundContext);
+	const { load, getLobby, deleteUsePlayground } =
+		useContext(UsePlaygroundContext);
 	const { getToken } = useContext(AuthContext);
 
 	useEffect(() => {
@@ -44,6 +45,10 @@ export default function LobbyScreen({ navigation, route }) {
 			clearInterval(interval);
 		};
 	}, []);
+
+	useEffect(() => {
+		console.log(game);
+	}, [game]);
 
 	return (
 		<>
@@ -182,6 +187,7 @@ export default function LobbyScreen({ navigation, route }) {
 									setGame(getLobby());
 								}
 							}
+							load({ token: getToken() });
 						},
 					},
 				]}

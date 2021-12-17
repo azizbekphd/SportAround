@@ -1,8 +1,8 @@
 import api from "../global/api";
 
-export default function searchPlaygrounds({ typeId, pay, address, token }) {
-	let url = new URL(api + `playground?`);
-	url.searchParams.append("expand", "photos, hourWork");
+export default function searchUsePlaygrounds({ typeId, pay, address, token }) {
+	let url = new URL(api + `use-playground?`);
+	url.searchParams.append("expand", "user, playground");
 	url.searchParams.append("typeId", typeId);
 	url.searchParams.append("address", address.trim());
 	url.searchParams.append("pay", pay);
