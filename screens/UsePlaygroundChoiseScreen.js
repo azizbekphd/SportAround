@@ -64,11 +64,14 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 	const { load } = useContext(UsePlaygroundContext);
 
 	useEffect(() => {
+		console.log("aaa");
 		map.current.animateCamera(
 			{
 				center: {
 					latitude: selectedUsePlayground.playground.latitude,
-					longitude: selectedUsePlayground.playground.longitude,
+					longitude:
+						selectedUsePlayground.playground.longitude ??
+						selectedUsePlayground.playground.longtitude,
 				},
 				zoom: 15,
 			},
@@ -123,6 +126,10 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 			setAddress(a);
 		}
 	}, [addressObj]);
+
+	useEffect(() => {
+		console.log(address);
+	}, [address]);
 
 	function init() {
 		checkIfLocationEnabled().then((enabled) => {
@@ -183,9 +190,9 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 				accept: "application/json",
 				Authorization: `Bearer ${getToken()}`,
 			},
-			body: {
+			body: JSON.stringify({
 				usePlaygroundId: selectedUsePlayground.id,
-			},
+			}),
 		})
 			.then(async (response) => {
 				console.log(response.status);
@@ -227,6 +234,7 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 								onSubmit={(text) => {
 									console.log(text);
 									setIsLoading(true);
+
 									if (isNewGame) {
 										searchUsePlaygrounds({
 											typeId: gameData.typeId,
@@ -235,8 +243,8 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 											token: getToken(),
 										})
 											.then(async (response) => {
+												setUsePlaygrounds([]);
 												let json = await response.json();
-												console.log(json);
 												await json.map((item) => {
 													item.playground.address.includes(text)
 														? setUsePlaygrounds([...usePlaygrounds, item])
