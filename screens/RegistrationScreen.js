@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useCallback } from 'react';
+import React, { useState, useRef, useContext, useCallback, useEffect } from 'react';
 import globalStyles from '../global/Styles';
 import { Text, View, StyleSheet, TextInput, Image, Alert, StatusBar, BackHandler } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -21,14 +21,12 @@ import rawPhone from '../global/rawPhone';
 import { useFocusEffect } from '@react-navigation/core';
 
 export default function RegistrationScreen({ navigation }) {
-
     const [dob, setDob] = useState(null)
     const [loading, setLoading] = useState(false)
     const pager = useRef()
     const [page, setPage] = useState(0)
     const [data, setData] = useState({
         username: '',
-        email: '',
         password: '',
         password_repeat: '',
         email: '',

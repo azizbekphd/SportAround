@@ -58,16 +58,19 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 	const { getToken } = useContext(AuthContext);
 
 	useEffect(() => {
-		map.current.animateCamera(
-			{
-				center: {
-					latitude: selectedUsePlayground.playground.latitude,
-					longitude: selectedUsePlayground.playground.longitude,
+		if(selectedUsePlayground.playground !== {}) {
+			console.log('a' + selectedUsePlayground.playground.latitude)
+			map.current.animateCamera(
+				{
+					center: {
+						latitude: selectedUsePlayground.playground.latitude,
+						longitude: selectedUsePlayground.playground.longtitude,
+					},
+					zoom: 15,
 				},
-				zoom: 15,
-			},
-			1000
-		);
+				1000
+			);
+		}
 	}, [selectedUsePlayground]);
 
 	const onBack = () => {
@@ -259,6 +262,7 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 							/>
 						</View>
 					</View>
+
 					<View style={styles.buttonsContainer} width="100%">
 						<View style={{ ...styles.button, flex: 1, marginRight: 0 }}>
 							<Button
@@ -335,6 +339,7 @@ export default function UsePlaygroundChoiceScreen({ navigation, route }) {
 										setSelectedUsePlayground(item);
 										setShowInfo(true);
 									}}
+									title={item.playground.name}
 								>
 									<View
 										style={{ justifyContent: "center", alignItems: "center" }}

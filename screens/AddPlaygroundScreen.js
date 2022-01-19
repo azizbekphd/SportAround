@@ -363,6 +363,8 @@ export default function AddPlaygroundScreen({ navigation, route }) {
 							title="Дальше"
 							disabled={!scheduleIsValid() && !tfs}
 							onPress={() => {
+								console.log('aa' + playgroundData.hourWork, playgroundData.id)
+								console.log(api + `playground/hour-work/13`)
 								setIsLoading(true);
 								fetch(api + `playground/hour-work/${playgroundData.id}`, {
 									method: playgroundData.hourWork ? "PUT" : "POST",
@@ -381,7 +383,7 @@ export default function AddPlaygroundScreen({ navigation, route }) {
 										: JSON.stringify(schedule),
 								})
 									.then(async (resp) => {
-										if (resp && resp.status == 200) {
+										if (resp && resp.status === 200) {
 											let s = await resp.json();
 											setPlaygroundData((prev) => {
 												return {

@@ -10,11 +10,37 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Navbar from '../components/Navbar';
 import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../contexts/AuthContext';
+import * as Location from "expo-location";
+import UpdateUserLocation from "../api/UpdateUserLocation";
 
 export default function SportChoiceScreen({ navigation, route }) {
-
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
     const { getToken } = useContext(AuthContext)
     const [types, setTypes] = useState()
+
+    useEffect(() => {
+        (async () => {
+              const { status } = await Location.requestForegroundPermissionsAsync();
+              if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+              }
+
+              const location = await Location.getCurrentPositionAsync({});
+              await setLocation(location);
+        })();
+     }, []);
+
+    useEffect(() => {
+        if(location) {
+                    UpdateUserLocation({
+                        token: getToken(),
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude
+                    }).then(response => console.log(response))
+        }
+    }, [location])
 
     const openNextPage = ({ typeId, countPlays, status }) => {
         navigation.navigate('NewGame', {
